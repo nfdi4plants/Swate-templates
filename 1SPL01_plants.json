@@ -1,0 +1,12 @@
+{
+  "name": "Plant growth",
+  "version": "1.0.0",
+  "author": ["Hajira Jabeen", "Dominik Brilhaus"],
+  "description": "Template to describe a plant growth study.",
+  "docslink": "",
+  "tags": ["Plants", "Sampling", "Plant growth", "Plant study","er:GEO", "mod:1SPL"],
+  "Workbook": "1SPL01_plants.xlsx",
+  "Worksheet": "1SPL01_plants",
+  "Table": "annotationTable"
+}
+
