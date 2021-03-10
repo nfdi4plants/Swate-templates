@@ -1,5 +1,6 @@
 ---
 name: Tutorial request for user (front-end)
+about: 'Requesting a tutorial for users'
 title: "[Tutorial user]"
 labels: ''
 assignees: ''
