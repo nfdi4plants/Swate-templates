@@ -1,5 +1,6 @@
 ---
 name: Tutorial request for data stewards (back-end)
+about: 'Requesting a tutorial for data stewards'
 title: "[Tutorial data steward]"
 labels: ''
 assignees: ''
