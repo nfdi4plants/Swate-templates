@@ -1,0 +1,12 @@
+{
+  "name": "RNA-Seq Computational Analysis - Test",
+  "version": "1.0.0",
+  "author": ["Marcel Tschöpe"],
+  "description": "Template to describe the computational analysis of RNA-Seq data.",
+  "docslink": "https://github.com/nfdi4plants/SWATE_templates/blob/main/templates/4COM01_RNASeqGEO.json",
+  "tags": ["Transcriptomics", "mRNASeq", "RNASeq", "Computational Analysis", "er:GEO", "mod:4COM"],
+  "Workbook": "4COM01_RNASeqGEO.xlsx",
+  "Worksheet": "4COM01_RNASeqGEO",
+  "Table": "annotationTable3"
+}
+
