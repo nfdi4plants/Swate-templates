@@ -1,0 +1,12 @@
+{
+  "name": "Plant growth",
+  "version": "1.0.0",
+  "author": ["Hajira Jabeen", "Dominik Brilhaus"],
+  "description": "Template to describe a plant growth study.",
+  "docslink": "https://github.com/nfdi4plants/SWATE_templates/wiki/1SPL01_plants",
+  "tags": ["Plants", "Sampling", "Plant growth", "Plant study","er:GEO", "mod:1SPL"],
+  "Workbook": "1SPL01_plants.xlsx",
+  "Worksheet": "1SPL01_plants",
+  "Table": "annotationTable"
+}
+
