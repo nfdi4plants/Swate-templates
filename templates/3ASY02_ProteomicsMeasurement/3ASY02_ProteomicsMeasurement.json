@@ -1,0 +1,11 @@
+{
+  "name": "Measurement for Proteomics",
+  "version": "1.0.0",
+  "author": [ "Oliver Maus" ],
+  "description": "This protocol focuses on the measurement of the mass spectrometer, its settings and all other relevant data related to this.",
+  "docslink": "https://github.com/nfdi4plants/SWATE_templates/wiki/3ASY02_ProteomicsMeasurement",
+  "tags": [ "3_ASY", "Assay", "Proteomics", "Measurement", "Mass spectrometry", "MS", "er:ISA", "mod:3ASY" ],
+  "Workbook": "3ASY02_ProteomicsMeasurement.xlsx",
+  "Worksheet": "3ASY02_ProteomicsMeasurement",
+  "Table": "annotationTable3"
+}

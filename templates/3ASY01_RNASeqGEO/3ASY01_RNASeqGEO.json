@@ -1,0 +1,12 @@
+{
+  "name": "RNA-Seq Assay",
+  "version": "1.0.0",
+  "author": ["Hajira Jabeen", "Dominik Brilhaus"],
+  "description": "Template to describe preparation and measurement of RNA-Seq.",
+  "docslink": "https://github.com/nfdi4plants/SWATE_templates/wiki/3ASY01_RNASeqGEO",
+  "tags": ["Transcriptomics", "mRNASeq", "RNASeq", "Assay", "er:GEO", "mod:3ASY"],
+  "Workbook": "3ASY01_RNASeqGEO.xlsx",
+  "Worksheet": "3ASY01_RNASeqGEO",
+  "Table": "annotationTable2"
+}
+

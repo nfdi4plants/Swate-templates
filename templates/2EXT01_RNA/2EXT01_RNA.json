@@ -1,0 +1,12 @@
+{
+  "name": "RNA extraction",
+  "version": "1.0.0",
+  "author": ["Hajira Jabeen", "Dominik Brilhaus"],
+  "description": "Template to describe sampling for and extraction of RNA.",
+  "docslink": "https://github.com/nfdi4plants/SWATE_templates/wiki/2EXT01_RNA",
+  "tags": ["Extraction", "RNA", "er:GEO", "mod:2EXT"],
+  "Workbook": "2EXT01_RNA.xlsx",
+  "Worksheet": "2EXT01_RNA",
+  "Table": "annotationTable1"
+}
+

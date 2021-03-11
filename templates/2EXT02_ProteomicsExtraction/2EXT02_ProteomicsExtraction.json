@@ -1,0 +1,11 @@
+{
+  "name": "Extraction for Proteomics",
+  "version": "1.0.0",
+  "author": [ "Oliver Maus" ],
+  "description": "This protocol focuses on lab works regarding the extraction of the molecule of interest.",
+  "docslink": "https://github.com/nfdi4plants/SWATE_templates/wiki/2EXT02_ProteomicsExtraction",
+  "tags": [ "2_EXT", "Extraction", "Proteomics", "er:ISA", "mod:2EXT" ],
+  "Workbook": "2EXT02_ProteomicsExtraction.xlsx",
+  "Worksheet": "2EXT02_ProteomicsExtraction",
+  "Table": "annotationTable3"
+}
