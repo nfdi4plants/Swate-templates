@@ -1,6 +1,16 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\templates",
+    "\\templates\\1SPL01_plants",
+    "\\templates\\1SPL02_ProteomicsSamplePreparation",
+    "\\templates\\2EXT01_RNA",
+    "\\templates\\2EXT02_ProteomicsExtraction",
+    "\\templates\\3ASY01_RNASeqGEO",
+    "\\templates\\3ASY02_ProteomicsMeasurement",
+    "\\templates\\4COM01_RNASeqGEO",
+    "\\templates\\4COM02_ProteomicsDataProcessing"
   ],
+  "SelectedNode": "\\templates\\4COM02_ProteomicsDataProcessing\\4COM02_ProteomicsDataProcessing.json",
   "PreviewInSolutionExplorer": false
 }
