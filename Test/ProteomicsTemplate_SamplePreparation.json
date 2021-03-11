@@ -1,0 +1,11 @@
+{
+  "name": "Sample Preparation Proteomics",
+  "version": "1.0.0",
+  "author": "Oliver Maus",
+  "description": "This protocol focuses on works in the lab the experimentator does, e.g. cultivation of cells, transfection with genes, and so on. It is specialized to work for preparations for proteomics experiments. It includes special annotation blocks for proteomics workflows.",
+  "docslink": "https://github.com/nfdi4plants/Swate/wiki/Proteomics-Template#sample-preparation",
+  "tags": [ "01_SPL", "Sampling", "Proteomics", "Sample preparation", "Extraction", "02_EXT" ],
+  "Workbook": "ProteomicsTemplate.xlsx",
+  "Worksheet": "Sample preparation",
+  "Table": "annotationTable"
+}
