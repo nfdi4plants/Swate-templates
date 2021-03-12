@@ -7,5 +7,5 @@
   "tags": [ "2_EXT", "Extraction", "Proteomics", "er:ISA", "mod:2EXT" ],
   "Workbook": "2EXT02_ProteomicsExtraction.xlsx",
   "Worksheet": "2EXT02_ProteomicsExtraction",
-  "Table": "annotationTable3"
+  "Table": "annotationTable"
 }

@@ -7,5 +7,5 @@
   "tags": [ "3_ASY", "Assay", "Proteomics", "Measurement", "Mass spectrometry", "MS", "er:ISA", "mod:3ASY" ],
   "Workbook": "3ASY02_ProteomicsMeasurement.xlsx",
   "Worksheet": "3ASY02_ProteomicsMeasurement",
-  "Table": "annotationTable3"
+  "Table": "annotationTable"
 }
