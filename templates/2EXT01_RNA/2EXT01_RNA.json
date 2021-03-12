@@ -1,6 +1,6 @@
 {
   "name": "RNA extraction",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "author": ["Hajira Jabeen", "Dominik Brilhaus"],
   "description": "Template to describe the extraction of RNA.",
   "docslink": "https://github.com/nfdi4plants/SWATE_templates/wiki/2EXT01_RNA",
