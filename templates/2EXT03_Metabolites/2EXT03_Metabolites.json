@@ -1,0 +1,11 @@
+{
+  "name":"Metabolite Extraction",
+  "version":"1.0.0",
+  "author": ["Dominik Brilhaus"],
+  "description": "Template to describe the extraction of metabolites for a metabolomics assay.",
+  "docslink": "https://github.com/nfdi4plants/SWATE_templates/wiki/2EXT03_Metabolites",
+  "tags":["Extraction", "Metabolites", "er:Metabolights", "mod:2EXT"],
+  "Workbook":"2EXT03_Metabolites.xlsx",
+  "Worksheet":"2EXT03_Metabolites",
+  "Table":"annotationTable"
+}
