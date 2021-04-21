@@ -1,6 +1,6 @@
 {
   "name": "Plant growth",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "author": ["Hajira Jabeen", "Dominik Brilhaus"],
   "description": "Template to describe a plant growth study as well as sample collection and handling.",
   "docslink": "https://github.com/nfdi4plants/SWATE_templates/wiki/1SPL01_plants",
