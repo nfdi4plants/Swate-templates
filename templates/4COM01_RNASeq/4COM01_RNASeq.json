@@ -1,6 +1,6 @@
 {
   "name": "RNA-Seq Computational Analysis",
-  "version": "1.0.1",
+  "version": "1.0.0",
   "author": ["Hajira Jabeen", "Dominik Brilhaus"],
   "description": "Template to describe the computational analysis of RNA-Seq data.",
   "docslink": "https://github.com/nfdi4plants/SWATE_templates/blob/main/templates/4COM01_RNASeq",
