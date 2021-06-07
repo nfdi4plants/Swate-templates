@@ -1,0 +1,12 @@
+{
+  "name": "Genomics Assay",
+  "version": "1.0.0",
+  "author": ["Angela Kranz", "Dominik Brilhaus"],
+  "reviewer": "review incomplete",
+  "description": "Template to describe preparation and measurement of DNA-Seq for genomics.",
+  "docslink": "",
+  "tags": ["Genomics", "DNASeq" , "Assay", "er:SRA", "er:GenBank", "mod:3ASY"],
+  "Workbook": "3ASY04_Genomics.xlsx",
+  "Worksheet": "3ASY04_Genomics",
+  "Table": "annotationTable2"
+}
