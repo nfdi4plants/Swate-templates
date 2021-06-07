@@ -8,6 +8,6 @@
   "tags": ["Extraction", "DNA", "er:SRA", "er:GenBank", "mod:2EXT"],
   "Workbook": "2EXT04_DNA.xlsx",
   "Worksheet": "2EXT04_DNA",
-  "Table": "annotationTable2"
+  "Table": "annotationTable1"
 }
 
