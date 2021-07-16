@@ -1,8 +1,7 @@
 {
   "name": "Plant growth",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "author": ["Hajira Jabeen", "Dominik Brilhaus"],
-  "reviewer": "Test",
   "description": "Template to describe a plant growth study as well as sample collection and handling.",
   "docslink": "https://github.com/nfdi4plants/SWATE_templates/wiki/1SPL01_plants",
   "tags": ["Plants", "Sampling", "Plant growth", "Plant study", "er:GEO", "er:Metabolights", "mod:1SPL"],
