@@ -1,6 +1,6 @@
 {
   "name": "Data Processing for Proteomics",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "author": [ "Oliver Maus" ],
   "description": "This protocol tackles the steps after obtaining measurement results in terms of computational analysis.",
   "docslink": "https://github.com/nfdi4plants/SWATE_templates/wiki/4COM02_ProteomicsDataProcessing",

@@ -1,6 +1,6 @@
 {
   "name": "Extraction for Proteomics",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "author": [ "Oliver Maus" ],
   "reviewer": ["Dominik Brilhaus"],
   "description": "This protocol focuses on lab works regarding the extraction of the molecule of interest.",
