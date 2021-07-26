@@ -2,7 +2,6 @@
   "name": "DNA extraction",
   "version": "1.0.1",
   "author": ["Angela Kranz", "Dominik Brilhaus"],
-  "reviewer": "review incomplete",
   "description": "Template to describe the extraction of DNA.",
   "docslink": "",
   "er": ["SRA", "GENBANK"],
