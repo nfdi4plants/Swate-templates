@@ -1,10 +1,11 @@
 {
   "name": "RNA-Seq Computational Analysis",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "author": ["Hajira Jabeen", "Dominik Brilhaus"],
   "description": "Template to describe the computational analysis of RNA-Seq data.",
-  "docslink": "https://github.com/nfdi4plants/SWATE_templates/blob/main/templates/4COM01_RNASeq",
-  "tags": ["Transcriptomics", "mRNASeq", "RNASeq", "Computational Analysis", "er:GEO", "mod:4COM"],
+  "docslink": "",
+  "er": ["GEO"],
+  "tags": ["Transcriptomics", "mRNASeq", "RNASeq", "Computational Analysis"],
   "Workbook": "4COM01_RNASeq.xlsx",
   "Worksheet": "4COM01_RNASeq",
   "Table": "annotationTable3"

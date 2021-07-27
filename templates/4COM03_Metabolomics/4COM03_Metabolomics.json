@@ -1,11 +1,12 @@
 {
   "name": "Metabolomics Computational Analysis",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "author": ["Dominik Brilhaus"],
   "reviewer": "review incomplete",
   "description": "Template to describe the computational analysis of metabolomics data.",
   "docslink": "",
-  "tags": ["Metabolomics", "GC-MS", "LC-MS", "metabolites", "Computational Analysis", "er:Metabolights", "mod:4COM"],
+  "er":   ["METABOLIGHTS"],
+  "tags": ["Metabolomics", "GC-MS", "LC-MS", "metabolites", "Computational Analysis"],
   "Workbook": "4COM03_Metabolomics.xlsx",
   "Worksheet": "4COM03_Metabolomics",
   "Table": "annotationTable"
