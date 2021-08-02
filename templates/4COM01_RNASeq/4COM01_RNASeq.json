@@ -1,6 +1,6 @@
 {
   "name": "RNA-Seq Computational Analysis",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "author": ["Hajira Jabeen", "Dominik Brilhaus"],
   "description": "Template to describe the computational analysis of RNA-Seq data.",
   "docslink": "",

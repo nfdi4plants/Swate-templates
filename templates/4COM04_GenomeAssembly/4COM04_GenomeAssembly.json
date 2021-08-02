@@ -1,6 +1,6 @@
 {
   "name": "Genome assembly",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "author": ["Angela Kranz", "Dominik Brilhaus"],
   "description": "Template to describe computational of a genome assembly",
   "docslink": "",
