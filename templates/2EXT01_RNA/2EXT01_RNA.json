@@ -1,6 +1,6 @@
 {
   "name": "RNA extraction",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "author": ["Hajira Jabeen", "Dominik Brilhaus"],
   "description": "Template to describe the extraction of RNA.",
   "docslink": "",
