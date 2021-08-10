@@ -1,6 +1,6 @@
 {
   "name": "Metabolomics Computational Analysis",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "author": ["Dominik Brilhaus"],
   "reviewer": "review incomplete",
   "description": "Template to describe the computational analysis of metabolomics data.",
