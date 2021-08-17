@@ -391,11 +391,11 @@ FodyWeavers.xsd
 .idea/
 *.sln.iml
 
-# /.vs
+/.vs
 
-# /tmp/watch
-# /.fsdocs
-# /output
+/tmp/watch
+/.fsdocs
+/output
 
 ~$*
 .DS_Store
