@@ -1,108 +1,108 @@
 {
-    "$schema": "https://json-schema.org/draft/2020-12/schema",
-    "$id": "<githublink vermutlich>",
-    "title": "Term",
-    "description": "The JSON schema representation of a ontology term.",
-    "type": "object",
-    "properties": {
-        "id": {
-            "description": "The TAN of this term.",
-            "type": "string"
-        },
-        "name": {
-            "description": "The name of this term.",
-            "type": "string"
-        },
-        "def": {
-            "description": "The definition of this term (in short sentences).",
-            "type": "string"
-        },
-        "comment": {
-            "description": "A comment regarding this term and its usage, properties, ...",
-            "type": "string"
-        },
-        "synonym": {
-            "description": "An alternate name of this term.",
-            "type": "string"
-        },
-        "xref": {
-            "description": "A cross-reference to another term from another ontology with the same or an analogous meaning.",
-            "type": "array",
-            "items": {
-                "type": "string"
-            },
-            "minItems": 1,
-            "uniqueItems": true
-        },
-        "is_a": {
-            "description": "A reference to the to the class this term is an instance of.",
-            "type": "array",
-            "items": {
-                "type": "string"
-            },
-            "minItems": 1,
-            "uniqueItems": true
-        },
-        "is_anonymous": {
-            "description": "Whether or not this term has an anonymous id.",
-            "type": "boolean"
-        },
-        "subset": {
-            "description": "The term subset this term belongs to.",
-            "type": "string"
-        },
-        "intersection_of": {
-            "description": "The terms of which this term is the intersection of, given as TANs.",
-            "type": "array",
-            "items": {
-                "type": "string"
-            },
-            "minItems": 2,
-            "uniqueItems": true
-        },
-        "union_of": {
-            "description": "The terms of which this term is the union of, given as TANs.",
-            "type": "array",
-            "items": {
-                "type": "string"
-            },
-            "minItems": 2,
-            "uniqueItems": true
-        },
-        "disjoint_from": {
-            "description": "The terms of which this term is disjoint from, given as TANs.",
-            "type": "array",
-            "items": {
-                "type": "string"
-            },
-            "minItems": 2,
-            "uniqueItems": true
-        },
-        "relationship": {
-            "description": "The type of relationship of this term to another one. This other term is defined via its TAN.",
-            "type": "array",
-            "items": {
-                "type": "string"
-            },
-            "minItems": 1,
-            "uniqueItems": true
-        },
-        "is_obsolete": {
-            "description": "Whether or not this term is obsolete.",
-            "type": "boolean"
-        },
-        "replaced_by": {
-            "description": "The TAN of the term this term is replaced by.",
-            "type": "string"
-        },
-        "consider": {
-            "description": "The TAN of a term that could be a good replacement for this term. Should be carefully reviewed by a domain-specific expert.",
-            "type": "string"
-        },
-        "builtin": {
-            "description": "Whether or not this term is built in to the OBO format.",
-            "type": "boolean"
-        }
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/nfdi4plants/SWATE_templates/FormattingDocs/templates/TermSchema.json",
+  "title": "Term",
+  "description": "The JSON schema representation of a ontology term.",
+  "type": "object",
+  "properties": {
+    "id": {
+      "description": "The TAN of this term.",
+      "type": "string"
     },
-    "required": ["id"]
+    "name": {
+      "description": "The name of this term.",
+      "type": "string"
+    },
+    "def": {
+      "description": "The definition of this term (in short sentences).",
+      "type": "string"
+    },
+    "comment": {
+      "description": "A comment regarding this term and its usage, properties, ...",
+      "type": "string"
+    },
+    "synonym": {
+      "description": "An alternate name of this term.",
+      "type": "string"
+    },
+    "xref": {
+      "description": "A cross-reference to another term from another ontology with the same or an analogous meaning.",
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "is_a": {
+      "description": "A reference to the to the class this term is an instance of.",
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "is_anonymous": {
+      "description": "Whether or not this term has an anonymous id.",
+      "type": "boolean"
+    },
+    "subset": {
+      "description": "The term subset this term belongs to.",
+      "type": "string"
+    },
+    "intersection_of": {
+      "description": "The terms of which this term is the intersection of, given as TANs.",
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 2,
+      "uniqueItems": true
+    },
+    "union_of": {
+      "description": "The terms of which this term is the union of, given as TANs.",
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 2,
+      "uniqueItems": true
+    },
+    "disjoint_from": {
+      "description": "The terms of which this term is disjoint from, given as TANs.",
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 2,
+      "uniqueItems": true
+    },
+    "relationship": {
+      "description": "The type of relationship of this term to another one. This other term is defined via its TAN.",
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "is_obsolete": {
+      "description": "Whether or not this term is obsolete.",
+      "type": "boolean"
+    },
+    "replaced_by": {
+      "description": "The TAN of the term this term is replaced by.",
+      "type": "string"
+    },
+    "consider": {
+      "description": "The TAN of a term that could be a good replacement for this term. Should be carefully reviewed by a domain-specific expert.",
+      "type": "string"
+    },
+    "builtin": {
+      "description": "Whether or not this term is built in to the OBO format.",
+      "type": "boolean"
+    }
+  },
+  "required": [ "id" ]
 }

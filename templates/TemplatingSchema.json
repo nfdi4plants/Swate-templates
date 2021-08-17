@@ -1,69 +1,69 @@
 {
-    "$schema": "https://json-schema.org/draft/2020-12/schema",
-    "$id": "<githublink vermutlich>",
-    "title": "Templating Schema",
-    "description": "The schema regarding Swate templating-related JSON files.",
-    "type": "object",
-    "properties": {
-        "name": {
-            "description": "The name of the Swate template.",
-            "type": "string"
-        },
-        "version": {
-            "description": "The current version of this template in SemVer notation.",
-            "type": "string"
-        },
-        "type": {
-            "description": "The type of template used: Sample; Extraction; Measurement; Computation.",
-            "type": "string"
-        },
-        "author": {
-            "description": "The author(s) of this template.",
-            "type": "array",
-            "items": {
-                "type": "string"
-            },
-            "minItems": 1,
-            "uniqueItems": true
-        },
-        "description": {
-            "description": "The description of this template. Use few sentences for succinctness.",
-            "type": "string"
-        },
-        "dosclink": {
-            "description": "The URL to the documentation page.",
-            "type": "string"
-        },
-        "er": {
-            "description": "A list of all ERs (endpoint repositories) targeted with this template. ERs are realized as Terms: <term ref here>",
-            "type": "array",
-            "items": {
-                "$ref": "<link>"
-            },
-            "minItems": 1,
-            "uniqueItems": true
-        },
-        "tags": {
-            "description": "A list of all tags associated with this template. Tags are realized as Terms: <term ref here>",
-            "type": "array",
-            "items": {
-                "$ref": "<link>"
-            },
-            "minItems": 1,
-            "uniqueItems": true
-        },
-        "Workbook": {
-            "description": "The full name of this template's excel file.",
-            "type": "string"
-        },
-        "Worksheet": {
-            "description": "The name of the worksheet in the template's excel file.",
-            "type": "string"
-        },
-        "Table": {
-            "description": "The name of the Swate annotation table in the worksheet of the template's excel file.",
-            "type": "string"
-        }
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/nfdi4plants/SWATE_templates/FormattingDocs/templates/TemplatingSchema.json",
+  "title": "Templating Schema",
+  "description": "The schema regarding Swate templating-related JSON files.",
+  "type": "object",
+  "properties": {
+    "name": {
+      "description": "The name of the Swate template.",
+      "type": "string"
     },
-    "required": ["name", "version", "type", "author", "description", "docslink", "er", "tags", "Workbook", "Worksheet", "Table"]
+    "version": {
+      "description": "The current version of this template in SemVer notation.",
+      "type": "string"
+    },
+    "type": {
+      "description": "The type of template used: Sample; Extraction; Measurement; Computation.",
+      "type": "string"
+    },
+    "author": {
+      "description": "The author(s) of this template.",
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "description": {
+      "description": "The description of this template. Use few sentences for succinctness.",
+      "type": "string"
+    },
+    "dosclink": {
+      "description": "The URL to the documentation page.",
+      "type": "string"
+    },
+    "er": {
+      "description": "A list of all ERs (endpoint repositories) targeted with this template. ERs are realized as Terms: <term ref here>",
+      "type": "array",
+      "items": {
+        "$ref": "https://raw.githubusercontent.com/nfdi4plants/SWATE_templates/FormattingDocs/templates/TermSchema.json"
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "tags": {
+      "description": "A list of all tags associated with this template. Tags are realized as Terms: <term ref here>",
+      "type": "array",
+      "items": {
+        "$ref": "https://raw.githubusercontent.com/nfdi4plants/SWATE_templates/FormattingDocs/templates/TermSchema.json"
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "Workbook": {
+      "description": "The full name of this template's excel file.",
+      "type": "string"
+    },
+    "Worksheet": {
+      "description": "The name of the worksheet in the template's excel file.",
+      "type": "string"
+    },
+    "Table": {
+      "description": "The name of the Swate annotation table in the worksheet of the template's excel file.",
+      "type": "string"
+    }
+  },
+  "required": [ "name", "version", "type", "author", "description", "docslink", "er", "tags", "Workbook", "Worksheet", "Table" ]
 }
