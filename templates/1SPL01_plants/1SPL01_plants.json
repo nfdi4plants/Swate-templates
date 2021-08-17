@@ -1,8 +1,10 @@
 {
   "name": "Plant growth",
   "version": "1.0.11",
+  "type":  "sampling",
   "author": ["Hajira Jabeen", "Dominik Brilhaus", "Oliver Maus"],
   "description": "Template to describe a plant growth study as well as sample collection and handling.",
+  "followup": [ "RNA extraction", "Protein extraction", "Metabolite Extraction", "DNA extraction" ],
   "docslink": "",
   "er":   ["GEO", "METABOLIGHTS", "PRIDE","BIOSAMPLE"],
   "tags": ["Plants", "Sampling", "Plant growth", "Plant study"],

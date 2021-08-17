@@ -1,0 +1,1 @@
+This is a list of all protocol templates available in Swate.
