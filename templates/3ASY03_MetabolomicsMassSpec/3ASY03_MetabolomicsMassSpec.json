@@ -1,7 +1,7 @@
 {
   "name":"Metabolomics MassSpec Assay",
-  "version": "1.0.5",
-  "author":["Dominik Brilhaus"],
+  "version": "1.0.6",
+  "author":["Dominik Brilhaus", "Martin Kuhl"],
   "description":"Template to describe preparation and measurement of metabolomics samples",
   "docslink": "",
   "er":   ["METABOLIGHTS"],
