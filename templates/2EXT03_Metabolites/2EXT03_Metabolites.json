@@ -1,6 +1,6 @@
 {
   "name":"Metabolite Extraction",
-  "version":"1.0.6",
+  "version":"1.0.7",
   "author": ["Dominik Brilhaus"],
   "description": "Template to describe the extraction of metabolites for a metabolomics assay.",
   "docslink": "",
