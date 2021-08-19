@@ -1,6 +1,6 @@
 {
   "name": "Plant growth",
-  "version": "1.0.16",
+  "version": "1.0.17",
   "author": ["Hajira Jabeen", "Dominik Brilhaus", "Oliver Maus"],
   "description": "Template to describe a plant growth study as well as sample collection and handling.",
   "docslink": "",
