@@ -1,6 +1,6 @@
 {
   "name": "RNA-Seq Assay",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "author": ["Hajira Jabeen", "Dominik Brilhaus"],
   "description": "Template to describe preparation and measurement of RNA-Seq.",
   "docslink": "",
