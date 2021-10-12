@@ -5,7 +5,11 @@
   "description": "The schema regarding Swate templating-related JSON files.",
   "type": "object",
   "properties": {
-    "name": {
+    "templateId": {
+      "description": "A unique identifier for a template.",
+      "type": "string"
+    },
+    "templateName": {
       "description": "The name of the Swate template.",
       "type": "string"
     },
@@ -30,7 +34,7 @@
       "description": "The description of this template. Use few sentences for succinctness.",
       "type": "string"
     },
-    "dosclink": {
+    "docslink": {
       "description": "The URL to the documentation page.",
       "type": "string"
     },
@@ -51,18 +55,6 @@
       },
       "minItems": 1,
       "uniqueItems": true
-    },
-    "Workbook": {
-      "description": "The full name of this template's excel file.",
-      "type": "string"
-    },
-    "Worksheet": {
-      "description": "The name of the worksheet in the template's excel file.",
-      "type": "string"
-    },
-    "Table": {
-      "description": "The name of the Swate annotation table in the worksheet of the template's excel file.",
-      "type": "string"
     }
   },
   "required": [ "name", "version", "type", "author", "description", "docslink", "er", "tags", "Workbook", "Worksheet", "Table" ]
