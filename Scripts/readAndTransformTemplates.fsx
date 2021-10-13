@@ -1,10 +1,15 @@
-#r "nuget: FSharpSpreadsheetML"
 #r "nuget: FSharpAux"
+#r "nuget: FSharpSpreadsheetML"
 
 open FSharpSpreadsheetML
 open DocumentFormat.OpenXml.Spreadsheet
 open FSharpAux
 open System
+open System.IO
+
+// ------------------------------------------------------------------------------------------------
+// Types
+// ------------------------------------------------------------------------------------------------
 
 type CVEntry = {
     Ontology        : string
@@ -12,6 +17,11 @@ type CVEntry = {
     TermSourceRef   : string
 }
 
+// ------------------------------------------------------------------------------------------------
+// Functions
+// ------------------------------------------------------------------------------------------------
+
+// delete when pushed to F#Aux
 module Array =
     /// Returns a new array containing only the elements of the input array for which the given predicate returns true.
     let filteri (predicate : int -> 'T -> bool) (array : 'T []) =
@@ -106,13 +116,14 @@ module Array =
     /// Returns an array without every nth element of the input array.
     let skipNth (n : int) (array : 'T []) = filteri (fun i _ -> (i + 1) % n <> 0) array
 
+// delete when pushed to F#Aux
 module String =
     /// Returns the first char of a string.
     let first (str : string) = str.Chars 0
     /// Returns the last char of a string.
     let last (str : string) = str.Chars (str.Length - 1)
     /// Splits an input string at a given delimiter (substring).
-    let splitS (delimiter : string) (str : string) = str.Split ([|delimiter|],System.StringSplitOptions.None)
+    let splitS (delimiter : string) (str : string) = str.Split ([|delimiter|],StringSplitOptions.None)
     /// Returns the last index of a char in a string.
     let findIndexBack (ch : char) (str : string) = str.ToCharArray () |> Array.findIndexBack (fun c -> c = ch)
     /// Returns the first index of a char in a string.
@@ -172,23 +183,35 @@ let isHeaderCell (table : Table) cell =
     let cRow, cCol = 
         let chArr = (Cell.getReference cell).ToCharArray()
         chArr
-        |> Array.takeWhile System.Char.IsLetter
-        |> System.String
+        |> Array.takeWhile Char.IsLetter
+        |> String
         |> toNumber,
         chArr
-        |> Array.skipWhile System.Char.IsLetter
-        |> System.String
+        |> Array.skipWhile Char.IsLetter
+        |> String
         |> int
     cRow = row && cCol >= colL && cCol <= colR
 
+// ------------------------------------------------------------------------------------------------
+// Testing
+// ------------------------------------------------------------------------------------------------
+
 let templates =
-    let dirs = System.IO.Directory.GetDirectories "../templates/"
-    let files = dirs |> Array.collect (fun d -> System.IO.Directory.GetFiles(d,"*.xlsx")) 
-    files |> Array.map (fun f -> Spreadsheet.fromFile f false)
+    let templDir = Path.Combine(__SOURCE_DIRECTORY__, "../templates")
+    let dirs = Directory.GetDirectories templDir
+    let files = dirs |> Array.collect (fun d -> Directory.GetFiles(d,"*.xlsx")) 
+    files |> Array.map (fun f -> Spreadsheet.fromFile f false) // Open files
 
-templates |> Array.iter (fun d -> d.Close())
+templates |> Array.iter (fun d -> d.Close()) // Close files
 
-let testTemplate = templates.[0]
+//let testTemplate = templates.[0]
+let testTemplate =
+    let userProfile = Environment.SpecialFolder.UserProfile |> Environment.GetFolderPath
+    userProfile + "/onedrive/csb-stuff/nfdi/template-skripts/1spl01_plants.xlsx"
+    |> Spreadsheet.fromFile // Open file
+    <| false
+
+testTemplate.Close() // Close file
 
 let sst = Spreadsheet.getSharedStringTable testTemplate
 
@@ -216,3 +239,49 @@ let headers, tans =
         Array.filter (fun (t : string) -> not (t.Contains "#")) arr,
         Array.choose (fun (t : string) -> if t.Contains tanKey then Some (getCVEntry t) else None) arr
 
+let ers =
+    let rowL = SheetData.getMaxRowIndex sd
+    let col1 = 
+        Array.init (int rowL) (
+            fun i ->
+                match SheetData.tryGetCellValueAt (Some sst) (i + 1 |> uint) 1u sd with
+                | Some a    -> a
+                | None      -> ""
+        )
+    col1
+    |> Array.choose (fun t -> if t.Contains("ER ") then Some (t.Remove(0, 3)) else None)
+    |> Array.distinct
+
+let cvEntryCols = [|
+    "TermSourceRef"
+    "Ontology"
+    "TAN"
+|]
+
+let validationCols = [|
+    "Content type (validation)"
+    "Notes during templating"
+|]
+
+let erCols = [|
+    "Target term"
+    "Instruction"
+    "Requirement (m/o/n)"
+    "Value (cv/s/d)"
+    "Additional information"
+    "Review comments"
+|]
+
+let combinedCols = Array.concat [|cvEntryCols; validationCols; erCols|]
+
+// zu Funktion machen
+let emptyErTable =
+    Array2D.init headers.Length combinedCols.Length (
+        fun iR iC ->
+            match (iR,iC) with
+            | (0,0) -> ""
+            | (0,_) -> 
+    )
+
+// zu Funktion machen
+let fullErTable =
