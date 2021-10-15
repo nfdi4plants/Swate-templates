@@ -1,9 +1,11 @@
-#r "nuget: FSharpAux"
 #r "nuget: FSharpSpreadsheetML"
+#r "nuget: FSharpAux"
+#r "nuget: Newtonsoft.Json"
 
 open FSharpSpreadsheetML
 open DocumentFormat.OpenXml.Spreadsheet
 open FSharpAux
+open Newtonsoft.Json
 open System
 open System.IO
 
@@ -15,6 +17,18 @@ type CVEntry = {
     Ontology        : string
     TAN             : string
     TermSourceRef   : string
+}
+
+type TemplateMetadata = {
+    Name        : string
+    version     : string
+    author      : string []
+    description : string
+    er          : string []
+    tags        : string []
+    Workbook    : string
+    Worksheet   : string
+    Table       : string
 }
 
 // ------------------------------------------------------------------------------------------------
@@ -196,13 +210,19 @@ let isHeaderCell (table : Table) cell =
 // Testing
 // ------------------------------------------------------------------------------------------------
 
-let templates =
+let dirs =
     let templDir = Path.Combine(__SOURCE_DIRECTORY__, "../templates")
-    let dirs = Directory.GetDirectories templDir
+    Directory.GetDirectories templDir
+
+let templates =
     let files = dirs |> Array.collect (fun d -> Directory.GetFiles(d,"*.xlsx")) 
     files |> Array.map (fun f -> Spreadsheet.fromFile f false) // Open files
 
 templates |> Array.iter (fun d -> d.Close()) // Close files
+
+let outerJsons = // name is "outerJsons" because they are located outside of the .xlsx file
+    let files = dirs |> Array.collect (fun d -> Directory.GetFiles(d,"*.json")) 
+    files |> Array.map File.ReadAllText
 
 //let testTemplate = templates.[0]
 let testTemplate =
@@ -213,16 +233,72 @@ let testTemplate =
 
 testTemplate.Close() // Close file
 
+let testOuterJson =
+    let userProfile = Environment.SpecialFolder.UserProfile |> Environment.GetFolderPath
+    try
+        userProfile + "/onedrive/csb-stuff/nfdi/template-skripts/1spl01_plants.json"
+        |> File.ReadAllText
+        |> JsonConvert.DeserializeObject<TemplateMetadata>
+        |> Option.Some
+    with :? FileNotFoundException -> None
+
 let sst = Spreadsheet.getSharedStringTable testTemplate
+let wbp = Spreadsheet.getWorkbookPart testTemplate
+    
+let testInnerTempMetadata =
+    WorkbookPart.getWorkSheetParts wbp
+    |> Seq.tryPick (
+        fun t -> 
+            let sd = Worksheet.get t |> Worksheet.getSheetData
+            let check =
+                SheetData.tryGetCellValueAt (Some sst) 7u 1u sd = Some "Table" && 
+                SheetData.tryGetCellValueAt (Some sst) 7u 2u sd <> None
+            if check then 
+                let svm =
+                    Worksheet.get t
+                    |> Worksheet.getSheetData
+                    |> SheetData.toSparseValueMatrix sst 
+                Some svm
+            else None
+    )
 
-let wsp =
-    Spreadsheet.getWorkbookPart testTemplate
-    |> WorkbookPart.getWorkSheetParts
-    |> Seq.head
 
-let swateTable = (Table.tryGetByNameBy ((=) "annotationTable") wsp).Value
+// ++++++++++++++++ Spreadsheet-Tests ++++++++++++++++
 
-let sd = Worksheet.get wsp |> Worksheet.getSheetData
+let tryGetRowValues (sst : SharedStringTable option) (row : Row) =
+    Row.toCellSeq row
+    |> Seq.map (Cell.tryGetValue sst)
+
+let getPresentRowValues (sst : SharedStringTable option) (row : Row) =
+    Row.toCellSeq row
+    |> Seq.choose (Cell.tryGetValue sst)
+
+let sheetData = WorkbookPart.getWorkSheetParts wbp |> Seq.head |> Worksheet.get |> Worksheet.getSheetData
+SheetData.getRows sheetData
+|> Array.ofSeq
+|> Array.map (fun row ->
+    getPresentRowValues (Some sst) row |> Array.ofSeq
+)
+
+// +++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+let annoTableMetadata =
+    match (testOuterJson,testInnerTempMetadata) with
+    | (Some md,None)    -> md.Table
+    | (None,Some md)    -> md.Item (7,2)
+    | (Some _, Some _)  -> failwith "ERROR: Template metadata in both versions (JSON, Worksheet) existing."
+    | (None,None)       -> failwith "ERROR: No template metadata existing."
+
+let wspSwateTable, swateTable =
+    let wsp =
+        WorkbookPart.getWorkSheetParts wbp
+        |> Seq.find (fun t -> (Table.tryGetByNameBy ((=) "annotationTable") t).IsSome)
+    wsp,
+    Table.tryGetByNameBy ((=) "annotationTable") wsp
+    |> Option.get
+
+let sd = Worksheet.get wspSwateTable |> Worksheet.getSheetData
 
 let headerArea =
     let v = (Table.getArea swateTable)
@@ -274,14 +350,50 @@ let erCols = [|
 
 let combinedCols = Array.concat [|cvEntryCols; validationCols; erCols|]
 
+// TO DO: Vesuchen, irgendwie die SheetID aus dem WorksheetPart zu bekommen, sodass am Ende SheetName und Worksheet(Part) gematcht werden können.
+// Ist wichtig, um später Sheets herstellen und mit den entsprechenden hergestellten Worksheet(Part)s verknüpfen zu können.
+let matchSheetIDWithWorksheet =
+    wspSwateTable
+    |> Worksheet.WorksheetPart.get
+
+testTemplate
+|> Spreadsheet.getWorkbookPart
+|> fun wbp ->
+    Workbook.get wbp
+    |> Sheet.Sheets.get
+    |> Sheet.Sheets.getSheets
+    |> Seq.head
+    |> Sheet.getName
+    WorkbookPart.getWorkSheetParts wbp
+    |> Worksheet.WorksheetPart.getByID 
+    |> Worksheet.get
+    |> Worksheet.getSheetData
+    |> Sheet.
+
+testTemplate.
+|> Spreadsheet.
+
+// zu Funktion machen
+let erSheet = 
+    let 
+    Sheet.create
+    
+
 // zu Funktion machen
 let emptyErTable =
-    Array2D.init headers.Length combinedCols.Length (
-        fun iR iC ->
-            match (iR,iC) with
-            | (0,0) -> ""
-            | (0,_) -> 
-    )
+    let arr2d = 
+        Array2D.init (headers.Length + 1) (combinedCols.Length + 1) (
+            fun iR iC ->
+                match (iR,iC) with
+                | (0,0) -> ""
+                | (0,_) -> combinedCols.[iC - 1]
+                | (_,0) -> headers.[iR - 1]
+                | (_,1) -> tans.[iR - 1].TermSourceRef
+                | (_,2) -> tans.[iR - 1].Ontology
+                | (_,3) -> tans.[iR - 1].TAN
+                | (_,_) -> ""
+        )
+
 
 // zu Funktion machen
 let fullErTable =

@@ -1,9 +1,10 @@
 {
   "ExpandedNodes": [
     "",
+    "\\Scripts",
     "\\templates",
     "\\templates\\1SPL01_plants"
   ],
-  "SelectedNode": "\\templates\\1SPL01_plants\\1SPL01_plants.xlsx",
+  "SelectedNode": "\\templates\\1SPL01_plants\\1SPL01_plants.json",
   "PreviewInSolutionExplorer": false
 }
