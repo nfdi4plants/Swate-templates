@@ -17,8 +17,8 @@ open System.IO
 
 type CVEntry = {
     Ontology        : string
-    TAN             : string
     TermSourceRef   : string
+    TAN             : string
 }
 
 type TemplateMetadata = {
@@ -207,11 +207,15 @@ let getCVEntry (s : string) =
         |> String.split ')'
         |> Array.head
     let onto = String.split ':' tsr |> Array.head
-    let tan = String.split ':' tsr |> Array.item 1
+    let tan = 
+        let purlLink = @"http://purl.obolibrary.org/obo/"
+        let underscoreTsr = String.replace ":" "_" tsr
+        let uri = purlLink + underscoreTsr
+        uri
     {
         Ontology        = onto
-        TAN             = tan
         TermSourceRef   = tsr
+        TAN             = tan
     }
 
 let toNumber (str : string) =
@@ -246,6 +250,8 @@ let isHeaderCell (table : Table) cell =
 // ------------------------------------------------------------------------------------------------
 // Testing
 // ------------------------------------------------------------------------------------------------
+
+let userProfile = System.Environment.SpecialFolder.UserProfile |> Environment.GetFolderPath
 
 let dirs =
     let templDir = Path.Combine(__SOURCE_DIRECTORY__, "../templates")
@@ -387,6 +393,9 @@ let combinedCols = Array.concat [|cvEntryCols; validationCols; erCols|]
 
 Spreadsheet.saveAs @"C:\Users\Mauso\OneDrive\CSB-Stuff\NFDI\Template-Skripts\1SPL01_plants_bearbeitungsCopy.xlsx" testTemplate
 
+testTemplate.Close() // Close file
+
+// funzt nicht -> skippen
 let initNewErSheet ss er =
     let ss = Spreadsheet.fromFile @"C:\Users\Mauso\OneDrive\CSB-Stuff\NFDI\Template-Skripts\1SPL01_plants_bearbeitungsCopy.xlsx" true
     let er = ers.[0]
@@ -499,8 +508,8 @@ let initErSheet erSheetName (doc : SpreadsheetDocument) =
 
     doc
 
-Spreadsheet.saveAs @"C:\Users\Mauso\OneDrive\CSB-Stuff\NFDI\Template-Skripts\1SPL01_plants_bearbeitungsCopy.xlsx" testTemplate
-let ss = Spreadsheet.fromFile @"C:\Users\Mauso\OneDrive\CSB-Stuff\NFDI\Template-Skripts\1SPL01_plants_bearbeitungsCopy.xlsx" true
+Spreadsheet.saveAs (System.IO.Path.Combine(userProfile, @"OneDrive\CSB-Stuff\NFDI\Template-Skripts\1SPL01_plants_bearbeitungsCopy.xlsx")) testTemplate
+let ss = Spreadsheet.fromFile (System.IO.Path.Combine(userProfile, @"OneDrive\CSB-Stuff\NFDI\Template-Skripts\1SPL01_plants_bearbeitungsCopy.xlsx")) true
 initErSheet ers.[0] ss
 
 /// Adds a StyleSheet to a given SpreadsheetDocument
@@ -537,7 +546,7 @@ let setColWidthToBestFit wbp wsName =
 Spreadsheet.close ss
 
 
-let testSs = Spreadsheet.init "sheet1" @"C:\Users\Mauso\OneDrive\CSB-Stuff\testFiles\testExcelCreated4.xlsx"
+let testSs = Spreadsheet.init "sheet1" (Path.Combine(userProfile, @"OneDrive\CSB-Stuff\testFiles\testExcelCreated4.xlsx"))
 let ws = Spreadsheet.tryGetWorksheetPartBySheetName "sheet1" testSs |> Option.get |> Worksheet.get
 let sd = Spreadsheet.tryGetSheetBySheetName "sheet1" testSs |> Option.get
 let allCols = Columns()
@@ -553,7 +562,14 @@ let protoCols =
             protoCol.BestFit <- BooleanValue true
             protoCol
     )
+let protoCol2 =
+    let col = Column()
+    col.Min <- UInt32Value 1u
+    col.Max <- UInt32Value 5u
+    col.Width <- DoubleValue 5.
+    col
 allCols.AddChild protoCols.[0] |> ignore
+allCols.AddChild protoCol2 |> ignore
 for i = 1 to protoCols.Length - 1 do allCols.AppendChild protoCols.[i] |> ignore
 ws.InsertAt(allCols, 0)
 let info = [|"Hello"; "World"|]
@@ -561,20 +577,11 @@ let row = Row.ofValues None 1u info
 SheetData.appendRow row sd
 Spreadsheet.close testSs
 
-#r @"C:\Users\Mauso\.nuget\packages\system.drawing.common\5.0.2\runtimes\win\lib\netcoreapp3.0\System.Drawing.Common.dll"
-open System.Drawing
-#r @"C:\Windows\Microsoft.NET\Framework\v4.0.30319\System.Windows.Forms.dll"
-open System.Windows.Forms
-
-let font = new Font("Calibri", 11.0f, FontStyle.Regular)
-
 // ------------------------------------------------------------------------------------------------
 // newDoc Testwiese:
 // ------------------------------------------------------------------------------------------------
 
-let fullpath =
-    let userProfile = System.Environment.SpecialFolder.UserProfile |> Environment.GetFolderPath
-    Path.Combine(userProfile, @"OneDrive\CSB-Stuff\testFiles\testExcelCreated.xlsx")
+let fullpath = Path.Combine(userProfile, @"OneDrive\CSB-Stuff\testFiles\testExcelCreated.xlsx")
 
 let newDoc = // zuerst neues SpreadsheetDocument erstellen
     //SpreadsheetDocument.Create(fullpath, SpreadsheetDocumentType())
