@@ -8,14 +8,14 @@ let file = ISADotNet.XLSX.AssayFile.AssayFile.fromFile @"C:\Users\olive\OneDrive
 let file2 = ISADotNet.XLSX.AssayFile.AssayFile.fromFile @"C:\Users\olive\OneDrive\CSB-Stuff\NFDI\testARC\testAssayFile.xlsx"
 
 /// Takes an instance of a generic RecordType and returns a sequence of Cells according to the FieldNames of the Record.
-let transformRecordToCellSeq (dataTypes : seq<CellValues option> option) (cellReferences : seq<string option> option) record =
+let recordToCells record =
 
     // get fields of the Record
     let sysType = record.GetType()
     let fields = FSharp.Reflection.FSharpType.GetRecordFields(sysType)
 
     // transform dataType, cellReference and the field into a cell
-    let inline toCell (valType : CellValues option) (ref : string option) (value : string) = 
+    let toCell (valType : CellValues option) (ref : string option) (value : string) = 
         let cell = Cell.empty ()
         if ref.IsSome       then Cell.setReference  ref.Value       cell |> ignore
         if valType.IsSome   then Cell.setType       valType.Value   cell |> ignore
@@ -46,7 +46,7 @@ let transformRecordToCellSeq (dataTypes : seq<CellValues option> option) (cellRe
     |||> Seq.map3 (fun field dt cellRef -> toCell dt cellRef field.Name)
 
 /// Takes an instance of a generic RecordType and returns a Row of the according FieldNames of the Record.
-let transformRecordToRow index record =
+let recordToHeader index (* <- in die PipelineFunktion *) record =
 
     // get fields of the Record
     let sysType = record.GetType()
@@ -71,3 +71,7 @@ let row = transformRecordToRow 1u myRecordInstance
 
 cellSeq.[2].CellValue.Text
 row.Elements<Cell>() |> Seq.iter (fun x -> printfn "%s" x.CellValue.Text)
+
+let assay = 
+    let ass = file2 |>  fun (_,_,_,d) -> d
+    ass.ProcessSequence
