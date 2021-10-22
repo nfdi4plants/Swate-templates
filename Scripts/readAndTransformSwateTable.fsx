@@ -8,10 +8,32 @@ open System
 module String = 
     let splitS (delimiter : string) (str : string) = str.Split ([|delimiter|],StringSplitOptions.None)
 
+/// Converts numbers to letters like the column keys in MS Excel.
+let inline toExcelLetters number =
+    if int number < 1 then failwith "ERROR: Only numbers > 0 can be converted to Excel letters."
+    let rec loop no list =
+        if no > 26. then
+            loop 
+                (if no % 26. = 0. then no / 26. - 0.1 else no / 26.) 
+                (if no % 26. = 0. then 'Z'::list else (no % 26. + 64. |> char)::list)
+        else
+            if no % 26. = 0. then 'Z'::list else (no % 26. + 64. |> char)::list
+    loop (float number) []
+    |> System.String.Concat
+
+
+
+
 let userProfile = Environment.SpecialFolder.UserProfile |> Environment.GetFolderPath
 let filepath = userProfile + "/onedrive/csb-stuff/nfdi/template-skripts/1spl01_plants.xlsx"
 
 let ss = Spreadsheet.fromFile filepath false
+
+let oldSs = 
+    IO.Path.Combine(userProfile, "onedrive/csb-stuff/nfdi/template-skripts/1spl01_plants_deprecated.xlsx")
+    |> fun s -> Spreadsheet.saveAs s ss 
+
+Spreadsheet.close oldSs
 
 let sst = Spreadsheet.getSharedStringTable ss
 
@@ -82,7 +104,14 @@ let transformedHeadersAll =
             )
     )
 
-Table.create
+let createNewSwateTable name (transformedHeaders : ) =
+    let area = 
+        let firstRow = 1
+        let lastRow = 2
+        let firstColumn = "A"
+        let lastColumn = toExcelLetters transformedHeaders.Length
+        Table.Area.ofBoundaries
+    Table.create name 
 
 
 Spreadsheet.close ss
