@@ -1,6 +1,6 @@
 {
   "name": "RNA extraction",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "author": ["Hajira Jabeen", "Dominik Brilhaus"],
   "description": "Template to describe the extraction of RNA.",
   "docslink": "",
@@ -8,6 +8,6 @@
   "tags": ["Extraction", "RNA", "er:GEO", "mod:2EXT"],
   "Workbook": "2EXT01_RNA.xlsx",
   "Worksheet": "2EXT01_RNA",
-  "Table": "annotationTable1"
+  "Table": "annotationTableGoodDingo21"
 }
 

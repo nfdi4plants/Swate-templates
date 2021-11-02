@@ -1,13 +1,13 @@
 {
   "name": "DNA extraction",
-  "version": "1.1.1",
-  "author": ["Angela Kranz", "Dominik Brilhaus"],
+  "version": "1.1.2",
+  "author": [ "Angela Kranz", "Dominik Brilhaus" ],
   "description": "Template to describe the extraction of DNA.",
   "docslink": "",
-  "er": ["SRA", "GENBANK"],
-  "tags": ["Extraction", "DNA"],
+  "er": [ "SRA", "GENBANK" ],
+  "tags": [ "Extraction", "DNA" ],
   "Workbook": "2EXT04_DNA.xlsx",
   "Worksheet": "2EXT04_DNA",
-  "Table": "annotationTable1"
+  "Table": "annotationTableThinTreefrog81"
 }
 

@@ -1,14 +1,14 @@
 {
   "name": "Plant growth",
-  "version": "1.1.4",
-  "author": ["Hajira Jabeen", "Dominik Brilhaus", "Oliver Maus"],
+  "version": "1.1.5",
+  "author": [ "Hajira Jabeen", "Dominik Brilhaus", "Oliver Maus" ],
   "description": "Template to describe a plant growth study as well as sample collection and handling.",
   "docslink": "",
-  "er":   ["GEO", "METABOLIGHTS", "PRIDE","BIOSAMPLE"],
-  "labels": ["NFDI4PSO00000234:Plants"], 
-  "tags": ["Plants", "Sampling", "Plant growth", "Plant study"],
+  "er": [ "GEO", "METABOLIGHTS", "PRIDE", "BIOSAMPLE" ],
+  "labels": [ "NFDI4PSO00000234:Plants" ],
+  "tags": [ "Plants", "Sampling", "Plant growth", "Plant study" ],
   "Workbook": "1SPL01_plants.xlsx",
   "Worksheet": "1SPL01_plants",
-  "Table": "annotationTable"
+  "Table": "annotationTableUnluckyVampirebat89"
 }
 

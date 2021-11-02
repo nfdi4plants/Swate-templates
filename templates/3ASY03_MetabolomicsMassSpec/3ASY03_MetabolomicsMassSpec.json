@@ -1,12 +1,12 @@
 {
-  "name":"Metabolomics MassSpec Assay",
-  "version": "1.1.3",
-  "author":["Dominik Brilhaus", "Martin Kuhl"],
-  "description":"Template to describe preparation and measurement of metabolomics samples",
+  "name": "Metabolomics MassSpec Assay",
+  "version": "1.1.4",
+  "author": [ "Dominik Brilhaus", "Martin Kuhl" ],
+  "description": "Template to describe preparation and measurement of metabolomics samples",
   "docslink": "",
-  "er":   ["METABOLIGHTS"],
-  "tags":["Metabolomics", "metabolites", "Assay"],
-  "Workbook":"3ASY03_MetabolomicsMassSpec.xlsx",
-  "Worksheet":"3ASY03_MetabolomicsMassSpec",
-  "Table":"annotationTable"
+  "er": [ "METABOLIGHTS" ],
+  "tags": [ "Metabolomics", "metabolites", "Assay" ],
+  "Workbook": "3ASY03_MetabolomicsMassSpec.xlsx",
+  "Worksheet": "3ASY03_MetabolomicsMassSpec",
+  "Table": "annotationTableSpottyDog46"
 }

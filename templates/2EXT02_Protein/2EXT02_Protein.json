@@ -1,12 +1,12 @@
 {
   "name": "Protein extraction",
-  "version": "1.1.1",
-  "author": ["Oliver Maus", "Dominik Brilhaus"],
+  "version": "1.1.2",
+  "author": [ "Oliver Maus", "Dominik Brilhaus" ],
   "description": "This protocol focuses on lab works regarding protein extraction.",
   "docslink": "",
-  "er": ["PRIDE"],
-  "tags": ["Extraction", "Protein", "Proteomics"],
-  "Workbook":"2EXT02_Protein.xlsx",
-  "Worksheet":"2EXT02_Protein",
-  "Table":"annotationTable"
+  "er": [ "PRIDE" ],
+  "tags": [ "Extraction", "Protein", "Proteomics" ],
+  "Workbook": "2EXT02_Protein.xlsx",
+  "Worksheet": "2EXT02_Protein",
+  "Table": "annotationTableHeavyHusky91"
 }
