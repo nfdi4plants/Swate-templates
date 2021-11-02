@@ -1,12 +1,12 @@
 {
   "name": "Genome assembly",
-  "version": "1.1.1",
-  "author": ["Angela Kranz", "Dominik Brilhaus"],
+  "version": "1.1.2",
+  "author": [ "Angela Kranz", "Dominik Brilhaus", "Oliver Maus" ],
   "description": "Template to describe computational of a genome assembly",
   "docslink": "",
-  "er": ["SRA", "GENBANK"],
-  "tags": ["Genomics", "DNASeq" , "Assay"],
+  "er": [ "SRA", "GENBANK" ],
+  "tags": [ "Genomics", "DNASeq", "Assay" ],
   "Workbook": "4COM04_GenomeAssembly.xlsx",
   "Worksheet": "4COM04_GenomeAssembly",
-  "Table": "annotationTable"
+  "Table": "annotationTableSmoothBird74"
 }
