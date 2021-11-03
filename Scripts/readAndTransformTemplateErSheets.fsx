@@ -22,15 +22,17 @@ type CVEntry = {
 }
 
 type TemplateMetadata = {
-    Name        : string
-    version     : string
-    author      : string []
-    description : string
-    er          : string []
-    tags        : string []
-    Workbook    : string
-    Worksheet   : string
-    Table       : string
+    Name            : string
+    version         : string
+    author          : string []
+    description     : string
+    er              : string []
+    tags            : string []
+    Workbook        : string
+    Worksheet       : string
+    Table           : string
+    docslink        : string
+    organisation    : string
 }
 
 // ------------------------------------------------------------------------------------------------
@@ -265,7 +267,11 @@ templates |> Array.iter (fun d -> d.Close()) // Close files
 
 let outerJsons = // name is "outerJsons" because they are located outside of the .xlsx file
     let files = dirs |> Array.collect (fun d -> Directory.GetFiles(d,"*.json")) 
-    files |> Array.map File.ReadAllText
+    files 
+    |> Array.map (
+        File.ReadAllText
+        >> JsonConvert.DeserializeObject<TemplateMetadata>
+    )
 
 //let testTemplate = templates.[0]
 let testTemplate =
@@ -332,6 +338,64 @@ let annoTableMetadata =
     | (None,Some md)    -> md.Item (7,2)
     | (Some _,Some _)   -> failwith "ERROR: Template metadata in both versions (JSON, Worksheet) existing."
     | (None,None)       -> failwith "ERROR: No template metadata existing."
+
+// abandoned: too much work for a thing that can be done by hand in ~15 minutes (and won't be repeated in the future)
+//let createTemplateMetadata outerJson =
+//    let outerJson = testOuterJson.Value
+//    let newGuid = System.Guid.NewGuid()
+
+type Author = {
+    FirstName   : string
+    MidInitials : string
+    LastName    : string
+}
+
+let authorsAnew = 
+    outerJsons
+    |> Array.map (
+        fun tmd ->
+            tmd.author
+            |> Array.map (
+                String.split ' '
+                >> fun strs ->
+                    let fn = Array.head strs
+                    let ln = Array.last strs
+                    let l = strs.Length
+                    let mi = strs.[1 .. l - 2] |> String.concat ""
+                    {
+                        FirstName   = fn
+                        MidInitials = mi
+                        LastName    = ln
+                    }
+            )
+    )
+
+let mutable uglyCount = -1
+for i in outerJsons do
+    uglyCount <- uglyCount + 1
+    printfn "\n\n-----------------------------------------------------\ntemplate of dir: %s" dirs.[uglyCount]
+    printfn "%s" i.Name
+    printfn "'%s" i.version
+    printfn "%s" i.description
+    printfn "%s" i.docslink
+    printfn "%s" i.organisation
+    printfn "%s" i.Table
+    printfn "" // empty row: "#ER list"
+    i.er |> Array.iter (printf "%s\t")
+    printfn "" // new line from before
+    printfn "" // no er tan
+    printfn "" // no er tsr
+    printfn "" // empty row: "#TAGS list"
+    i.tags |> Array.iter (printf "%s\t")
+    printfn "" // new line from before
+    printfn "" // no tags tan
+    printfn "" // no tags tsr
+    printfn "" // empty row: "#AUTHORS list"
+    authorsAnew.[uglyCount] |> Array.iter (fun a -> printf "%s\t" a.LastName)
+    printfn "" // new line from before
+    authorsAnew.[uglyCount] |> Array.iter (fun a -> printf "%s\t" a.FirstName)
+    printfn "" // new line from before
+    authorsAnew.[uglyCount] |> Array.iter (fun a -> printf "%s\t" a.MidInitials)
 
 let wspSwateTable =
     WorkbookPart.getWorkSheetParts wbp
