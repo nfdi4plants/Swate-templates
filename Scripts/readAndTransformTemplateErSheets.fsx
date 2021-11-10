@@ -1,4 +1,4 @@
-#r "nuget: FSharpAux"
+ï»¿#r "nuget: FSharpAux"
 #r "nuget: FSharpSpreadsheetML"
 #r "nuget: Newtonsoft.Json"
 
@@ -201,24 +201,32 @@ module String =
             String.skip i str
 
 let getCVEntry (s : string) =
-    let tsr = 
-        String.splitS "#t" s 
-        |> Array.item 1 
-        |> String.split ';'
-        |> Array.head
-        |> String.split ')'
-        |> Array.head
-    let onto = String.split ':' tsr |> Array.head
-    let tan = 
-        let purlLink = @"http://purl.obolibrary.org/obo/"
-        let underscoreTsr = String.replace ":" "_" tsr
-        let uri = purlLink + underscoreTsr
-        uri
-    {
-        Ontology        = onto
-        TermSourceRef   = tsr
-        TAN             = tan
-    }
+    let isUserSpecific = String.contains "#h" s && String.contains "#t" s |> not
+    if isUserSpecific then
+        {
+            Ontology        = "user-specific"
+            TermSourceRef   = "user-specific"
+            TAN             = "user-specific"
+        }
+    else 
+        let tsr = 
+            String.splitS "#t" s 
+            |> Array.item 1 
+            |> String.split ';'
+            |> Array.head
+            |> String.split ')'
+            |> Array.head
+        let onto = String.split ':' tsr |> Array.head
+        let tan = 
+            let purlLink = @"http://purl.obolibrary.org/obo/"
+            let underscoreTsr = String.replace ":" "_" tsr
+            let uri = purlLink + underscoreTsr
+            uri
+        {
+            Ontology        = onto
+            TermSourceRef   = tsr
+            TAN             = tan
+        }
 
 let toNumber (str : string) =
     let chArr = str.ToCharArray()
@@ -399,9 +407,18 @@ for i in outerJsons do
 
 let wspSwateTable =
     WorkbookPart.getWorkSheetParts wbp
-    |> Seq.find (fun t -> (Table.tryGetByNameBy ((=) "annotationTable") t).IsSome)
-    
-let swateTable = (Table.tryGetByNameBy ((=) "annotationTable") wspSwateTable).Value
+    |> Seq.find (fun t -> (Table.tryGetByNameBy (String.contains "annotationTable") t).IsSome)
+
+let swateTable = (Table.tryGetByNameBy (String.contains "annotationTable") wspSwateTable).Value // (=) or String.contains? Should be elaborated on...
+
+/// Returns the SwateTable from a SwateTable-containing WorksheetPart.
+let getSwateTable stwsp = (Table.tryGetByNameBy (String.contains "annotationTable") stwsp).Value
+
+/// Takes a SpreadsheetDocument and returns the WorksheetPart in which the SwateTable is located.
+let getSwateTableWsp doc =
+    let wbp = Spreadsheet.getWorkbookPart doc
+    WorkbookPart.getWorkSheetParts wbp
+    |> Seq.find (fun t -> (Table.tryGetByNameBy (String.contains "annotationTable") t).IsSome)
 
 let sd = Worksheet.get wspSwateTable |> Worksheet.getSheetData
 
@@ -410,6 +427,82 @@ let headerArea =
     let row = Table.Area.upperBoundary v
     let colL, colR = Table.Area.leftBoundary v, Table.Area.rightBoundary v
     Array.init (int colR - int colL) (fun i -> SheetData.getCellAt row (colL + uint i) sd)
+
+type HeaderCvPair = {
+    Header  : string
+    CVEntry : CVEntry
+}
+
+let testArr = [|
+    "Hello (i = 0)"
+    "World (i = 1)"
+    "Hello (i = 2)"
+    "Hello (i = 3)"
+    "World (i = 4)"
+    "World (i = 5)"
+    "Hello (i = 6)"
+|]
+
+let isWorld s = String.contains "World" s
+let indsWorld = testArr |> Array.findIndeces isWorld
+
+// THIS IS IT!
+Array.init (indsWorld.Length + 1) (
+    fun i ->
+        if i = 0 then
+            testArr.[i .. indsWorld.[i]]
+        elif i = indsWorld.Length then
+            testArr.[Array.last indsWorld + 1 ..]
+        else
+            testArr.[indsWorld.[i - 1] + 1 .. indsWorld.[i]]
+)
+
+let testArr2 = [|
+    "SampleName (i = 0)"
+    "SourceName (i = 1)"
+    "Char (i = 2)"
+    "CharTSR #h (i = 3)"
+    "CharTAN #h (i = 4)"
+    "Param (i = 5)"
+    "ParamTSR #h (i = 6)"
+    "ParamTAN #h (i = 7)"
+|]
+
+let createHeaderCvPairs headerAreaValues =
+    let headerAreaValues = testArr2
+    let isNonHiddenCol c = String.contains "#h" c |> not
+    let inds = Array.findIndeces isNonHiddenCol headerAreaValues
+    let chunks =
+        Array.init (inds.Length + 0) (
+            fun i ->
+                //if i = 0 then
+                //    headerAreaValues.[i .. inds.[i]]
+                //elif i = inds.Length then
+                //    headerAreaValues.[Array.last inds ..]
+                if i - 1 = inds.Length then
+                    headerAreaValues.[Array.last inds ..]
+                else
+                    headerAreaValues.[inds.[i] .. inds.[i + 1] - 1]
+        )
+    chunks
+
+createHeaderCvPairs testArr2
+
+/// <summary>Takes the SwateTable, the SheetData and the SharedStringTable, and returns headers and corresponding CVEntries.</summary>
+/// <remarks>Only works for Swate Version â‰¤ 0.4.8</remarks>
+let getHeadersAndCvEntries sst sheetData swateTable =
+    let v = Table.getArea swateTable
+    let row = Table.Area.upperBoundary v
+    let colL, colR = Table.Area.leftBoundary v, Table.Area.rightBoundary v
+    let headerArea = Array.init (int colR - int colL) (fun i -> SheetData.getCellAt row (colL + uint i) sheetData)
+    let headerAreaValues = headerArea |> Array.map (Cell.getValue (Some sst))
+    let headers, tans = 
+        let tanKey = "Term Accession Number "
+        headerAreaValues 
+        |> fun arr ->
+            Array.filter (fun (t : string) -> not (t.Contains "#")) arr,
+            Array.choose (fun (t : string) -> printfn "%s" t; if t.Contains tanKey && String.contains "#u" t |> not then Some (getCVEntry t) else None) arr
+    headers, tans
 
 let headerAreaValues = headerArea |> Array.map (Cell.getValue (Some sst))
 
@@ -421,6 +514,21 @@ let headers, tans =
         Array.choose (fun (t : string) -> if t.Contains tanKey then Some (getCVEntry t) else None) arr
 
 let ers =
+    let rowL = SheetData.getMaxRowIndex sd
+    let col1 = 
+        Array.init (int rowL) (
+            fun i ->
+                match SheetData.tryGetCellValueAt (Some sst) (i + 1 |> uint) 1u sd with
+                | Some a    -> a
+                | None      -> ""
+        )
+    col1
+    |> Array.choose (fun t -> if t.Contains("ER ") then Some (t.Remove(0, 3)) else None)
+    |> Array.distinct
+
+/// Takes a SwateTable-containing WorksheetPart as well as a SharedStringTable, and returns an array with the names of all ERs that are associated.
+let getErNames sst swateTableWsp =
+    let sd = Worksheet.get swateTableWsp |> Worksheet.getSheetData
     let rowL = SheetData.getMaxRowIndex sd
     let col1 = 
         Array.init (int rowL) (
@@ -460,98 +568,99 @@ Spreadsheet.saveAs @"C:\Users\Mauso\OneDrive\CSB-Stuff\NFDI\Template-Skripts\1SP
 testTemplate.Close() // Close file
 
 // funzt nicht -> skippen
-let initNewErSheet ss er =
-    let ss = Spreadsheet.fromFile @"C:\Users\Mauso\OneDrive\CSB-Stuff\NFDI\Template-Skripts\1SPL01_plants_bearbeitungsCopy.xlsx" true
-    let er = ers.[0]
+//let initNewErSheet ss er =
+//    let ss = Spreadsheet.fromFile @"C:\Users\Mauso\OneDrive\CSB-Stuff\NFDI\Template-Skripts\1SPL01_plants_bearbeitungsCopy.xlsx" true
+//    let er = ers.[0]
 
-    // Get Workbookpart and Workbook
-    let wbp = Spreadsheet.getWorkbookPart ss
-    let wb = Workbook.get wbp
+//    // Get Workbookpart and Workbook
+//    let wbp = Spreadsheet.getWorkbookPart ss
+//    let wb = Workbook.get wbp
     
-    // Create new WorksheetPart, Worksheet, and SheetData and connect them.
-    let newWsp = WorkbookPart.initWorksheetPart wbp
-    WorkbookPart.addWorksheetPart newWsp wbp |> ignore
-    let newWs = Worksheet.empty ()
-    Worksheet.setWorksheet newWs newWsp |> ignore
-    let newSd = SheetData.empty ()
-    Worksheet.addSheetData newSd newWs |> ignore
+//    // Create new WorksheetPart, Worksheet, and SheetData and connect them.
+//    let newWsp = WorkbookPart.initWorksheetPart wbp
+//    WorkbookPart.addWorksheetPart newWsp wbp |> ignore
+//    let newWs = Worksheet.empty ()
+//    Worksheet.setWorksheet newWs newWsp |> ignore
+//    let newSd = SheetData.empty ()
+//    Worksheet.addSheetData newSd newWs |> ignore
 
-    // Get sheets object and numbers
-    let sheets = Sheet.Sheets.get wb
-    let currMaxSheetNo = 
-        Sheet.Sheets.getSheets sheets
-        |> Seq. (
-            fun s -> s.Id.Value
-        )
-    let newErSheetNo = uint currMaxSheetNo + 1u
+//    // Get sheets object and numbers
+//    let sheets = Sheet.Sheets.get wb
+//    let currMaxSheetNo = 
+//        Sheet.Sheets.getSheets sheets
+//        |> Seq. (
+//            fun s -> s.Id.Value
+//        )
+//    let newErSheetNo = uint currMaxSheetNo + 1u
 
-    // Create new sheet and add it to the sheets object
-    let idOfNewWsp = WorkbookPart.getWorksheetPartID newWsp wbp
-    let newSheet = Sheet.create idOfNewWsp er newErSheetNo
-    sheets.AppendChild newSheet |> ignore
+//    // Create new sheet and add it to the sheets object
+//    let idOfNewWsp = WorkbookPart.getWorksheetPartID newWsp wbp
+//    let newSheet = Sheet.create idOfNewWsp er newErSheetNo
+//    sheets.AppendChild newSheet |> ignore
 
-    /// Function to create cells on the basis of column index, row index, and a value (string).
-    let createNewCell (colI : uint32) rowI v = 
-        let dt = 
-            let chArr = String.toCharArray v
-            let onlyDigits = chArr |> Array.forall Char.IsDigit
-            if onlyDigits then CellValues.Number else CellValues.String
-        let cr = sprintf "%s%i" (toExcelLetters colI) rowI
-        let cv = CellValue v
-        Cell.create dt cr cv
+//    /// Function to create cells on the basis of column index, row index, and a value (string).
+//    let createNewCell (colI : uint32) rowI v = 
+//        let dt = 
+//            let chArr = String.toCharArray v
+//            let onlyDigits = chArr |> Array.forall Char.IsDigit
+//            if onlyDigits then CellValues.Number else CellValues.String
+//        let cr = sprintf "%s%i" (toExcelLetters colI) rowI
+//        let cv = CellValue v
+//        Cell.create dt cr cv
 
-    // Blank of the first row with all the columns
-    let colRow =
-        let r = Row.empty ()
-        Row.setIndex 1u r |> ignore
-        SheetData.appendRow r newSd |> ignore
-        r
+//    // Blank of the first row with all the columns
+//    let colRow =
+//        let r = Row.empty ()
+//        Row.setIndex 1u r |> ignore
+//        SheetData.appendRow r newSd |> ignore
+//        r
         
-    // Associate all cells with the column row
-    combinedCols
-    |> Array.iteri (
-        fun i c ->
-            let newCell = createNewCell 1u (i + 1) c
-            if i = 0 then () else Row.appendCell newCell colRow |> ignore
-    )
+//    // Associate all cells with the column row
+//    combinedCols
+//    |> Array.iteri (
+//        fun i c ->
+//            let newCell = createNewCell 1u (i + 1) c
+//            if i = 0 then () else Row.appendCell newCell colRow |> ignore
+//    )
     
-    let otherRows =
-        let l = headers.Length
-        let rs =
-            Array.init l (
-                fun i ->
-                    let r = Row.empty ()
-                    let ri = i + 2
-                    Row.setIndex (uint ri) r |> ignore
-                    let headerCell  = createNewCell 1u ri headers.[i]
-                    let ontoCell    = createNewCell 2u ri tans.[i].Ontology
-                    let tanCell     = createNewCell 3u ri tans.[i].TAN
-                    let tsrCell     = createNewCell 4u ri tans.[i].TermSourceRef
-                    Row.appendCell headerCell   r |> ignore
-                    Row.appendCell ontoCell     r |> ignore
-                    Row.appendCell tanCell      r |> ignore
-                    Row.appendCell tsrCell      r |> ignore
-            )
-        rs
+//    let otherRows =
+//        let l = headers.Length
+//        let rs =
+//            Array.init l (
+//                fun i ->
+//                    let r = Row.empty ()
+//                    let ri = i + 2
+//                    Row.setIndex (uint ri) r |> ignore
+//                    let headerCell  = createNewCell 1u ri headers.[i]
+//                    let ontoCell    = createNewCell 2u ri tans.[i].Ontology
+//                    let tanCell     = createNewCell 3u ri tans.[i].TAN
+//                    let tsrCell     = createNewCell 4u ri tans.[i].TermSourceRef
+//                    Row.appendCell headerCell   r |> ignore
+//                    Row.appendCell ontoCell     r |> ignore
+//                    Row.appendCell tanCell      r |> ignore
+//                    Row.appendCell tsrCell      r |> ignore
+//            )
+//        rs
 
-    Spreadsheet.close ss; ()
+//    Spreadsheet.close ss; ()
     
 
-/// Create a metadata sheet with a given name of an ER and add it to a given SpreadsheetDocument.
-let initErSheet erSheetName (doc : SpreadsheetDocument) = 
+/// Creates a metadata sheet with a given name of an ER, row and column keys, and adds it to a given SpreadsheetDocument.
+let initErSheet erSheetName (rowKeys : string []) (colKeys : string []) (cvEntries : CVEntry []) (doc : SpreadsheetDocument) = 
 
     let emptyErTable =
         let jaggArr = 
-            JaggedArray.init (headers.Length + 1) (combinedCols.Length + 1) (
+            JaggedArray.init (rowKeys.Length + 1) (colKeys.Length + 1) (
                 fun iR iC ->
+                    printf "iR: %i; iC: %i\t" iR iC
                     match (iR,iC) with
-                    | (0,0) -> ""
-                    | (0,_) -> combinedCols.[iC - 1]
-                    | (_,0) -> headers.[iR - 1]
-                    | (_,1) -> tans.[iR - 1].TermSourceRef
-                    | (_,2) -> tans.[iR - 1].Ontology
-                    | (_,3) -> tans.[iR - 1].TAN
-                    | (_,_) -> ""
+                    | (0,0) -> ""                                   |> fun s -> printfn "empty corner"; s
+                    | (0,_) -> colKeys.[iC - 1]                     |> fun s -> printfn "%s" s; s
+                    | (_,0) -> rowKeys.[iR - 1]                     |> fun s -> printfn "%s" s; s
+                    | (_,1) -> cvEntries.[iR - 1].TermSourceRef     |> fun s -> printfn "%s" s; s
+                    | (_,2) -> cvEntries.[iR - 1].Ontology          |> fun s -> printfn "%s" s; s
+                    | (_,3) -> cvEntries.[iR - 1].TAN               |> fun s -> printfn "%s" s; s
+                    | (_,_) -> ""                                   |> fun s -> printfn "empty cell"; s
             )
         jaggArr
 
@@ -574,7 +683,79 @@ let initErSheet erSheetName (doc : SpreadsheetDocument) =
 
 Spreadsheet.saveAs (System.IO.Path.Combine(userProfile, @"OneDrive\CSB-Stuff\NFDI\Template-Skripts\1SPL01_plants_bearbeitungsCopy.xlsx")) testTemplate
 let ss = Spreadsheet.fromFile (System.IO.Path.Combine(userProfile, @"OneDrive\CSB-Stuff\NFDI\Template-Skripts\1SPL01_plants_bearbeitungsCopy.xlsx")) true
-initErSheet ers.[0] ss
+initErSheet ers.[0] headers combinedCols tans ss
+Spreadsheet.close ss
+testTemplate.Close()
+
+// ++++++ 'Read&Write short' section ++++++
+
+let deprFilePaths = [|
+    @"C:\Users\olive\OneDrive\CSB-Stuff\NFDI\Template-Skripts\JonasL\1SPL01_plants_deprecated.xlsx"
+    @"C:\Users\olive\OneDrive\CSB-Stuff\NFDI\Template-Skripts\JonasL\2EXT01_RNA_deprecated.xlsx"
+    @"C:\Users\olive\OneDrive\CSB-Stuff\NFDI\Template-Skripts\JonasL\3ASY01_RNASeq_deprecated.xlsx"
+    @"C:\Users\olive\OneDrive\CSB-Stuff\NFDI\Template-Skripts\JonasL\4COM01_RNASeq_deprecated.xlsx"
+|]
+
+deprFilePaths
+|> Array.iter (
+    fun fp ->
+        printfn "%s" fp
+        let ss = Spreadsheet.fromFile fp true
+        try 
+            let sst = Spreadsheet.getSharedStringTable ss
+            let stwsp = getSwateTableWsp ss
+            let st = getSwateTable stwsp
+            let sd = Worksheet.get stwsp |> Worksheet.getSheetData
+            let headers, cves = getHeadersAndCvEntries sst sd st
+            initErSheet "GEO_RNASEQ" headers combinedCols cves ss
+            |> Spreadsheet.close
+        with e -> printfn "\n%A" e; Spreadsheet.close ss
+)
+
+/// Reads the values from a sheet reagrding 
+let getErValues sheetName erName swateTableHeaders sst doc =
+    
+
+/// <summary>Creates a metadata sheet with a given name of an ER, row and column keys, as well as the respective values, and adds it to a given SpreadsheetDocument.</summary>
+/// <param name="erSheetName">The name of the ER a sheet shall be created of.</param>
+/// <param name="rowKeys">The row keys of the new sheet. Ideally transposed SwateTable headers.</param>
+/// <param name="colKeys">The column keys of the new sheet. Ideally composed of TSR, TAN, Swate validation information, and ER-related metadata.</param>
+/// <param name="values">The values regarding the column keys for each row. I.e., transposed values from ER and Swate validation section.</param>
+/// <param name="doc">The SpreadsheetDocument in which the new sheet shall be created.</param>
+/// <returns>The SpreadsheetDocument with the newly created ER sheet.</param>
+let transferErSheet erSheetName (rowKeys : string []) (colKeys : string []) (values : string [,]) doc =
+    
+    let transferredErTable =
+        let jaggArr = 
+            JaggedArray.init (rowKeys.Length + 1) (colKeys.Length + 1) (
+                fun iR iC ->
+                    match (iR,iC) with
+                    | (0,0) -> ""
+                    | (0,_) -> combinedCols.[iC - 1]
+                    | (_,0) -> headers.[iR - 1]
+                    | (_,1) -> tans.[iR - 1].TermSourceRef
+                    | (_,2) -> tans.[iR - 1].Ontology
+                    | (_,3) -> tans.[iR - 1].TAN
+                    | (_,_) -> values.[iR,iC]
+            )
+        jaggArr
+
+    let sheet = SheetData.empty ()
+    
+    transferredErTable
+    |> Array.foldi (
+        fun i s row ->
+            Row.ofValues None (uint i + 1u) row
+            |> fun r -> SheetData.appendRow r s
+    ) sheet
+    |> ignore
+    
+    doc
+    |> Spreadsheet.getWorkbookPart
+    |> WorkbookPart.appendSheet erSheetName sheet
+    |> ignore 
+    
+    doc
 
 /// Adds a StyleSheet to a given SpreadsheetDocument
 let addStyleSheet ss =
@@ -621,7 +802,7 @@ let protoCols =
             let minmax = UInt32Value(uint i + 1u)
             protoCol.Min <- minmax
             protoCol.Max <- minmax
-            protoCol.Width <- DoubleValue 7. // TO DO: Entweder alle Spaltenbreiten für jeden Calibri, Size 11-Char erlangen, in einem Dictionary hinterlegen und aus dem Text erzeugen lassen oder für alle Spalten in einem generischen ER-Sheet einmalig die Spaltenbreiten checken und hardcoden
+            protoCol.Width <- DoubleValue 7. // TO DO: Entweder alle Spaltenbreiten fÃ¼r jeden Calibri, Size 11-Char erlangen, in einem Dictionary hinterlegen und aus dem Text erzeugen lassen oder fÃ¼r alle Spalten in einem generischen ER-Sheet einmalig die Spaltenbreiten checken und hardcoden
             protoCol.CustomWidth <- BooleanValue true
             protoCol.BestFit <- BooleanValue true
             protoCol
@@ -653,20 +834,20 @@ let newDoc = // zuerst neues SpreadsheetDocument erstellen
 
 newDoc.Close(); File.Delete fullpath // kill newDoc
 
-let newWbp = Spreadsheet.initWorkbookPart newDoc // WorkbookPart zum SpreadsheetDocument hinzufügen
-Workbook.init newWbp // Workbook dem WorkbookPart anhängen
+let newWbp = Spreadsheet.initWorkbookPart newDoc // WorkbookPart zum SpreadsheetDocument hinzufÃ¼gen
+Workbook.init newWbp // Workbook dem WorkbookPart anhÃ¤ngen
 let newWb = Workbook.get newWbp // hier wird das neue Workbook nur gebindet
-Sheet.Sheets.init newWb // Sheets-Objekt zum Workbook hinzufügen
+Sheet.Sheets.init newWb // Sheets-Objekt zum Workbook hinzufÃ¼gen
 let newSheets = Sheet.Sheets.get newWb
 
-let newWsp = WorkbookPart.initWorksheetPart newWbp // neues WorksheetPart zum WorkbookPart hinzufügen
-Worksheet.init newWsp // neues Worksheet ans WorksheetPart angehängt
+let newWsp = WorkbookPart.initWorksheetPart newWbp // neues WorksheetPart zum WorkbookPart hinzufÃ¼gen
+Worksheet.init newWsp // neues Worksheet ans WorksheetPart angehÃ¤ngt
 let newWs = Worksheet.get newWsp // neues Worksheet wird gebindet
 let newSheetData = SheetData.empty () // neue SheetData
 
 let newCells = 
     //let rows = 
-    //    let cells = // das hier besser direkt schon im emptyErTable initiieren und nicht erst hier so hässlich umformen
+    //    let cells = // das hier besser direkt schon im emptyErTable initiieren und nicht erst hier so hÃ¤sslich umformen
     //        emptyErTable
     //        |> Array2D.mapi (
     //            fun i j s -> 
@@ -715,13 +896,13 @@ let newCells =
 
 
 
-Worksheet.addSheetData newSheetData newWs // SheetData wird zum Worksheet hinzugefügt
+Worksheet.addSheetData newSheetData newWs // SheetData wird zum Worksheet hinzugefÃ¼gt
 let idOfNewWsp = newWbp.GetIdOfPart(newWsp) // ID des neuen WorksheetParts binden
 let newSheet = Sheet.empty() // neues Sheet
-Sheet.setID idOfNewWsp newSheet // die WorksheetPartID wird mit dem neuen Sheet verknüpft
+Sheet.setID idOfNewWsp newSheet // die WorksheetPartID wird mit dem neuen Sheet verknÃ¼pft
 Sheet.setSheetID 1u newSheet // wir geben dem neuen Sheet die Position 1 im Workbook
 Sheet.setName "neues Sheet" newSheet // wir geben dem neuen Sheet einen Namen (, der auch in der Worksheet-Leiste in Excel angezeigt wird)
-newSheets.AppendChild(newSheet) // das neue Sheet wird dem Sheets-Objekt hinzugefügt
+newSheets.AppendChild(newSheet) // das neue Sheet wird dem Sheets-Objekt hinzugefÃ¼gt
 
 //Sheet.add newDoc newSheet
 
@@ -748,7 +929,7 @@ let newDoc2 = Spreadsheet.fromFile fullpath false
 
 
 
-// noch härteres ToyExample
+// noch hÃ¤rteres ToyExample
 
 // C#
 let mySpreadsheetDocument = SpreadsheetDocument.Create(@"C:\Users\Mauso\OneDrive\CSB-Stuff\testFiles\testExcelCreated2.xlsx", SpreadsheetDocumentType.Workbook)
@@ -1040,8 +1221,8 @@ Spreadsheet.close thisSpreadsheetDocument
 JaggedArray.init 3 7 (fun i j -> i * 2, j * 3)
 
 
-// TO DO: Vesuchen, irgendwie die SheetID aus dem WorksheetPart zu bekommen, sodass am Ende SheetName und Worksheet(Part) gematcht werden können.
-// Ist wichtig, um später Sheets herstellen und mit den entsprechenden hergestellten Worksheet(Part)s verknüpfen zu können.
+// TO DO: Vesuchen, irgendwie die SheetID aus dem WorksheetPart zu bekommen, sodass am Ende SheetName und Worksheet(Part) gematcht werden kÃ¶nnen.
+// Ist wichtig, um spÃ¤ter Sheets herstellen und mit den entsprechenden hergestellten Worksheet(Part)s verknÃ¼pfen zu kÃ¶nnen.
 let matchSheetIDWithWorksheet =
     wspSwateTable
     |> Worksheet.WorksheetPart.
