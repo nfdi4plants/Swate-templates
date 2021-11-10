@@ -15,7 +15,7 @@ open System.IO
 // Types
 // ------------------------------------------------------------------------------------------------
 
-type CVEntry = {
+type CvEntry = {
     Ontology        : string
     TermSourceRef   : string
     TAN             : string
@@ -200,7 +200,7 @@ module String =
             while i < str.Length && predicate str.[i] do i <- i + 1
             String.skip i str
 
-let getCVEntry (s : string) =
+let getCvEntry (s : string) =
     let isUserSpecific = String.contains "#h" s && String.contains "#t" s |> not
     if isUserSpecific then
         {
@@ -227,6 +227,12 @@ let getCVEntry (s : string) =
             TermSourceRef   = tsr
             TAN             = tan
         }
+
+let emptyCvEntry () = {
+    Ontology        = String.Empty
+    TermSourceRef   = String.Empty
+    TAN             = String.Empty
+}
 
 let toNumber (str : string) =
     let chArr = str.ToCharArray()
@@ -430,79 +436,50 @@ let headerArea =
 
 type HeaderCvPair = {
     Header  : string
-    CVEntry : CVEntry
+    CvEntry : CvEntry
 }
 
-let testArr = [|
-    "Hello (i = 0)"
-    "World (i = 1)"
-    "Hello (i = 2)"
-    "Hello (i = 3)"
-    "World (i = 4)"
-    "World (i = 5)"
-    "Hello (i = 6)"
-|]
-
-let isWorld s = String.contains "World" s
-let indsWorld = testArr |> Array.findIndeces isWorld
-
-// THIS IS IT!
-Array.init (indsWorld.Length + 1) (
-    fun i ->
-        if i = 0 then
-            testArr.[i .. indsWorld.[i]]
-        elif i = indsWorld.Length then
-            testArr.[Array.last indsWorld + 1 ..]
-        else
-            testArr.[indsWorld.[i - 1] + 1 .. indsWorld.[i]]
-)
-
-let testArr2 = [|
-    "SampleName (i = 0)"
-    "SourceName (i = 1)"
-    "Char (i = 2)"
-    "CharTSR #h (i = 3)"
-    "CharTAN #h (i = 4)"
-    "Param (i = 5)"
-    "ParamTSR #h (i = 6)"
-    "ParamTAN #h (i = 7)"
-|]
-
+/// Creates ...
 let createHeaderCvPairs headerAreaValues =
-    let headerAreaValues = testArr2
     let isNonHiddenCol c = String.contains "#h" c |> not
-    let inds = Array.findIndeces isNonHiddenCol headerAreaValues
     let chunks =
-        Array.init (inds.Length + 0) (
-            fun i ->
-                //if i = 0 then
-                //    headerAreaValues.[i .. inds.[i]]
-                //elif i = inds.Length then
-                //    headerAreaValues.[Array.last inds ..]
-                if i - 1 = inds.Length then
-                    headerAreaValues.[Array.last inds ..]
+        headerAreaValues
+        |> Array.fold (
+            fun acc e ->
+                if isNonHiddenCol e then
+                    [e] :: acc
                 else
-                    headerAreaValues.[inds.[i] .. inds.[i + 1] - 1]
-        )
+                    (e :: acc.Head) :: acc.Tail
+        ) []
+        |> List.rev
+        |> List.map (List.rev >> Array.ofList)
+        |> Array.ofList
     chunks
+    |> Array.map (
+        fun chunk ->
+            printfn "chunk: %A" chunk
+            if chunk.Length <= 1 then
+                {
+                    Header  = chunk.[0]
+                    CvEntry = emptyCvEntry ()
+                }
+            else
+                {
+                    Header  = chunk.[0]
+                    CvEntry = getCvEntry chunk.[2]
+                }
+    )
 
-createHeaderCvPairs testArr2
-
-/// <summary>Takes the SwateTable, the SheetData and the SharedStringTable, and returns headers and corresponding CVEntries.</summary>
+/// <summary>Takes the SwateTable, the SheetData and the SharedStringTable, and returns headers and corresponding CvEntries.</summary>
 /// <remarks>Only works for Swate Version ≤ 0.4.8</remarks>
 let getHeadersAndCvEntries sst sheetData swateTable =
     let v = Table.getArea swateTable
     let row = Table.Area.upperBoundary v
     let colL, colR = Table.Area.leftBoundary v, Table.Area.rightBoundary v
-    let headerArea = Array.init (int colR - int colL) (fun i -> SheetData.getCellAt row (colL + uint i) sheetData)
+    let headerArea = Array.init (int colR - int colL + 1) (fun i -> SheetData.getCellAt row (colL + uint i) sheetData)
     let headerAreaValues = headerArea |> Array.map (Cell.getValue (Some sst))
-    let headers, tans = 
-        let tanKey = "Term Accession Number "
-        headerAreaValues 
-        |> fun arr ->
-            Array.filter (fun (t : string) -> not (t.Contains "#")) arr,
-            Array.choose (fun (t : string) -> printfn "%s" t; if t.Contains tanKey && String.contains "#u" t |> not then Some (getCVEntry t) else None) arr
-    headers, tans
+    createHeaderCvPairs headerAreaValues
+
 
 let headerAreaValues = headerArea |> Array.map (Cell.getValue (Some sst))
 
@@ -511,7 +488,7 @@ let headers, tans =
     headerAreaValues 
     |> fun arr ->
         Array.filter (fun (t : string) -> not (t.Contains "#")) arr,
-        Array.choose (fun (t : string) -> if t.Contains tanKey then Some (getCVEntry t) else None) arr
+        Array.choose (fun (t : string) -> if t.Contains tanKey then Some (getCvEntry t) else None) arr
 
 let ers =
     let rowL = SheetData.getMaxRowIndex sd
@@ -646,7 +623,7 @@ testTemplate.Close() // Close file
     
 
 /// Creates a metadata sheet with a given name of an ER, row and column keys, and adds it to a given SpreadsheetDocument.
-let initErSheet erSheetName (rowKeys : string []) (colKeys : string []) (cvEntries : CVEntry []) (doc : SpreadsheetDocument) = 
+let initErSheet erSheetName (rowKeys : string []) (colKeys : string []) (cvEntries : CvEntry []) (doc : SpreadsheetDocument) = 
 
     let emptyErTable =
         let jaggArr = 
@@ -690,10 +667,17 @@ testTemplate.Close()
 // ++++++ 'Read&Write short' section ++++++
 
 let deprFilePaths = [|
-    @"C:\Users\olive\OneDrive\CSB-Stuff\NFDI\Template-Skripts\JonasL\1SPL01_plants_deprecated.xlsx"
-    @"C:\Users\olive\OneDrive\CSB-Stuff\NFDI\Template-Skripts\JonasL\2EXT01_RNA_deprecated.xlsx"
-    @"C:\Users\olive\OneDrive\CSB-Stuff\NFDI\Template-Skripts\JonasL\3ASY01_RNASeq_deprecated.xlsx"
-    @"C:\Users\olive\OneDrive\CSB-Stuff\NFDI\Template-Skripts\JonasL\4COM01_RNASeq_deprecated.xlsx"
+    // NB-W-2020-11-OM
+    //@"C:\Users\olive\OneDrive\CSB-Stuff\NFDI\Template-Skripts\JonasL\1SPL01_plants_deprecated.xlsx"
+    //@"C:\Users\olive\OneDrive\CSB-Stuff\NFDI\Template-Skripts\JonasL\2EXT01_RNA_deprecated.xlsx"
+    //@"C:\Users\olive\OneDrive\CSB-Stuff\NFDI\Template-Skripts\JonasL\3ASY01_RNASeq_deprecated.xlsx"
+    //@"C:\Users\olive\OneDrive\CSB-Stuff\NFDI\Template-Skripts\JonasL\4COM01_RNASeq_deprecated.xlsx"
+
+    //DT-P-2020-04-OM
+    //@"C:\Users\Mauso\OneDrive\CSB-Stuff\NFDI\Template-Skripts\JonasL\1SPL01_plants_deprecated.xlsx"
+    //@"C:\Users\Mauso\OneDrive\CSB-Stuff\NFDI\Template-Skripts\JonasL\2EXT01_RNA_deprecated.xlsx"
+    @"C:\Users\Mauso\OneDrive\CSB-Stuff\NFDI\Template-Skripts\JonasL\3ASY01_RNASeq_deprecated.xlsx"   // <- die nochmal wiederholen (fehlt evtl. ne Spalte)
+    @"C:\Users\Mauso\OneDrive\CSB-Stuff\NFDI\Template-Skripts\JonasL\4COM01_RNASeq_deprecated.xlsx"   // <- die nochmal wiederholen (fehlt evtl. ne Spalte)
 |]
 
 deprFilePaths
@@ -706,7 +690,10 @@ deprFilePaths
             let stwsp = getSwateTableWsp ss
             let st = getSwateTable stwsp
             let sd = Worksheet.get stwsp |> Worksheet.getSheetData
-            let headers, cves = getHeadersAndCvEntries sst sd st
+            let headers, cves = 
+                getHeadersAndCvEntries sst sd st 
+                |> Array.map (fun hcp -> hcp.Header, hcp.CvEntry)
+                |> Array.unzip
             initErSheet "GEO_RNASEQ" headers combinedCols cves ss
             |> Spreadsheet.close
         with e -> printfn "\n%A" e; Spreadsheet.close ss
