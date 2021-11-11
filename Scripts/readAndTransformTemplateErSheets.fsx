@@ -434,12 +434,13 @@ let headerArea =
     let colL, colR = Table.Area.leftBoundary v, Table.Area.rightBoundary v
     Array.init (int colR - int colL) (fun i -> SheetData.getCellAt row (colL + uint i) sd)
 
+
 type HeaderCvPair = {
     Header  : string
     CvEntry : CvEntry
 }
 
-/// Creates ...
+/// Creates ... // TO DO: Write Triple-Slash docu
 let createHeaderCvPairs headerAreaValues =
     let isNonHiddenCol c = String.contains "#h" c |> not
     let chunks =
