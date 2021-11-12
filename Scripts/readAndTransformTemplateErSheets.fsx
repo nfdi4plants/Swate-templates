@@ -627,20 +627,17 @@ testTemplate.Close() // Close file
 let initErSheet erSheetName (rowKeys : string []) (colKeys : string []) (cvEntries : CvEntry []) (doc : SpreadsheetDocument) = 
 
     let emptyErTable =
-        let jaggArr = 
-            JaggedArray.init (rowKeys.Length + 1) (colKeys.Length + 1) (
-                fun iR iC ->
-                    printf "iR: %i; iC: %i\t" iR iC
-                    match (iR,iC) with
-                    | (0,0) -> ""                                   |> fun s -> printfn "empty corner"; s
-                    | (0,_) -> colKeys.[iC - 1]                     |> fun s -> printfn "%s" s; s
-                    | (_,0) -> rowKeys.[iR - 1]                     |> fun s -> printfn "%s" s; s
-                    | (_,1) -> cvEntries.[iR - 1].TermSourceRef     |> fun s -> printfn "%s" s; s
-                    | (_,2) -> cvEntries.[iR - 1].Ontology          |> fun s -> printfn "%s" s; s
-                    | (_,3) -> cvEntries.[iR - 1].TAN               |> fun s -> printfn "%s" s; s
-                    | (_,_) -> ""                                   |> fun s -> printfn "empty cell"; s
-            )
-        jaggArr
+        JaggedArray.init (rowKeys.Length + 1) (colKeys.Length + 1) (
+            fun iR iC ->
+                match (iR,iC) with
+                | (0,0) -> ""
+                | (0,_) -> colKeys.[iC - 1]
+                | (_,0) -> rowKeys.[iR - 1]
+                | (_,1) -> cvEntries.[iR - 1].TermSourceRef
+                | (_,2) -> cvEntries.[iR - 1].Ontology
+                | (_,3) -> cvEntries.[iR - 1].TAN
+                | (_,_) -> ""
+        )
 
     let sheet = SheetData.empty ()
 
@@ -669,16 +666,16 @@ testTemplate.Close()
 
 let deprFilePaths = [|
     // NB-W-2020-11-OM
-    //@"C:\Users\olive\OneDrive\CSB-Stuff\NFDI\Template-Skripts\JonasL\1SPL01_plants_deprecated.xlsx"
-    //@"C:\Users\olive\OneDrive\CSB-Stuff\NFDI\Template-Skripts\JonasL\2EXT01_RNA_deprecated.xlsx"
-    //@"C:\Users\olive\OneDrive\CSB-Stuff\NFDI\Template-Skripts\JonasL\3ASY01_RNASeq_deprecated.xlsx"
-    //@"C:\Users\olive\OneDrive\CSB-Stuff\NFDI\Template-Skripts\JonasL\4COM01_RNASeq_deprecated.xlsx"
+    @"C:\Users\olive\OneDrive\CSB-Stuff\NFDI\Template-Skripts\JonasL\1SPL01_plants_deprecated.xlsx"
+    @"C:\Users\olive\OneDrive\CSB-Stuff\NFDI\Template-Skripts\JonasL\2EXT01_RNA_deprecated.xlsx"
+    @"C:\Users\olive\OneDrive\CSB-Stuff\NFDI\Template-Skripts\JonasL\3ASY01_RNASeq_deprecated.xlsx"
+    @"C:\Users\olive\OneDrive\CSB-Stuff\NFDI\Template-Skripts\JonasL\4COM01_RNASeq_deprecated.xlsx"
 
     //DT-P-2020-04-OM
-    //@"C:\Users\Mauso\OneDrive\CSB-Stuff\NFDI\Template-Skripts\JonasL\1SPL01_plants_deprecated.xlsx"
-    //@"C:\Users\Mauso\OneDrive\CSB-Stuff\NFDI\Template-Skripts\JonasL\2EXT01_RNA_deprecated.xlsx"
-    @"C:\Users\Mauso\OneDrive\CSB-Stuff\NFDI\Template-Skripts\JonasL\3ASY01_RNASeq_deprecated.xlsx"   // <- die nochmal wiederholen (fehlt evtl. ne Spalte)
-    @"C:\Users\Mauso\OneDrive\CSB-Stuff\NFDI\Template-Skripts\JonasL\4COM01_RNASeq_deprecated.xlsx"   // <- die nochmal wiederholen (fehlt evtl. ne Spalte)
+    @"C:\Users\Mauso\OneDrive\CSB-Stuff\NFDI\Template-Skripts\JonasL\1SPL01_plants_deprecated.xlsx"
+    @"C:\Users\Mauso\OneDrive\CSB-Stuff\NFDI\Template-Skripts\JonasL\2EXT01_RNA_deprecated.xlsx"
+    @"C:\Users\Mauso\OneDrive\CSB-Stuff\NFDI\Template-Skripts\JonasL\3ASY01_RNASeq_deprecated.xlsx"
+    @"C:\Users\Mauso\OneDrive\CSB-Stuff\NFDI\Template-Skripts\JonasL\4COM01_RNASeq_deprecated.xlsx"
 |]
 
 deprFilePaths
