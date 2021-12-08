@@ -40,6 +40,19 @@ type HeaderCvPair = {
     CvEntry : CvEntry
 }
 
+type Author = {
+    FirstName   : string
+    MidInitials : string
+    LastName    : string
+}
+
+type Template = {
+    Path        : string
+    Name        : string
+    SSDocument  : SpreadsheetDocument
+    IsEditable  : bool
+}
+
 // ------------------------------------------------------------------------------------------------
 // Values
 // ------------------------------------------------------------------------------------------------
@@ -117,6 +130,8 @@ let emptyCvEntry () = {
     TAN             = String.Empty
 }
 
+let getTemplate isEditable filePath name ss = {Path = filePath; SSDocument = ss; IsEditable = isEditable; Name = name}
+
 let toNumber (str : string) =
     let chArr = str.ToCharArray()
     let mutable i = chArr.Length |> float
@@ -128,6 +143,7 @@ let toNumber (str : string) =
     ) 0.
     |> int
 
+/// Returns if a given cell of a given table is a header-cell.
 let isHeaderCell (table : Table) cell =
     // header area
     let v = (Table.getArea table)
@@ -191,8 +207,7 @@ let createHeaderCvPairs headerAreaValues =
     chunks
     |> Array.map (
         fun chunk ->
-            printfn "chunk: %A" chunk
-            if chunk.Length <= 1 then
+            if chunk.Length = 1 then
                 {
                     Header  = chunk.[0]
                     CvEntry = emptyCvEntry ()
@@ -214,7 +229,9 @@ let getHeadersAndCvEntries sst sheetData swateTable =
     let headerAreaValues = headerArea |> Array.map (Cell.getValue (Some sst))
     createHeaderCvPairs headerAreaValues
 
-/// Takes header area values and returns headers and TANs.
+[<Obsolete>]
+/// <summary>Takes header area values and returns headers and TANs.</summary>
+/// <remarks>Deprecated. Use `getHeaderAndCvEntries` and `unzipHeaderCvPair` instead.</remarks>
 let getHeadersAndTans headerAreaValues =
     let tanKey = "Term Accession Number "
     headerAreaValues 
@@ -225,7 +242,9 @@ let getHeadersAndTans headerAreaValues =
 /// Takes a SwateTable-containing WorksheetPart as well as a SharedStringTable, and returns an array with the names of all ERs that are associated.
 let getErNames sst swateTableWsp =
     let sd = Worksheet.get swateTableWsp |> Worksheet.getSheetData
-    let rowL = SheetData.getMaxRowIndex sd
+    let rowL = 
+        let realRowL = SheetData.getMaxRowIndex sd
+        if realRowL > 100u then 100u else realRowL
     let col1 = 
         Array.init (int rowL) (
             fun i ->
@@ -269,6 +288,8 @@ let initErSheet erSheetName (rowKeys : string []) (colKeys : string []) (cvEntri
     |> ignore 
 
     doc
+
+let unzipHeaderCvPair headerCvPair = headerCvPair.Header, headerCvPair.CvEntry
 
 // ------------------------------------------------------------------------------------------------
 // Testing
@@ -371,12 +392,6 @@ let annoTableMetadata =
 //let createTemplateMetadata outerJson =
 //    let outerJson = testOuterJson.Value
 //    let newGuid = System.Guid.NewGuid()
-
-type Author = {
-    FirstName   : string
-    MidInitials : string
-    LastName    : string
-}
 
 let authorsAnew = 
     outerJsons
@@ -587,40 +602,52 @@ deprFilePaths
 // Writing
 // ------------------------------------------------------------------------------------------------
 
+let dirs =
+    let templDir = Path.Combine(__SOURCE_DIRECTORY__, "../templates")
+    Directory.GetDirectories templDir
+
 /// Deprecated templates
 let templatesDepr =
+    let isEditable = false
     let files = dirs |> Array.collect (fun d -> Directory.GetFiles(d,"*_deprecated.xlsx")) 
-    files |> Array.map (fun f -> Spreadsheet.fromFile f false) // Open files
+    let names = files |> Array.map (FileInfo >> fun fi -> fi.Name)
+    let sss = files |> Array.map (fun f -> Spreadsheet.fromFile f isEditable) // Open files
+    (files, names, sss)
+    |||> Array.map3 (getTemplate isEditable)
 
 /// Current templates
 let templatesCurr =
-    let files = dirs |> Array.collect (fun d -> Directory.GetFiles(d,"*.xlsx")) 
-    files 
-    |> Array.filter (String.contains "_deprecated" >> not)
-    |> Array.map (fun f -> Spreadsheet.fromFile f false) // Open files
-
-templatesDepr |> Array.iter (fun d -> d.Close()) // Close files
-templatesCurr |> Array.iter (fun d -> d.Close()) // Close files
+    let isEditable = true
+    let files = 
+        dirs 
+        |> Array.collect (fun d -> Directory.GetFiles(d,"*.xlsx")) 
+        |> Array.filter (String.contains "_deprecated" >> not)
+    let names = files |> Array.map (FileInfo >> fun fi -> fi.Name)
+    let sss = files |> Array.map (fun f -> Spreadsheet.fromFile f isEditable) // Open files
+    (files, names, sss)
+    |||> Array.map3 (getTemplate isEditable)
 
 templatesDepr
 |> Array.iteri (
     fun i t ->
-        let sst = Spreadsheet.getSharedStringTable t
-        let stwsp = getSwateTableWsp t
+        printfn "Writing template %i: %s" (i + 1) t.Name
+        let sst = Spreadsheet.getSharedStringTable t.SSDocument
+        let stwsp = getSwateTableWsp t.SSDocument
         let ers = getErNames sst stwsp
         let st = getSwateTable stwsp
         let stsd = getSwateTableSd stwsp
         let ha = getHeaderArea st stsd
-        let havs = getHeaderAreaValues sst ha
-        let rKs, tans = getHeadersAndTans havs
+        let rKs, tans = getHeadersAndCvEntries sst stsd st |> Array.map unzipHeaderCvPair |> Array.unzip
         ers
-        |> Array.iter (fun er -> initErSheet er rKs combinedCols tans templatesCurr.[i] |> ignore)
+        |> Array.iter (fun er -> initErSheet er rKs combinedCols tans templatesCurr.[i].SSDocument |> ignore)
 )
 
+templatesDepr |> Array.iter (fun d -> d.SSDocument.Close()) // Close files
+templatesCurr |> Array.iter (fun d -> d.SSDocument.Close()) // Close files
 
 /// Reads the values from a sheet reagrding 
-let getErValues sheetName erName swateTableHeaders sst doc =
-    
+let getErValues sheetDataSourceSheet sheetDataTargetSheet erName swateTableHeaders sst doc =
+    let sourceSheet = 
 
 /// <summary>Creates a metadata sheet with a given name of an ER, row and column keys, as well as the respective values, and adds it to a given SpreadsheetDocument.</summary>
 /// <param name="erSheetName">The name of the ER a sheet shall be created of.</param>
