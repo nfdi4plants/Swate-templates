@@ -605,6 +605,7 @@ deprFilePaths
 let dirs =
     let templDir = Path.Combine(__SOURCE_DIRECTORY__, "../templates")
     Directory.GetDirectories templDir
+    |> Array.filter (String.contains "Imaging" >> not)
 
 /// Deprecated templates
 let templatesDepr =
