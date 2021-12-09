@@ -90,9 +90,9 @@ let inline toExcelLetters number =
         if no > 26. then
             loop 
                 (if no % 26. = 0. then no / 26. - 0.1 else no / 26.) 
-                (if no % 26. = 0. then 'Z'::list else (no % 26. + 64. |> char)::list)
+                (if no % 26. = 0. then 'Z' :: list else (no % 26. + 64. |> char) :: list)
         else
-            if no % 26. = 0. then 'Z'::list else (no % 26. + 64. |> char)::list
+            if no % 26. = 0. then 'Z' :: list else (no % 26. + 64. |> char) :: list
     loop (float number) []
     |> System.String.Concat
 
@@ -602,33 +602,28 @@ deprFilePaths
 // Writing
 // ------------------------------------------------------------------------------------------------
 
-let dirs =
+let getDirs withImaging =
     let templDir = Path.Combine(__SOURCE_DIRECTORY__, "../templates")
     Directory.GetDirectories templDir
-    |> Array.filter (String.contains "Imaging" >> not)
+    |> Array.filter (String.contains "Imaging" >> (if withImaging then id else not))
+
+let getTemplates isDeprecated dirs =
+    let isEditable = not isDeprecated
+    let files = dirs |> Array.collect (fun d -> Directory.GetFiles(d, if isDeprecated then "*_deprecated.xlsx" else "*.xlsx")) 
+    let names = files |> Array.map (FileInfo >> fun fi -> fi.Name)
+    let sss = files |> Array.map (fun f -> Spreadsheet.fromFile f isEditable) // Open files
+    (files, names, sss)
+    |||> Array.map3 (getTemplate isEditable)
+
+let dirsNoImg = getDirs false
 
 /// Deprecated templates
-let templatesDepr =
-    let isEditable = false
-    let files = dirs |> Array.collect (fun d -> Directory.GetFiles(d,"*_deprecated.xlsx")) 
-    let names = files |> Array.map (FileInfo >> fun fi -> fi.Name)
-    let sss = files |> Array.map (fun f -> Spreadsheet.fromFile f isEditable) // Open files
-    (files, names, sss)
-    |||> Array.map3 (getTemplate isEditable)
+let templatesDeprNoImg = getTemplates true dirsNoImg
 
 /// Current templates
-let templatesCurr =
-    let isEditable = true
-    let files = 
-        dirs 
-        |> Array.collect (fun d -> Directory.GetFiles(d,"*.xlsx")) 
-        |> Array.filter (String.contains "_deprecated" >> not)
-    let names = files |> Array.map (FileInfo >> fun fi -> fi.Name)
-    let sss = files |> Array.map (fun f -> Spreadsheet.fromFile f isEditable) // Open files
-    (files, names, sss)
-    |||> Array.map3 (getTemplate isEditable)
+let templatesCurrNoImg = getTemplates false dirsNoImg
 
-templatesDepr
+templatesDeprNoImg
 |> Array.iteri (
     fun i t ->
         printfn "Writing template %i: %s" (i + 1) t.Name
@@ -637,14 +632,18 @@ templatesDepr
         let ers = getErNames sst stwsp
         let st = getSwateTable stwsp
         let stsd = getSwateTableSd stwsp
-        let ha = getHeaderArea st stsd
         let rKs, tans = getHeadersAndCvEntries sst stsd st |> Array.map unzipHeaderCvPair |> Array.unzip
         ers
-        |> Array.iter (fun er -> initErSheet er rKs combinedCols tans templatesCurr.[i].SSDocument |> ignore)
+        |> Array.iter (fun er -> initErSheet er rKs combinedCols tans templatesCurrNoImg.[i].SSDocument |> ignore)
 )
 
-templatesDepr |> Array.iter (fun d -> d.SSDocument.Close()) // Close files
-templatesCurr |> Array.iter (fun d -> d.SSDocument.Close()) // Close files
+templatesDeprNoImg |> Array.iter (fun d -> d.SSDocument.Close()) // Close files
+templatesCurrNoImg |> Array.iter (fun d -> d.SSDocument.Close()) // Close files
+
+let dirsOnlyImg = getDirs false
+
+let templatesDeprImg = getTemplates true dirsOnlyImg
+let templatesCurrImg = getTemplates false dirsOnlyImg
 
 /// Reads the values from a sheet reagrding 
 let getErValues sheetDataSourceSheet sheetDataTargetSheet erName swateTableHeaders sst doc =
