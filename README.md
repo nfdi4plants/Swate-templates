@@ -19,7 +19,7 @@ A collection of repository metadata templates for SWATE
     ![image](https://user-images.githubusercontent.com/47781170/146238760-9ebf10a7-7a39-43e8-b1a5-7428490c838e.png)
 2. Start with creating a new .xlsx file:  
 ![image](https://user-images.githubusercontent.com/47781170/146222236-fa5c0952-95e1-4d29-ad25-ab23cac44901.png)
-3. Give that file an appropriate name [[1]](#[1]-Naming-of-Swate-template-files), e.g. "2EXT06_XenobioticSubstances.xlsx" if you are interested in creating a template for the extraction of toxins or alike from a sample
+3. Give that file an appropriate name [[1]](#1-Naming-of-Swate-template-files), e.g. "2EXT06_XenobioticSubstances.xlsx" if you are interested in creating a template for the extraction of toxins or alike from a sample
 4. Open that file in MS Excel
 5. [Open Swate](https://github.com/nfdi4plants/Swate/wiki/Starting-Swate) and use it to [create an annotation table](https://github.com/nfdi4plants/Swate/wiki/Creating-Annotation-tables)
 6. [Add the columns](https://github.com/nfdi4plants/Swate/wiki/Adding-Building-Blocks) you like to add. If you are unsure of which columns to add:
