@@ -57,7 +57,7 @@ A collection of repository metadata templates for SWATE
     3. "Note during templating" refers to things that you (or another template creater) had while writing the template and which are / could be important. This field is **optional**
     4. "Target term" tells which field in the ER the field of this column maps to (e.g. the column "Parameter [cleavage agent name]" might map to "Protease used" of a fictitious ER). This field is **mandatory if "Requirement" is set to "m" or "o"**
     5. "Instruction" is the information of the ER for the mapped field (means: What does this ER's field describe?). This field is **optional**
-    6. "Requirement" tells if the column's values _must_ be mapped ("m" = mandatory), _can_ be mapped ("o" = optional), or _cannot_ be mapped ("n" = no requirement). This field is **mandatory**
+    6. "Requirement" tells if the column's values _must_ be mapped ("m" = mandatory), _can_ be mapped ("o" = optional), or _cannot_ be mapped ("n" = not available). This field is **mandatory**
     7. "Value" describes which kind of value the field has _in the ER_ (**not** in the Swate table!). It can be "cv" (= controlled vocabulary), "s" (= string, meaning text) or "d" (= double, meaning number). This field is **mandatory if "Requirement is set to "m" or "o"**
     8. "Additional information" is, well, additional information that you want to provide to other Data Stewards (or your later self) regarding this ER's field (for additional information about this column of the Swate table, use "Notes during templating")
     9. "Review comments" is a field left for potential reviewers who want to comment on the annotations of this line. As a reviewer, you can add things to consider here
