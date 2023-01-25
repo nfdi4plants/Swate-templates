@@ -8,7 +8,16 @@ Anyone can access them via the [template search](https://nfdi4plants.github.io/S
 
 ---
 
-## Contribution Guide
+# Contribution Guide
+
+## TL;DR
+
+1. Create issue with background information about the template you want to add. This also serves as place for discussion.
+2. [Fork](https://docs.github.com/en/get-started/quickstart/fork-a-repo) this repository.
+3. [Clone](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository) your fork and add/update **ONE** new template.
+4. Commit, push and rebase your branch.
+
+## Complete
 
 1. [Fork](https://docs.github.com/en/get-started/quickstart/fork-a-repo) this repository and [clone](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository) your fork.
 2. Create a new .xlsx file and open it with Excel.  
