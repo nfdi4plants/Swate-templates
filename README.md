@@ -10,25 +10,25 @@ Anyone can access them via the [template search](https://nfdi4plants.github.io/S
 
 # Contribution Guide
 
-## TL;DR
+## Git Workflow
 
 1. Create issue with background information about the template you want to add. This also serves as place for discussion.
 2. [Fork](https://docs.github.com/en/get-started/quickstart/fork-a-repo) this repository.
-3. [Clone](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository) your fork and add/update **ONE** new template.
+3. Create a feature branch.
+3. [Clone](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository) your fork-branch and add/update **ONE** new template.
 4. Commit, push and [sync your branch](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/syncing-a-fork).
-5. Open a [pull request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/about-pull-requests). :tada:
+5. Open a [pull request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/about-pull-requests) referencing your issue. :tada:
 
-## Complete
+## Template
 
-1. [Fork](https://docs.github.com/en/get-started/quickstart/fork-a-repo) this repository and [clone](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository) your fork.
-2. Create a new .xlsx file and open it with Excel.  
-3. If not done already [install Swate](https://nfdi4plants.github.io/Swate-docs/docs/UserDocs/Docs01-Installing-Swate.html) and create an [Annotation Table](https://nfdi4plants.github.io/Swate-docs/docs/UserDocs/Docs02-Annotation-Table.html).
-4. [Add building blocks](https://nfdi4plants.github.io/Swate-docs/docs/UserDocs/Docs03-Building-Blocks.html). If you are unsure of which columns to add:
+1. Create a new .xlsx file in the correct folder (check the subfolder README.md files).
+2. If not done already [install Swate](https://nfdi4plants.github.io/Swate-docs/docs/UserDocs/Docs01-Installing-Swate.html) and create an [Annotation Table](https://nfdi4plants.github.io/Swate-docs/docs/UserDocs/Docs02-Annotation-Table.html).
+3. [Add building blocks](https://nfdi4plants.github.io/Swate-docs/docs/UserDocs/Docs03-Building-Blocks.html). If you are unsure of which columns to add:
     - keep the template as concise as possible
     - if you are adding a template with a specific endpoint repistory (ER) in mind, you may want to add columns that match the required fields of this ER
     - if you are adding a template because the research/methodical topic is missing, try to add columns that cover experimental procedures (as Parameters) and features of the sample (as Characteristics) that the experimenter would do when working on an experiment of that type
-5. After you are done with the table, you have to add a SwateMetadataSheet: Click on the "Template Metdata" tab in **Swate Experts** and click "Create Metadata". A new worksheet will open. 
-6. Type in a fitting name for the template (this will be the name that is displayed later for the user), as well as a short description, and your name into the author's list (you can also add your role into the author's role list and your email, phone, etc., if you like. These fields are optional)
+4. After you are done with the table, you have to add a SwateMetadataSheet: Click on the "Template Metdata" tab in **Swate Experts** and click "Create Metadata". A new worksheet will open. 
+5. Type in a fitting name for the template (this will be the name that is displayed later for the user), as well as a short description, and your name into the author's list (you can also add your role into the author's role list and your email, phone, etc., if you like. These fields are optional)
 ![image](https://user-images.githubusercontent.com/47781170/146255531-97318a5f-cc34-420f-9474-0b09621ba65a.png)
 6. As version, add "1.0.0" for new templates, or raise the version number if you update an existing template. The versioning follows the [SemVer](https://semver.org/) convention.
 7. Go back to the sheet of the Swate table and find the Swate table's name under "Table Design" -> "Table Name" and write it into the Table field of the MetadataTable  
@@ -37,7 +37,6 @@ Anyone can access them via the [template search](https://nfdi4plants.github.io/S
 8. Fill in Tags associated with the topic of this into the respective list. The same goes for ERs that this template should relate to
 9. Add your organisation name to the "Organisation" field.
 10. Close the file and give it an appropriate name (naming convention is work in progress).
-11. Commit the changes on your file, push to your fork and start a [pull request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/about-pull-requests).
 
 Well done! :tada: You created a new template. 
 
