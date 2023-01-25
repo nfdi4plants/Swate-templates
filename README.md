@@ -1,4 +1,4 @@
-# SWATE templates
+# Swate-templates
 
 A collection of minimal information standard templates for Swate.
 
@@ -15,7 +15,8 @@ Anyone can access them via the [template search](https://nfdi4plants.github.io/S
 1. Create issue with background information about the template you want to add. This also serves as place for discussion.
 2. [Fork](https://docs.github.com/en/get-started/quickstart/fork-a-repo) this repository.
 3. [Clone](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository) your fork and add/update **ONE** new template.
-4. Commit, push and rebase your branch.
+4. Commit, push and [sync your branch](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/syncing-a-fork).
+5. Open a [pull request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/about-pull-requests). :tada:
 
 ## Complete
 
