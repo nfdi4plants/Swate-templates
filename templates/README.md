@@ -1,0 +1,1 @@
+Templates in :file_folder: "dataplant" are created and maintained by members of DataPLANT, whereas templates in :file_folder: "community" are created by any users.
