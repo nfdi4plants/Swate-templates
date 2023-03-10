@@ -9,6 +9,7 @@
 
 ~$*
 .*
+!.gitignore
 .DS_Store
 Icon?
 /.vs
