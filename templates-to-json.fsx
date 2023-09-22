@@ -1,14 +1,10 @@
-#r "nuget: ARCtrl, 1.0.0-alpha6"
-#r "nuget: FsSpreadsheet.ExcelIO, 4.1.0"
+#r "nuget: ARCtrl.NET, 1.0.0-alpha2"
 
 open System.IO
 open FsSpreadsheet
 open FsSpreadsheet.ExcelIO
-open ARCtrl.Templates
-
-
-let standardizeSlashes (path : string) = 
-    path.Replace("\\","/") 
+open ARCtrl.Template
+open ARCtrl.NET
 
 let source = __SOURCE_DIRECTORY__ 
 let inputPath = Path.Combine(source, "templates")
@@ -32,23 +28,6 @@ type Logger(path : string) =
         fileWriter.WriteLine(sprintf "ERROR: %s" s)
         fileWriter.Flush()
 
-let makeRelative directoryPath (path : string) = 
-    if directoryPath = "." || directoryPath = "/" || directoryPath = "" then path
-    else
-        if path.StartsWith(directoryPath) then 
-            path.Substring(directoryPath.Length)
-        else path
-
-
-let getAllFilePaths (directoryPath : string) =
-    let rec allFiles dirs =
-        if Seq.isEmpty dirs then Seq.empty else
-            seq { yield! dirs |> Seq.collect Directory.EnumerateFiles
-                  yield! dirs |> Seq.collect Directory.EnumerateDirectories |> allFiles }
-
-    allFiles [directoryPath] |> Seq.toArray
-    |> Array.map (makeRelative directoryPath)
-
 let ensureDirectory (dirPath : string) =
     if Directory.Exists (dirPath) |> not then
         Directory.CreateDirectory (dirPath) |> ignore
@@ -61,7 +40,7 @@ log.Info("Starting templates-to-json.fsx")
 
 
 log.Info(sprintf "Get file paths in %s" inputPath)
-let files = getAllFilePaths inputPath
+let files = Path.getAllFilePaths inputPath
 
 log.Info(sprintf "Found %d files" files.Length)
 
@@ -73,9 +52,7 @@ let templates =
     xlsxFiles
     |> Array.choose (fun f -> 
         try 
-            let p = Path.Combine(inputPath, f.TrimStart('\\'))
-            log.Info(sprintf "InputPath %s" inputPath)
-            log.Info(sprintf "Loading template %s" p)
+            let p = inputPath + f
             FsWorkbook.fromXlsxFile p
             |> Spreadsheet.Template.fromFsWorkbook
             |> fun wb -> Some (f,wb)
@@ -89,12 +66,10 @@ log.Info(sprintf "Loaded %d templates" templates.Length)
 
 let json = 
     templates 
-    |> Array.toList
-    |> List.map (fun (p,t) -> p |> standardizeSlashes,Json.Template.encode t)
-    |> Thoth.Json.Net.Encode.object
+    |> Json.Templates.encodeToString 2
 
 log.Info("Write json")
 
-File.WriteAllText(outputFileName, json.ToString())
+File.WriteAllText(outputFileName, json)
 
 log.Info("Finished templates-to-json.fsx")
