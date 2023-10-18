@@ -46,5 +46,6 @@ let result = Tests.runTestsWithCLIArgs [] [||] tests
 
 match result with
 | 0 -> printfn "All checks successfull! ✅"
-| 1 -> failwith "Error! Tests failed!"
-| _ -> failwith "Error! Unknown exit condition!"
+| 1 -> failwith "Error! Tests errored!"
+| 2 -> failwith "Error! Tests failed!"
+| anyElse -> failwithf "Error! Unknown exit condition! %i" anyElse 
