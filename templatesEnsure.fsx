@@ -42,4 +42,9 @@ let tests = testList "TemplateConversion" [
         testTemplateFile file
 ]
 
-Tests.runTestsWithCLIArgs [] [||] tests
+let result = Tests.runTestsWithCLIArgs [] [||] tests
+
+match result with
+| 0 -> printfn "All checks successfull! ✅"
+| 1 -> failwith "Error! Tests failed!"
+| _ -> failwith "Error! Unknown exit condition!"
