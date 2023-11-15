@@ -8,8 +8,8 @@
 
 
 ~$*
-.*
 !.gitignore
 .DS_Store
 Icon?
 /.vs
+templates-to-json/**

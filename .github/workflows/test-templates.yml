@@ -1,0 +1,22 @@
+name: Test Templates
+
+on:
+    push:
+        branches: [ main ]
+    pull_request:
+        branches: [ main ]
+    
+jobs:
+
+  test:
+    
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Setup .NET 6.0
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '6.0.x'
+    - name: test
+      run: dotnet fsi templatesEnsure.fsx
