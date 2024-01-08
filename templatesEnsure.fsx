@@ -1,4 +1,4 @@
-#r "nuget: ARCtrl.NET, 1.0.0-alpha4"
+#r "nuget: ARCtrl.NET, 1.0.0"
 #r "nuget: Expecto, 10.1.0"
 
 open System.IO
@@ -45,7 +45,13 @@ let tests = testList "TemplateConversion" [
 let result = Tests.runTestsWithCLIArgs [] [||] tests
 
 match result with
-| 0 -> printfn "All checks successfull! ✅"
-| 1 -> failwith "Error! Tests failed!"
-| 2 -> failwith "Error! Tests errored!"
+| 0 -> 
+  printfn "All checks successfull! ✅"
+  System.Environment.ExitCode <- 0
+| 1 -> 
+  System.Environment.ExitCode <- 1
+  printfn "Error! Tests failed!"
+| 2 -> 
+  System.Environment.ExitCode <- 2
+  printfn "Error! Tests errored!"
 | anyElse -> failwithf "Error! Unknown exit condition! %i" anyElse 

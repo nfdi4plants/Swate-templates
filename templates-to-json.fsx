@@ -1,4 +1,4 @@
-#r "nuget: ARCtrl.NET, 1.0.0-alpha4"
+#r "nuget: ARCtrl.NET, 1.0.0"
 
 open System.IO
 open FsSpreadsheet
@@ -62,7 +62,7 @@ let templates =
             None
     )
 
-log.Info(sprintf "Loaded %d templates" templates.Length)
+log.Info(sprintf "Success! Read %d templates" templates.Length)
 
 let json = 
     templates 
