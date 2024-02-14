@@ -45,10 +45,16 @@ match result with
 | 0 -> 
   printfn "All checks successfull! ✅"
   System.Environment.ExitCode <- 0
+  System.Environment.Exit(0)
+  0
 | 1 -> 
   System.Environment.ExitCode <- 1
   printfn "Error! Tests failed!"
+  System.Environment.Exit(1)
+  1
 | 2 -> 
   System.Environment.ExitCode <- 2
   printfn "Error! Tests errored!"
+  System.Environment.Exit(2)
+  2
 | anyElse -> failwithf "Error! Unknown exit condition! %i" anyElse 
