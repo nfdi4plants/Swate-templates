@@ -8,19 +8,39 @@ on:
     
 jobs:
 
-  test:
-    
+  test-readability:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup .NET 6.0
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '6.0.x'
+      - name: "[Test] readability"
+        run: dotnet fsi CI/templatesEnsure.fsx
+
+  quality-control-tag-coherence:
     runs-on: windows-latest
 
+    needs: test-readability
     steps:
-    - uses: actions/checkout@v3
-    - name: Setup .NET 6.0
-      uses: actions/setup-dotnet@v3
-      with:
-        dotnet-version: '6.0.x'
-    - name: "[Test] readability"
-      run: dotnet fsi CI/templatesEnsure.fsx
-    - name: "[Test] tag coherence"
-      run: dotnet fsi CI/coherentTagEnsure.fsx
-    - name: "[Test] tag category"
-      run: dotnet fsi CI/tagCategoryEnsure.fsx
+      - uses: actions/checkout@v3
+      - name: Setup .NET 6.0
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '6.0.x'
+      - name: "[Test] tag coherence"
+        run: dotnet fsi CI/coherentTagsEnsure.fsx
+
+  quality-control-tag-categories:
+    runs-on: windows-latest
+
+    needs: test-readability
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup .NET 6.0
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '6.0.x'
+      - name: "[Test] tag category"
+        run: dotnet fsi CI/tagCategoryEnsure.fsx
