@@ -1,4 +1,4 @@
-#r "nuget: ARCtrl.NET, 1.0.0"
+#r "nuget: ARCtrl.NET, 1.0.4"
 #r "nuget: Expecto, 10.1.0"
 
 open System.IO
@@ -8,26 +8,23 @@ open ARCtrl.Template
 open ARCtrl.NET
 
 let source = __SOURCE_DIRECTORY__ 
-let inputPath = Path.Combine(source, "templates")
+let inputPath = Path.Combine(source, "..", "templates")
+let options = EnumerationOptions()
+options.RecurseSubdirectories <- true
+let files = Directory.GetFiles(inputPath,"*.xlsx",enumerationOptions=options)
 
-let files = Path.getAllFilePaths inputPath
-
-printfn "Found %d files" files.Length
-
-let xlsxFiles = files |> Array.filter (fun f -> f.EndsWith(".xlsx"))
-
-printfn "Found %d xlsx files" xlsxFiles.Length
+printfn "Found %i .xlsx files!" files.Length
 
 open Expecto
 
 let testTemplateFile (templatePath: string) = 
     testCase templatePath <| fun _ ->
-        let p = inputPath + templatePath
+        let p = templatePath
         let template =
             try
                 FsWorkbook.fromXlsxFile p
                 |> Spreadsheet.Template.fromFsWorkbook
-                |> fun wb -> Ok (wb)
+                |> Ok
             with
                 | e -> Error(templatePath,e)
         match template with
@@ -38,7 +35,7 @@ let testTemplateFile (templatePath: string) =
     
 
 let tests = testList "TemplateConversion" [
-    for file in xlsxFiles do
+    for file in files do
         testTemplateFile file
 ]
 
