@@ -14,6 +14,7 @@ let SimiliarityThreshold = 0.8
 let WhiteList : string [] [] = 
   [| 
     // [|"Plant"; "Plants"|] // Example
+    [|"RNASeq"; "mRNASeq"; "DNASeq"|]
   |]
 
 module SorensenDice =
@@ -42,8 +43,11 @@ let WhiteListMap =
   [|
     for set in WhiteList do
       for item in set do
-        item, Set.ofArray set
+        item, set
   |]
+  |> fun x -> x
+  |> Array.groupBy fst
+  |> Array.map (fun (name,set) -> name, Array.collect snd set |> Set.ofArray)
   |> Map.ofArray
 
 let getSimiliarTags (tag: ARCtrl.ISA.OntologyAnnotation) (tags: ARCtrl.ISA.OntologyAnnotation []) = 
@@ -89,7 +93,6 @@ let testTagForSimiliarity (tag: ARCtrl.ISA.OntologyAnnotation) (tags: ARCtrl.ISA
               ) 
               |> String.concat ", "
             sb.AppendLine (sprintf "- `%s` [%f] **%s** by (*%s*)" tag.NameText score (template.Name.Trim()) (authors.Trim())) |> ignore
-        printfn "4"
         sb.ToString()
     Expect.isNone similiarTags msg
 
@@ -123,7 +126,8 @@ let tests = testList "Ensure Coherent Tags" [
   ]
   testList "Similiar Names" [
     let mutable id = 0
-    for tag in distinctTags do
+    let distinctByNamesTags = distinctTags |> Array.distinctBy (fun t -> t.NameText)
+    for tag in distinctByNamesTags do
       testTagForSimiliarity tag distinctTags id
       id <- id + 1
   ]
