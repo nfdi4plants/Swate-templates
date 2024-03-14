@@ -13,7 +13,6 @@ open Expecto
 let SimiliarityThreshold = 0.8
 let WhiteList : string [] [] = 
   [| 
-    // [|"Plant"; "Plants"|] // Example
     [|"RNASeq"; "mRNASeq"; "DNASeq"|]
   |]
 
