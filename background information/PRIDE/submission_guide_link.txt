@@ -1,3 +1,3 @@
-PRIDE sumission guide:
+PRIDE submission guide:
 
 https://www.ebi.ac.uk/pride/markdownpage/pridesubmissiontool
