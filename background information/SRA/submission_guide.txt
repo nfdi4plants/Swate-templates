@@ -1,0 +1,8 @@
+Information on submission to the SRA (Sequence Read Archive) can be found here:
+https://submit.ncbi.nlm.nih.gov/subs/sra/
+
+There are two templates available:
+- Metadata spreadsheet for BioSample accessions
+- Metadata spreadsheet with sample names
+
+Last check of checklists was on 20/04/2024
