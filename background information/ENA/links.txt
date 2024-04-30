@@ -1,4 +1,7 @@
 
+ENA template generation tool:
+https://xrzhou.com/ena2swate/
+
 ENA sample checklists:
 https://www.ebi.ac.uk/ena/browser/checklists
 
