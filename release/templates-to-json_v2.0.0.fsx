@@ -76,7 +76,7 @@ open ARCtrl.Json
 
 let json = 
     templates 
-    |> Templates.toJsonString 2
+    |> Templates.toJsonString 0
 
 log.Info("Write json")
 
