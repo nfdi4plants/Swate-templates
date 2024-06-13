@@ -16,8 +16,10 @@ jobs:
       uses: actions/setup-dotnet@v3
       with:
         dotnet-version: '6.0.x'
-    - name: convert and publish
-      run: dotnet fsi templates-to-json.fsx
+    - name: convert and publish 1.0.0
+      run: dotnet fsi release/templates-to-json_v1.0.0.fsx
+    - name: convert and publish 2.0.0
+      run: dotnet fsi release/templates-to-json_v2.0.0.fsx
     - uses: "marvinpinto/action-automatic-releases@latest"
       with:
         repo_token: "${{ secrets.GITHUB_TOKEN }}"
@@ -27,3 +29,5 @@ jobs:
         files: |
             templates-to-json/report.txt
             templates-to-json/templates.json
+            templates-to-json/report_v2.0.0.txt
+            templates-to-json/templates_v2.0.0.json
