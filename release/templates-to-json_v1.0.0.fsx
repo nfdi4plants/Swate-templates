@@ -6,7 +6,8 @@ open FsSpreadsheet.ExcelIO
 open ARCtrl.Template
 open ARCtrl.NET
 
-let source = __SOURCE_DIRECTORY__ 
+let source0 = Path.GetFullPath(__SOURCE_DIRECTORY__)
+let source = Directory.GetParent(source0).FullName
 let inputPath = Path.Combine(source, "templates")
 let outputPath = Path.Combine(source, "templates-to-json")
 

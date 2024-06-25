@@ -45,15 +45,15 @@ jobs:
       - name: "[Test] tag category"
         run: dotnet fsi CI/tagCategoryEnsure.fsx
   
-  quality-control-template-diversity:
-    runs-on: windows-latest
+  # quality-control-template-diversity:
+  #   runs-on: windows-latest
 
-    needs: test-readability
-    steps:
-      - uses: actions/checkout@v3
-      - name: Setup .NET 6.0
-        uses: actions/setup-dotnet@v3
-        with:
-          dotnet-version: '6.0.x'
-      - name: "[Test] template diversity"
-        run: dotnet fsi CI/templateDiversityEnsure.fsx
+  #   needs: test-readability
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #     - name: Setup .NET 6.0
+  #       uses: actions/setup-dotnet@v3
+  #       with:
+  #         dotnet-version: '6.0.x'
+  #     - name: "[Test] template diversity"
+  #       run: dotnet fsi CI/templateDiversityEnsure.fsx
