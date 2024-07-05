@@ -1,0 +1,41 @@
+version: '3.4'
+
+services:
+
+  packageregistryservice:
+    image: ${DOCKER_REGISTRY-}templateregistryservice
+    container_name: 'STR_REST_API'
+    build:
+      context: .
+      dockerfile: src/STRService/Dockerfile
+    networks:
+      - aspnetcoreapp-network
+    depends_on: 
+      - "package_db"
+
+  package_db: # name of the service matches "Server" in connection string
+    container_name: 'swate_template_database'
+    image: postgres
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=employee
+    networks:
+      - aspnetcoreapp-network
+
+  adminer:
+    image: adminer
+    container_name: 'adminer'
+    # restart: always
+    ports:
+      - 8080:8080
+    networks:
+      - aspnetcoreapp-network
+    depends_on: 
+      - "package_db"
+
+networks:
+  aspnetcoreapp-network:
+    driver: bridge
