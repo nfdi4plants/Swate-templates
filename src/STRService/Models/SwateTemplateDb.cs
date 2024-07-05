@@ -34,9 +34,9 @@
             .HasColumnType("jsonb");
         }
 
-        public static void IncrementDownloadCount(SwateTemplateMetadata templateMetadata, SwateTemplateDb database)
+        public static void IncrementDownloadCount(SwateTemplate template, SwateTemplateDb database)
         {
-            var result = database.Downloads.SingleOrDefault(d => d.TemplateName == templateMetadata.Name && d.TemplateMajorVersion == templateMetadata.MajorVersion && d.TemplateMinorVersion == templateMetadata.MinorVersion && d.TemplatePatchVersion == templateMetadata.PatchVersion && d.TemplatePreReleaseVersionSuffix == templateMetadata.PreReleaseVersionSuffix && d.TemplateBuildMetadataVersionSuffix == templateMetadata.BuildMetadataVersionSuffix);
+            var result = database.Downloads.SingleOrDefault(d => d.TemplateName == template.TemplateName && d.TemplateMajorVersion == template.TemplateMajorVersion && d.TemplateMinorVersion == template.TemplateMinorVersion && d.TemplatePatchVersion == template.TemplatePatchVersion && d.TemplatePreReleaseVersionSuffix == template.TemplatePreReleaseVersionSuffix && d.TemplateBuildMetadataVersionSuffix == template.TemplateBuildMetadataVersionSuffix);
 
             if (result != null)
             {
@@ -46,12 +46,12 @@
             {
                 var d = new Downloads
                 {
-                    TemplateName = templateMetadata.Name,
-                    TemplateMajorVersion = templateMetadata.MajorVersion,
-                    TemplateMinorVersion = templateMetadata.MinorVersion,
-                    TemplatePatchVersion = templateMetadata.PatchVersion,
-                    TemplatePreReleaseVersionSuffix = templateMetadata.PreReleaseVersionSuffix,
-                    TemplateBuildMetadataVersionSuffix = templateMetadata.BuildMetadataVersionSuffix,
+                    TemplateName = template.TemplateName,
+                    TemplateMajorVersion = template.TemplateMajorVersion,
+                    TemplateMinorVersion = template.TemplateMinorVersion,
+                    TemplatePatchVersion = template.TemplatePatchVersion,
+                    TemplatePreReleaseVersionSuffix = template.TemplatePreReleaseVersionSuffix,
+                    TemplateBuildMetadataVersionSuffix = template.TemplateBuildMetadataVersionSuffix,
                     DownloadCount = 1
                 };
                 database.Downloads.Add(d);

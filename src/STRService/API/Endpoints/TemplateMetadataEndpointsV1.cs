@@ -23,11 +23,6 @@ namespace STRService.API.Endpoints
                 .WithOpenApi()
                 .WithName("GetTemplateMetadataByNameAndVersion");
 
-            group.MapPost("/", TemplateMetadataHandlers.CreateTemplateMetadata)
-                .WithOpenApi()
-                .WithName("CreateTemplateMetadata")
-                .AddEndpointFilter<APIKeyEndpointFilter>(); // creating templates via post requests requires an API key
-
             return group.WithTags("Swate Template Metadata");
         }
     }

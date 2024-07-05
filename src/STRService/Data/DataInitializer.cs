@@ -13,6 +13,8 @@ using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.Extensions.Options;
 using FsSpreadsheet.Net;
 using NuGet.Protocol;
+using ARCtrl.Json;
+using static ARCtrl.Json.TemplateExtension;
 
 namespace STRService.Data
     
@@ -143,7 +145,7 @@ namespace STRService.Data
                                 TemplatePatchVersion = semVer.Value.Patch,
                                 TemplatePreReleaseVersionSuffix = semVer.Value.PreRelease,
                                 TemplateBuildMetadataVersionSuffix = semVer.Value.BuildMetadata,
-                                TemplateContent = t.Table.ToJson()
+                                TemplateContent = t.ToJson()
                             };
                         });
 

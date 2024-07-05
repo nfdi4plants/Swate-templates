@@ -13,10 +13,6 @@ namespace STRService.API.Handlers
         public static async Task<Results<Ok<SwateTemplateMetadata[]>, Conflict<string>>> GetAllTemplateMetadata(SwateTemplateDb database)
         {
             var metadata = await database.Metadata.ToArrayAsync();
-
-            Array.ForEach(metadata, (p => SwateTemplateDb.IncrementDownloadCount(p, database)));
-            await database.SaveChangesAsync();
-
             return TypedResults.Ok(metadata);
         }
 
@@ -33,9 +29,6 @@ namespace STRService.API.Handlers
             {
                 return TypedResults.NotFound($"No template '{name}' available.");
             }
-
-            SwateTemplateDb.IncrementDownloadCount(metadata, database);
-            await database.SaveChangesAsync();
 
             return TypedResults.Ok(metadata);
         }
@@ -56,25 +49,7 @@ namespace STRService.API.Handlers
                 return TypedResults.NotFound($"No template '{name}' @ {version} available.");
             }
 
-            SwateTemplateDb.IncrementDownloadCount(metadata, database);
-            await database.SaveChangesAsync();
-
             return TypedResults.Ok(metadata);
-        }
-
-        public static async Task<Results<Ok<SwateTemplateMetadata>, Conflict, UnauthorizedHttpResult, UnprocessableEntity<string>>> CreateTemplateMetadata(SwateTemplateMetadata metadata, SwateTemplateDb database)
-        {
-            var existing = await database.Metadata.FindAsync(metadata.Name, metadata.MajorVersion, metadata.MinorVersion, metadata.PatchVersion, metadata.PreReleaseVersionSuffix, metadata.BuildMetadataVersionSuffix);
-            if (existing != null)
-            {
-                return TypedResults.Conflict();
-            }
-
-            database.Metadata.Add(metadata);
-            await database.SaveChangesAsync();
-
-            return TypedResults.Ok(metadata);
-
         }
     }
 }

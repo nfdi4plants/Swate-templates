@@ -92,6 +92,9 @@ if (!app.Environment.IsProduction())
 app.MapGroup("/api/v1/metadata")
     .MapTemplateMetadataApiV1();
 
+app.MapGroup("/api/v1/templates")
+    .MapTemplateApiV1();
+
 app.MapGroup("/api/v1/statistics")
     .MapStatisticsApiV1();
 

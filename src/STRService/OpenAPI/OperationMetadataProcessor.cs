@@ -37,6 +37,27 @@ namespace STRService.OpenAPI
                 }
             },
             {
+                "GetAllTemplateMetadata", new Dictionary<string, string>
+                {
+                    { "Summary", "Get metadata for all Swate templates" },
+                    { "Description", "Get all Swate templates from the template registry. Note that this endpoint returns all versions of each template. Template content is a base64 encoded byte array containing the template executable." }
+                }
+            },
+            {
+                "GetLatestTemplateMetadataByName", new Dictionary<string, string>
+                {
+                    { "Summary", "Get the metadata for latest version of a Swate template" },
+                    { "Description", "Get the latest version of a Swate template from the template registry. Template content is a base64 encoded byte array containing the template executable." }
+                }
+            },
+            {
+                "GetTemplateMetadataByNameAndVersion", new Dictionary<string, string>
+                {
+                    { "Summary", "Get metadata for a specific version of a Swate template" },
+                    { "Description", "Get a specific version of a Swate template from the template registry. Template content is a base64 encoded byte array containing the template executable." }
+                }
+            },
+            {
                 "GetAllDownloads", new Dictionary<string, string>
                 {
                     { "Summary", "Get all download statistics" },
