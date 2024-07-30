@@ -10,7 +10,8 @@
 }
 else
 {
-   <p>Template Count: @(metadata.Length)</p>
+   <p>Total Templates: @(metadata.Length)</p>
+   <p>Total Downloads: @(downloads?.Sum(d => d.DownloadCount))</p>
 
    <table>
         <thead>
@@ -18,6 +19,7 @@ else
                 <th>Name</th>
                 <th>Description</th>
                 <th>Version</th>
+                <th>Downloads</th>
             </tr>
         </thead>
         <tbody>
@@ -27,6 +29,7 @@ else
                     <td><a href="template/@item.Name">@(item.Name)</a></td>
                     <td>@(item.Description)</td>
                     <td>@(item.GetSemanticVersionString())</td>
+                    <td>@(downloads?.First(d => d.TemplateName == item.Name).DownloadCount)</td>
                 </tr>
             }
         </tbody>
@@ -38,6 +41,8 @@ else
     public string Name { get; set; }
 
     private SwateTemplateMetadata[]? metadata;
+
+    private Downloads[]? downloads;
 
     protected override async Task OnInitializedAsync()
     {
@@ -59,6 +64,21 @@ else
             )
             .ToArray();
 
+        // var downloadsTask = metadata0.Select(m => GetDownloadAsync(m));
+        // var downloads0 = await Task.WhenAll(downloadsTask);
+        var downloadsAll = await database.Downloads.ToArrayAsync();
+        var downloadsFiltered = downloadsAll.Where(d => latestMetadata.Any(m => m.Name == d.TemplateName && m.MajorVersion == d.TemplateMajorVersion && m.MinorVersion == d.TemplateMinorVersion && m.PatchVersion == d.TemplatePatchVersion)).ToArray();
+
         metadata = latestMetadata;
+        downloads = downloadsFiltered;
     }
+
+    // public async Task<Downloads> GetDownloadAsync(SwateTemplateMetadata meta)
+    // {
+    //     using SwateTemplateDb database = SwateTemplateDbContextFactory.CreateDbContext();
+    //     {
+    //         return await database.Downloads
+    //                         .FirstAsync(d => d.TemplateName == meta.Name && d.TemplateMajorVersion == meta.MajorVersion && d.TemplateMinorVersion == meta.MinorVersion && d.TemplatePatchVersion == meta.PatchVersion);
+    //     }
+    // }
 }
