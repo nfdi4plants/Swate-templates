@@ -14,12 +14,17 @@ using STRService.API.Endpoints;
 using STRService.Data;
 using Microsoft.AspNetCore.Http.Json;
 
+using STRService.Components; // import razor components
+
 // ------------------------- ApplicationBuilder -------------------------
 // in this section, we will add the necessary code to configure the application builder,
 // which defines the application's configuration and services.
 // This is the main Dependency Injection (DI) container.
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddRazorComponents()
+    .AddInteractiveServerComponents();
 
 // Add services to the container.
 
@@ -32,7 +37,7 @@ builder.Services.AddEndpointsApiExplorer();
 // Add database related services
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-builder.Services.AddDbContext<SwateTemplateDb>(opt => 
+builder.Services.AddDbContextFactory<SwateTemplateDb>(opt => 
     opt.UseNpgsql(
         // retrieve connection string from configuration via "PostgressConnectionString" key
         // this is found in the appsettings.json file locally, and in the environment variables when deployed
@@ -53,6 +58,11 @@ builder.Services.Configure<JsonOptions>(options => options.SerializerOptions.Pro
 // which defines the HTTP request pipeline.
 
 var app = builder.Build();
+
+app.MapRazorComponents<App>()
+    .AddInteractiveServerRenderMode();
+
+app.UseAntiforgery();
 
 app.UseStaticFiles(); // serve wwwroot content https://learn.microsoft.com/en-us/aspnet/core/fundamentals/static-files?view=aspnetcore-8.0
 
@@ -98,7 +108,7 @@ app.MapGroup("/api/v1/templates")
 app.MapGroup("/api/v1/statistics")
     .MapStatisticsApiV1();
 
-app.MapGroup("/")
-    .MapPageEndpoints();
+//app.MapGroup("/")
+//    .MapPageEndpoints();
 
 app.Run();

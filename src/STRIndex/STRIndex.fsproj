@@ -24,6 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Include="Wrapper.fs" />
     <Compile Include="Globals.fs" />
     <Compile Include="Domain.fs" />
     <Compile Include="STRRepo.fs" />

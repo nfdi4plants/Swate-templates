@@ -1,0 +1,64 @@
+﻿@page "/author/{Name}"
+@inject IDbContextFactory<SwateTemplateDb> SwateTemplateDbContextFactory
+@rendermode InteractiveServer
+
+<h1>Author - <mark>@Name</mark></h1>
+
+@if (metadata == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+   <p>Template Count: @(metadata.Length)</p>
+
+   <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Version</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in metadata)
+            {
+                <tr>
+                    <td><a href="template/@item.Name">@(item.Name)</a></td>
+                    <td>@(item.Description)</td>
+                    <td>@(item.GetSemanticVersionString())</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    [Parameter]
+    public string Name { get; set; }
+
+    private SwateTemplateMetadata[]? metadata;
+
+    protected override async Task OnInitializedAsync()
+    {
+        using SwateTemplateDb database = SwateTemplateDbContextFactory.CreateDbContext();
+
+        var metadata0 = await database.Metadata
+            .Where(m => m.Authors.Any(a => a.FullName == Name))
+            .Where(m => m.BuildMetadataVersionSuffix == "" && m.BuildMetadataVersionSuffix == "")
+            .ToArrayAsync();
+
+        var latestMetadata = metadata0
+            .GroupBy(m => m.Name)
+            .Select(m =>
+                m.ToArray()
+                    .OrderByDescending(m => m.MajorVersion)
+                    .ThenByDescending(p => p.MinorVersion)
+                    .ThenByDescending(p => p.PatchVersion)
+                    .First()
+            )
+            .ToArray();
+
+        metadata = latestMetadata;
+    }
+}

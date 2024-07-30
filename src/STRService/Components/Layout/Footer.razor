@@ -1,0 +1,16 @@
+﻿<footer style="margin-top: 200px" class="container">
+  <hr/>
+  <div class="grid">
+    <div>
+      <small><strong>STR - a service by <a class="secondary" href="https://nfdi4plants.org/">DataPLANT</a></strong></small>
+  </div>
+    <div>
+      <ul>
+        @foreach (var navbarLink in NavbarLinks.DefaultLinks)
+        {
+            <FooterItem item="@navbarLink.Name" link="@navbarLink.Url"></FooterItem>
+        }
+      </ul>
+    </div>
+  </div>
+</footer>

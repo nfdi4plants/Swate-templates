@@ -1,0 +1,170 @@
+﻿@page "/template/{Name}/{Version?}"
+@inject IDbContextFactory<SwateTemplateDb> SwateTemplateDbContextFactory
+@rendermode InteractiveServer
+
+<h3>Template</h3>
+
+<p>Name: @Name - Version: @(Version ?? "latest")</p>
+
+@if (template == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <section>
+        <div>
+            <h1>Swate template <mark>@template.TemplateName</mark></h1>
+            <p><TemplateTags tags="@tags"></TemplateTags></p>
+            <p><strong>v@(metadata.GetSemanticVersionString())</strong> released on @metadata.ReleaseDate</p>
+            <p>by 
+                @foreach (var author in authors)
+                {
+                    <a href="author/@author">@author</a>
+                    @if (author != authors.Last())
+                    {
+                        @(", ")
+                    }
+                }
+            </p>
+            <p>@downloadCount Downloads</p>
+        </div>
+    </section>
+
+    <hr />
+
+    <section>
+        <h2>Template Content</h2>
+        <ArcTable table="@table"></ArcTable>
+    </section>
+
+    <section>
+        <details>
+            <summary role="button" class="primary">Release Notes</summary>
+            <p>@metadata.ReleaseNotes</p>
+            Currently Work in Progress 🚧
+        </details>
+        <hr />
+
+        <details>
+            <summary role="button" class="primary">Versions</summary>
+
+            <VersionTable templates="@allMetadata"></VersionTable>
+        </details>
+    </section>
+
+    <hr />
+}
+
+
+@code {
+    [Parameter]
+    public string Name { get; set; }
+    // @
+    [Parameter]
+    public string? Version { get; set; }
+
+    private SwateTemplate? template;
+
+    private SwateTemplateMetadata? metadata;
+
+    private SwateTemplateMetadata[]? allMetadata;
+
+    private int? downloadCount;
+
+    /// <summary>
+    /// A specified "getter" for tags to improve readability in the html.
+    /// </summary>
+    private string[] tags => 
+        (metadata?.Tags ?? []).Select(t => t.Name).ToArray();
+
+    private string[] authors =>
+        (metadata?.Authors ?? []).Select(t => t.FullName).ToArray();
+
+    private ARCtrl.ArcTable? table => 
+        (template == null)
+            ? null
+            : (STRIndex.Wrapper.templateFromJson(template.TemplateContent).Table);
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var database = await SwateTemplateDbContextFactory.CreateDbContextAsync();
+        if (Version is not null)
+        {
+            await GetTemplateByVersion(Name, Version, database);
+        }
+        else
+        {
+            await GetTemplate(Name, database);
+        }
+    }
+
+    private async Task GetTemplateByVersion(string templateName, string version, SwateTemplateDb database)
+    {
+        var semVerOpt = STRIndex.Domain.SemVer.tryParse(version);
+        if (semVerOpt is null)
+        {
+            throw new Exception($"{version} is not a valid semantic version.");
+        }
+        var semVer = semVerOpt.Value;
+
+        var metadata0 = await database.Metadata.FindAsync(templateName, semVer.Major, semVer.Minor, semVer.Patch, semVer.PreRelease, semVer.BuildMetadata);
+        var template0 = await database.Templates.FindAsync(templateName, semVer.Major, semVer.Minor, semVer.Patch, semVer.PreRelease, semVer.BuildMetadata);
+        var downloads = await database.Downloads.FindAsync(templateName, semVer.Major, semVer.Minor, semVer.Patch, semVer.PreRelease, semVer.BuildMetadata);
+
+        if (template == null)
+        {
+            throw new Exception("Template not found!");
+        }
+
+        var allMetadata0 = await
+            database.Metadata
+            .Where(p => p.Name == metadata0.Name)
+            .ToArrayAsync();
+
+        downloadCount = (downloads?.DownloadCount ?? 0);
+        template = template0;
+        metadata = metadata0;
+        allMetadata = allMetadata0;
+    }
+    ///  <summary>
+    /// Gets latest template
+    /// </summary>
+    /// <param name="templateName"></param>
+    /// <param name="database"></param>
+    /// <returns></returns>
+    /// <exception cref="Exception"></exception>
+    private async Task GetTemplate(string templateName, SwateTemplateDb database)
+    {
+        var allMetadata0 = await
+                database.Metadata
+                    .Where(p => p.Name == templateName)
+                    .ToArrayAsync();
+
+        var latestMetadata =
+            allMetadata0
+            .Where(p => p.BuildMetadataVersionSuffix == "" && p.BuildMetadataVersionSuffix == "")
+            .OrderByDescending(p => p.MajorVersion)
+            .ThenByDescending(p => p.MinorVersion)
+            .ThenByDescending(p => p.PatchVersion)
+            .FirstOrDefault();
+
+        var latestTemplate =
+            database.Templates
+            .Where(p => p.TemplateName == latestMetadata.Name && p.TemplateMajorVersion == latestMetadata.MajorVersion && p.TemplateMinorVersion == latestMetadata.MinorVersion && p.TemplatePatchVersion == latestMetadata.PatchVersion && p.TemplatePreReleaseVersionSuffix == latestMetadata.PreReleaseVersionSuffix && p.TemplateBuildMetadataVersionSuffix == latestMetadata.BuildMetadataVersionSuffix)
+            .FirstOrDefault();
+
+        if (latestMetadata == null)
+        {
+            throw new Exception("Template not found!");
+        }
+
+        var downloads = await database.Downloads.FindAsync(latestMetadata.Name, latestMetadata.MajorVersion, latestMetadata.MinorVersion, latestMetadata.PatchVersion, latestMetadata.PreReleaseVersionSuffix, latestMetadata.BuildMetadataVersionSuffix);
+
+
+        downloadCount = (downloads?.DownloadCount ?? 0);
+        template = latestTemplate;
+        metadata = latestMetadata;
+        allMetadata = allMetadata0;
+    }
+}
