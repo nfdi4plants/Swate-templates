@@ -145,7 +145,7 @@ namespace STRService.Data
                                 TemplatePatchVersion = semVer.Value.Patch,
                                 TemplatePreReleaseVersionSuffix = semVer.Value.PreRelease,
                                 TemplateBuildMetadataVersionSuffix = semVer.Value.BuildMetadata,
-                                TemplateContent = t.ToJson()
+                                TemplateContent = Wrapper.templateToJson(t)
                             };
                         });
 

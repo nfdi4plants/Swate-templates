@@ -5,8 +5,6 @@ using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Model;
 using static System.Net.Mime.MediaTypeNames;
 using STRService.API;
 using STRService.OpenAPI;
-using STRService.Pages.Components;
-using STRService.Pages;
 using Microsoft.OpenApi.Models;
 using NSwag.Generation.Processors.Security;
 using NSwag.Generation.Processors;
