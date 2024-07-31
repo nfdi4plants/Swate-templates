@@ -1,0 +1,12 @@
+﻿<nav>
+    <ul>
+        <li><strong>STR - a service by <a href="https://nfdi4plants.org/">DataPLANT</a></strong></li>
+    </ul>
+    <ul>
+        @foreach (var navbarLink in NavbarLinks.DefaultLinks)
+        {
+            <NavbarItem item="@navbarLink.Name" link="@navbarLink.Url"></NavbarItem>
+        }
+    </ul>
+</nav>
+

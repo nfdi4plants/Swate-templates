@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
 using STRService.Models;
 using Microsoft.EntityFrameworkCore;
-using STRService.Pages.Components;
 using STRIndex;
 using static STRIndex.Domain;
 

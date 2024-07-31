@@ -40,10 +40,10 @@
   <ItemGroup>
     <Folder Include="Migrations\" />
     <Folder Include="wwwroot\js\" />
-    <None Include="..\..\templates\**" CopyToOutputDirectory="Always" LinkBase="templates"/>
+    <None Include="..\..\templates\**" CopyToOutputDirectory="Always" LinkBase="templates" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\STRIndex\STRIndex.fsproj"/>
+    <ProjectReference Include="..\STRIndex\STRIndex.fsproj" />
   </ItemGroup>
 </Project>
