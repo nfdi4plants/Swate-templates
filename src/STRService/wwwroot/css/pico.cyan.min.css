@@ -977,6 +977,10 @@ tfoot td, tfoot th {
     border-bottom: 0
 }
 
+table.bordered td, table.bordered th {
+    border: var(--pico-border-width) solid var(--pico-table-border-color) !important;
+}
+
 table.striped tbody tr:nth-child(odd) td, table.striped tbody tr:nth-child(odd) th {
     background-color: var(--pico-table-row-stripped-background-color)
 }
