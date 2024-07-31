@@ -13,7 +13,7 @@
 else
 {
     <section>
-        <div>
+        <hgroup>
             <h1>Swate template <mark>@template.TemplateName</mark></h1>
             <p><TemplateTags tags="@tags"></TemplateTags></p>
             <p><strong>v@(metadata.GetSemanticVersionString())</strong> released on @metadata.ReleaseDate</p>
@@ -28,13 +28,16 @@ else
                 }
             </p>
             <p>@downloadCount Downloads</p>
-        </div>
+        </hgroup>
     </section>
 
     <hr />
 
     <section>
-        <h2>Template Content</h2>
+        <hgroup>
+            <h2>Template Content</h2>
+            <p>Building Blocks + example values</p>
+        </hgroup>
         <ArcTable table="@table"></ArcTable>
     </section>
 
