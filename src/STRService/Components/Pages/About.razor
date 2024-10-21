@@ -1,0 +1,39 @@
+﻿@page "/about"
+
+<section>
+    <h1><strong>STR:</strong>Swate template registry</h1>
+
+    <p>The STR indexes and hosts templates for Swate. You can learn more about Swate <a href="@URL.DataPLANT">here</a>.</p>
+    <p>It is intended for 2 main use cases:</p>
+
+    <ol>
+        <li>Summarize available templates and make them discoverable and inspectable for users that want to use them. This is done by providing a <a href="/about#browser"> browser website</a>.</li>
+        <li>Provide programmatic access for downloading Swate templates. This is done by providing <a href="/about#api">Public API Endpoints</a></li>
+    </ol>
+    <hr/>
+</section>
+
+<section>
+    <h2 id="browser"><a class="contrast" href="/about#browser">Swate template browser</a></h2>
+
+    <p>The <a href="/templates">Swate template browser</a> provides a overview of all available Swate templates. You can browse the list of templates and view details such as tags, author(s), and the template table.</p>
+    <hr/>
+</section>
+
+<section>
+    <h2 id="api"><a class="contrast" href="/about#api">Swate template API</a></h2>
+
+    <p>For downstream tools that want to programmatically query and download available Swate templates, STR provides a extensively documented public API.</p>
+
+    <p>OpenAPI specs and documentation of this API can be accessed <a href="/swagger">here</a></p>
+
+    <p>Note that templates published on STR are intended to be <strong>immutable after publication</strong>. Therefore, any endpoints that can push changes to the database are authorization-only, and not intended to be used by any user-facing tool.</p>
+
+    <p>If you have good reasons to request an API key for authorizing to these endpoints, feel free to <a href="@URL.RepoTemplateIssues">contact us via an GitHub issue</a>.</p>
+
+    <hr/>
+</section>
+
+<section>
+    <h2 id="faq"><a class="contrast" href="/about#faq">Frequently asked questions</a></h2>
+</section>

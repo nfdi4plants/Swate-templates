@@ -1,0 +1,18 @@
+﻿<tr>
+    <th scope="row"><a href="/template/@summary.Name">@summary.Name</a></th>
+    <th scope="row"><small>@summary.Description</small></th>
+    <td><a href="/template/@summary.Name/@summary.LatestVersion">@summary.LatestVersion</a></td>
+    <td>@summary.ReleaseDate</td>
+    <td>
+        <TemplateTags tags="@summary.Tags"></TemplateTags>
+    </td>
+    <td>@summary.TotalDownloads</td>
+</tr>
+
+
+@code {
+
+    [Parameter]
+    public TemplateSummary summary { get; set; }
+
+}
