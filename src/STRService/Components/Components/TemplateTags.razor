@@ -1,0 +1,13 @@
+﻿@foreach (var tag in tags)
+{
+    <TemplateTag tag="@tag"></TemplateTag>
+    @if (tag != tags.Last())
+    {
+        @(", ")
+    }
+}
+
+@code {
+    [Parameter]
+    public string[] tags { get; set; }
+}

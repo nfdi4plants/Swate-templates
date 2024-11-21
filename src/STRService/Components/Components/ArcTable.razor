@@ -1,0 +1,28 @@
+﻿<div class="overflow-auto">
+    <table class="bordered">
+        <thead>
+            @foreach (var header in Rows.First())
+            {
+                <th>@(header.ToString())</th>
+            }
+        </thead>
+        <tbody>
+            @foreach (var row in Rows.Skip(1))
+            {
+                <tr>
+                    @foreach (var cell in row)
+                    {
+                        <td><small>@(cell)</small></td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@code {
+    [Parameter]
+    public ARCtrl.ArcTable table { get; set; }
+
+    private IEnumerable<IEnumerable<string>> Rows => STRIndex.Wrapper.tableToRowCellStringList(table);
+}
