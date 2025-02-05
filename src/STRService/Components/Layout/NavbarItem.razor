@@ -1,0 +1,13 @@
+﻿<li>
+    <NavLink href="@link" Match=NavLinkMatch.All>
+        <u>@item</u>
+    </NavLink>
+</li>
+
+@code {
+    [Parameter]
+    public string link { get; set; }
+
+    [Parameter]
+    public string item { get; set; }
+}

@@ -1,0 +1,99 @@
+﻿@page "/templates"
+@inject IDbContextFactory<SwateTemplateDb> SwateTemplateDbContextFactory
+@rendermode InteractiveServer
+
+<h1>All available Swate templates</h1
+
+@if (TemplateSummaries == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <input @bind="searchTerm" @bind:event="oninput" placeholder="Search by name" />
+
+    <div class="overflow-auto">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Name</th>
+                    <th scope="col">Description</th>
+                    <th scope="col">Latest stable version</th>
+                    <th scope="col">Release date</th>
+                    <th scope="col">Tags</th>
+                    <th scope="col">Total Downloads</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var templateSummary in FilteredTemplates)
+                {
+                    <TemplateSummaryRow summary="@templateSummary"></TemplateSummaryRow>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+@code 
+{
+    ///  <summary>
+    /// This is the collection of all templates from the database.
+    /// </summary>
+    private TemplateSummary[]? TemplateSummaries;
+    /// <summary>
+    /// search string in input field
+    /// </summary>
+    private string searchTerm = string.Empty;
+
+    private TemplateSummary[] FilteredTemplates => string.IsNullOrWhiteSpace(searchTerm)
+        ? TemplateSummaries
+        : TemplateSummaries?.Where(r => r.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)).ToArray();
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var database = await SwateTemplateDbContextFactory.CreateDbContextAsync();
+        var metadata = await database.Metadata.ToArrayAsync();
+        var templates = await database.Templates.ToArrayAsync();
+
+        var latestTemplates =
+            metadata
+            .OrderByDescending(p => p.MajorVersion)
+            .ThenByDescending(p => p.MinorVersion)
+            .ThenByDescending(p => p.PatchVersion)
+            .FirstOrDefault();
+
+        var templateSummaries =
+            metadata
+                .GroupBy(p => p.Name)
+                .ToList()
+                .Select(group =>
+                    {
+                        var downloads =
+                            database.Downloads
+                            .Where(p => p.TemplateName == group.Key)
+                            .Sum(d => d.DownloadCount);
+
+                        var latestTemplate =
+                            group
+                                .Where(p => p.BuildMetadataVersionSuffix == "" && p.BuildMetadataVersionSuffix == "")
+                                .OrderByDescending(p => p.MajorVersion)
+                                .ThenByDescending(p => p.MinorVersion)
+                                .ThenByDescending(p => p.PatchVersion)
+                                .FirstOrDefault();
+
+                        return new TemplateSummary
+                        {
+                            Name = group.Key,
+                            Description = latestTemplate.Description,
+                            Tags = (latestTemplate?.Tags ?? []).Select(t => t.Name).ToArray(),
+                            ReleaseDate = latestTemplate.ReleaseDate,
+                            LatestVersion = latestTemplate.GetSemanticVersionString(),
+                            TotalDownloads = downloads
+                        };
+                    }
+                ).ToArray();
+
+        TemplateSummaries = templateSummaries;
+    }
+}
