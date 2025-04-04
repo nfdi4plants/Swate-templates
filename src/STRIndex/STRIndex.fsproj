@@ -1,0 +1,35 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <Authors>Kevin Schneider, Kevin Frey, DataPLANT Open Source Contributors</Authors>
+    <Description>Type system and utils for the indexing backend of str.nfdi4plants.org</Description>
+    <Summary>Type system and utils for the indexing backend of str.nfdi4plants.org</Summary>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageTags>C# F# ARC annotated-research-context rdm research-data-management validation</PackageTags>
+    <PackageProjectUrl>https://github.com/nfdi4plants/arc-validate-package-registry</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/nfdi4plants/arc-validate-package-registry</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageReleaseNotes>$([System.IO.File]::ReadAllText("$(MSBuildProjectDirectory)/RELEASE_NOTES.md"))</PackageReleaseNotes>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageVersion>0.2.1</PackageVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="ARCtrl" Version="2.0.0-beta.2" />
+    <PackageReference Include="FsSpreadsheet.Net" Version="6.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="Wrapper.fs" />
+    <Compile Include="Globals.fs" />
+    <Compile Include="Domain.fs" />
+    <Compile Include="STRRepo.fs" />
+    <None Include="README.md" Pack="true" PackagePath="\" />
+    <None Include="RELEASE_NOTES.md" />
+  </ItemGroup>
+
+</Project>
