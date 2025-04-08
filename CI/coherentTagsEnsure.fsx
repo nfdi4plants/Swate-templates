@@ -14,6 +14,7 @@ let SimiliarityThreshold = 0.8
 let WhiteList : string [] [] = 
   [| 
     [|"RNASeq"; "mRNASeq"; "DNASeq"|]
+    [| "MIAPPE"; "MIAPE" |]
   |]
 
 module SorensenDice =
