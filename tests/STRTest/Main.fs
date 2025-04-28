@@ -54,4 +54,4 @@ let allTests =
     testList "All tests" (allTest)
 
 [<EntryPoint>]
-let main argv = Tests.runTestsWithCLIArgs [] [||] allTests
+let main argv = Tests.runTestsWithCLIArgs [] argv allTests
