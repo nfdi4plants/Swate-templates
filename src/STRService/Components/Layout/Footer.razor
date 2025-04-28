@@ -1,9 +1,17 @@
-﻿<footer style="margin-top: 200px" class="container">
+﻿@using STRService.Components
+
+<footer style="margin-top: 200px" class="container">
   <hr/>
   <div class="grid">
     <div>
-      <small><strong>STR - a service by <a class="secondary" href="https://nfdi4plants.org/">DataPLANT</a></strong></small>
-  </div>
+        <small>
+            <strong>
+                STR - a service by
+                <a class="secondary" href="https://nfdi4plants.org/">DataPLANT</a>
+                <span style="margin-left: 10px;">v@(@Util.AppInfo.Version)</span>
+            </strong>
+        </small>
+    </div>
     <div>
       <ul>
         @foreach (var navbarLink in NavbarLinks.DefaultLinks)

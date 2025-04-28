@@ -15,6 +15,14 @@ namespace STRService.Authentication
             EndpointFilterDelegate next
         )
         {
+            var headers = context.HttpContext.Request.Headers;
+
+            foreach 
+                (var header in headers)
+            {
+                Console.WriteLine($"Header: {header.Key}, Value: {string.Join(", ", header.Value)}");
+            }
+
             if (!context.HttpContext.Request.Headers.TryGetValue(AuthConstants.APIKeyHeaderName, out var extractedApiKey))
             {
                 return TypedResults.Unauthorized();

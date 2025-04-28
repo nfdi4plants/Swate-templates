@@ -27,7 +27,7 @@ namespace STRService.API.Endpoints
                 .WithOpenApi()
                 .WithName("CreateTemplate")
                 .AddEndpointFilter<APIKeyEndpointFilter>(); // creating templates via post requests requires an API key
-
+                
             return group.WithTags("Swate Templates (Full json with table content)");
         }
     }

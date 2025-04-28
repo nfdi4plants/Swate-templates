@@ -2,6 +2,7 @@
 using STRService.Models;
 using Microsoft.EntityFrameworkCore;
 using STRIndex;
+using ARCtrl;
 using static STRIndex.Domain;
 
 namespace STRService.API.Handlers
@@ -61,8 +62,11 @@ namespace STRService.API.Handlers
             return TypedResults.Ok(template);
         }
 
-        public static async Task<Results<Ok<SwateTemplate>, Conflict, UnauthorizedHttpResult, UnprocessableEntity<string>>> CreateTemplate(SwateTemplateMetadata metadata, string templateContent, SwateTemplateDb database)
+        public static async Task<Results<Ok<SwateTemplate>, Conflict, UnauthorizedHttpResult, UnprocessableEntity<string>>> CreateTemplate(SwateTemplateDto swateTemplateDto, SwateTemplateDb database)
         {
+            var metadata = swateTemplateDto.Metadata;
+            var templateContent = Wrapper.templateToJson(swateTemplateDto.Content);
+
             var existingTemplate = await database.Templates.FindAsync(metadata.Name, metadata.MajorVersion, metadata.MinorVersion, metadata.PatchVersion, metadata.PreReleaseVersionSuffix, metadata.BuildMetadataVersionSuffix);
             var existingMetadata = await database.Templates.FindAsync(metadata.Name, metadata.MajorVersion, metadata.MinorVersion, metadata.PatchVersion, metadata.PreReleaseVersionSuffix, metadata.BuildMetadataVersionSuffix);
             if (existingTemplate != null || existingMetadata != null)

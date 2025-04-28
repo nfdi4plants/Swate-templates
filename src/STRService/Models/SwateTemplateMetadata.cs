@@ -15,6 +15,30 @@ namespace STRService.Models
     [PrimaryKey(nameof(Name), nameof(MajorVersion), nameof(MinorVersion), nameof(PatchVersion), nameof(PreReleaseVersionSuffix), nameof(BuildMetadataVersionSuffix))]
     public class SwateTemplateMetadata
     {
+        public static SwateTemplateMetadata Create(
+            string name, string description,
+            int majorVersion, int minorVersion,
+            int patchVersion, string preReleaseVersionSuffix,
+            string buildMetadataVersionSuffix,
+            string organisation, ICollection<OntologyAnnotation> endpointRepositories,
+            DateOnly releaseDate, ICollection<OntologyAnnotation> tags,
+            ICollection<Author> authors) =>
+                new SwateTemplateMetadata
+                {
+                    Name = name,
+                    Description = description,
+                    MajorVersion = majorVersion,
+                    MinorVersion = minorVersion,
+                    PatchVersion = patchVersion,
+                    PreReleaseVersionSuffix = preReleaseVersionSuffix,
+                    BuildMetadataVersionSuffix = buildMetadataVersionSuffix,
+                    Organisation = organisation,
+                    EndpointRepositories = endpointRepositories,
+                    ReleaseDate = releaseDate,
+                    Tags = tags,
+                    Authors = authors
+                };
+
         /// <summary>
         /// The name of the Swate template.
         /// </summary>
