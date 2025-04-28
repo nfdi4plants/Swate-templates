@@ -76,7 +76,7 @@ type TestController (baseUrl: string, ?templatesPath) =
             let solutionRoot = this.TemplateController.FindSolutionRoot (DirectoryInfo(System.Environment.CurrentDirectory))
             Path.Combine(solutionRoot, "templates")
 
-    member private this.MatchResult result =
+    member this.MatchResult result =
         match result with
         | 0 -> 
             printfn "All checks successfull! ✅"

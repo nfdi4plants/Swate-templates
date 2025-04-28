@@ -36,7 +36,7 @@ open STRApplication
 open STRService.Data
 open STRService.Models
 
-let url = "https://localhost:50135/api/v1"
+let url = "https://localhost:49218/api/v1"
 
 let testController = new STRTest.TestController(url)
 
