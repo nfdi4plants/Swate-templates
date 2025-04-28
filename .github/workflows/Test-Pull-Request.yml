@@ -20,4 +20,4 @@ jobs:
           dotnet-version: '8.0.x'  # or whatever version you're targeting
           
       - name: "[Test] readability"
-        run: dotnet fsi tests/STRTest/Main.fsx
+        run: dotnet run tests/STRTest/STRTest.fsproj
