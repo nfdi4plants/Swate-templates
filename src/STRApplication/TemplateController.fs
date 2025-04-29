@@ -1,5 +1,6 @@
 ﻿namespace STRApplication
 
+open System
 open System.IO
 open System.Text.RegularExpressions
 
@@ -36,8 +37,8 @@ type TemplateController (baseUrl: string) =
                 failwith "Expected text response but got binary"
         result
 
-    member this.GetMetadataByName (name: string) : SwateTemplateMetadata =
-        let url = $"{this.BaseUrl}/metadata/{name}"
+    member this.GetMetadataById (id: Guid) : SwateTemplateMetadata =
+        let url = $"{this.BaseUrl}/metadata/{id}"
         let response =
             Http.Request(
                 url,
@@ -55,7 +56,7 @@ type TemplateController (baseUrl: string) =
         result
 
     member this.GetMetadataByKeys (name: string, version: string) : SwateTemplateMetadata =
-        let url = $"{this.BaseUrl}/metadata/{name}/{version}"
+        let url = $"{this.BaseUrl}/metadata/{id}/{version}"
         let response =
             Http.Request(
                 url,
@@ -108,8 +109,8 @@ type TemplateController (baseUrl: string) =
                 failwith "Expected text response but got binary"
         result
 
-    member this.GetTemplateByKeys (name: string, version: string) : SwateTemplate =
-        let url = $"{this.BaseUrl}/templates/{name}/{version}"
+    member this.GetTemplateByKeys (id: Guid, version: string) : SwateTemplate =
+        let url = $"{this.BaseUrl}/templates/{id}/{version}"
         let response =
             Http.Request(
                 url,

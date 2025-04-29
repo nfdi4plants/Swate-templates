@@ -15,11 +15,11 @@ namespace STRService.API.Endpoints
                 .WithOpenApi()
                 .WithName("GetAllTemplateMetadata");
 
-            group.MapGet("/{name}", TemplateMetadataHandlers.GetLatestTemplateMetadataByName)
+            group.MapGet("/{id}", TemplateMetadataHandlers.GetLatestTemplateMetadataById)
                 .WithOpenApi()
                 .WithName("GetLatestTemplateMetadataByName");
 
-            group.MapGet("/{name}/{version}", TemplateMetadataHandlers.GetTemplateMetadataByNameAndVersion)
+            group.MapGet("/{id}/{version}", TemplateMetadataHandlers.GetTemplateMetadataByIdAndVersion)
                 .WithOpenApi()
                 .WithName("GetTemplateMetadataByNameAndVersion");
 

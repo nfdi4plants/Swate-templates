@@ -12,10 +12,11 @@ namespace STRService.Models
     /// <summary>
     /// 
     /// </summary>
-    [PrimaryKey(nameof(Name), nameof(MajorVersion), nameof(MinorVersion), nameof(PatchVersion), nameof(PreReleaseVersionSuffix), nameof(BuildMetadataVersionSuffix))]
+    [PrimaryKey(nameof(Id), nameof(MajorVersion), nameof(MinorVersion), nameof(PatchVersion), nameof(PreReleaseVersionSuffix), nameof(BuildMetadataVersionSuffix))]
     public class SwateTemplateMetadata
     {
         public static SwateTemplateMetadata Create(
+            Guid id,
             string name, string description,
             int majorVersion, int minorVersion,
             int patchVersion, string preReleaseVersionSuffix,
@@ -25,6 +26,7 @@ namespace STRService.Models
             ICollection<Author> authors) =>
                 new SwateTemplateMetadata
                 {
+                    Id = id,
                     Name = name,
                     Description = description,
                     MajorVersion = majorVersion,
@@ -38,6 +40,12 @@ namespace STRService.Models
                     Tags = tags,
                     Authors = authors
                 };
+
+        /// <summary>
+        /// The unique identifier of the Swate template.
+        /// </summary>
+        /// <example>XXXXXXXX-XXXX-XXXX-XXX-XXXXXXXXXXXX</example>
+        public required Guid Id { get; set; }
 
         /// <summary>
         /// The name of the Swate template.

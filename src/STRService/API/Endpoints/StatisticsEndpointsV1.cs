@@ -13,11 +13,11 @@ namespace STRService.API.Endpoints
                 .WithOpenApi()
                 .WithName("GetAllDownloads");
 
-            group.MapGet("/downloads/{name}", DownloadsHandlers.GetAllDownloadsByName)
+            group.MapGet("/downloads/{id}", DownloadsHandlers.GetAllDownloadsById)
                 .WithOpenApi()
                 .WithName("GetAllDownloadsByName");
 
-            group.MapGet("/downloads/{name}/{version}", DownloadsHandlers.GetDownloadsByNameAndVersion)
+            group.MapGet("/downloads/{id}/{version}", DownloadsHandlers.GetDownloadsByIdAndVersion)
                 .WithOpenApi()
                 .WithName("GetDownloadsByNameAndVersion");
 

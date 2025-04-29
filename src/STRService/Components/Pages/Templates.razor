@@ -65,13 +65,13 @@ else
 
         var templateSummaries =
             metadata
-                .GroupBy(p => p.Name)
+                .GroupBy(p => p.Id)
                 .ToList()
                 .Select(group =>
                     {
                         var downloads =
                             database.Downloads
-                            .Where(p => p.TemplateName == group.Key)
+                            .Where(p => p.TemplateId == group.Key)
                             .Sum(d => d.DownloadCount);
 
                         var latestTemplate =
@@ -84,7 +84,8 @@ else
 
                         return new TemplateSummary
                         {
-                            Name = group.Key,
+                            Id = group.Key,
+                            Name = latestTemplate.Name,
                             Description = latestTemplate.Description,
                             Tags = (latestTemplate?.Tags ?? []).Select(t => t.Name).ToArray(),
                             ReleaseDate = latestTemplate.ReleaseDate,

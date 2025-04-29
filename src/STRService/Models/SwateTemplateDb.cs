@@ -36,7 +36,7 @@
 
         public static void IncrementDownloadCount(SwateTemplate template, SwateTemplateDb database)
         {
-            var result = database.Downloads.SingleOrDefault(d => d.TemplateName == template.TemplateName && d.TemplateMajorVersion == template.TemplateMajorVersion && d.TemplateMinorVersion == template.TemplateMinorVersion && d.TemplatePatchVersion == template.TemplatePatchVersion && d.TemplatePreReleaseVersionSuffix == template.TemplatePreReleaseVersionSuffix && d.TemplateBuildMetadataVersionSuffix == template.TemplateBuildMetadataVersionSuffix);
+            var result = database.Downloads.SingleOrDefault(d => d.TemplateId == template.TemplateId && d.TemplateMajorVersion == template.TemplateMajorVersion && d.TemplateMinorVersion == template.TemplateMinorVersion && d.TemplatePatchVersion == template.TemplatePatchVersion && d.TemplatePreReleaseVersionSuffix == template.TemplatePreReleaseVersionSuffix && d.TemplateBuildMetadataVersionSuffix == template.TemplateBuildMetadataVersionSuffix);
 
             if (result != null)
             {
@@ -46,6 +46,7 @@
             {
                 var d = new Downloads
                 {
+                    TemplateId = template.TemplateId,
                     TemplateName = template.TemplateName,
                     TemplateMajorVersion = template.TemplateMajorVersion,
                     TemplateMinorVersion = template.TemplateMinorVersion,

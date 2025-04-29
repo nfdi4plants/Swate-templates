@@ -1,10 +1,8 @@
-﻿@page "/template/{Name}/{Version?}"
+﻿@page "/template/{Id:guid}/{Version?}"
 @inject IDbContextFactory<SwateTemplateDb> SwateTemplateDbContextFactory
 @rendermode InteractiveServer
 
-<h3>Template</h3>
-
-<p>Name: @Name - Version: @(Version ?? "latest")</p>
+<small>@Id </small>
 
 @if (template == null)
 {
@@ -62,7 +60,7 @@ else
 
 @code {
     [Parameter]
-    public string Name { get; set; }
+    public Guid Id { get; set; }
     // @
     [Parameter]
     public string? Version { get; set; }
@@ -94,15 +92,15 @@ else
         using var database = await SwateTemplateDbContextFactory.CreateDbContextAsync();
         if (Version is not null)
         {
-            await GetTemplateByVersion(Name, Version, database);
+            await GetTemplateByVersion(Id, Version, database);
         }
         else
         {
-            await GetTemplate(Name, database);
+            await GetTemplate(Id, database);
         }
     }
 
-    private async Task GetTemplateByVersion(string templateName, string version, SwateTemplateDb database)
+    private async Task GetTemplateByVersion(Guid id, string version, SwateTemplateDb database)
     {
         var semVerOpt = STRIndex.Domain.SemVer.tryParse(version);
         if (semVerOpt is null)
@@ -111,18 +109,18 @@ else
         }
         var semVer = semVerOpt.Value;
 
-        var metadata0 = await database.Metadata.FindAsync(templateName, semVer.Major, semVer.Minor, semVer.Patch, semVer.PreRelease, semVer.BuildMetadata);
-        var template0 = await database.Templates.FindAsync(templateName, semVer.Major, semVer.Minor, semVer.Patch, semVer.PreRelease, semVer.BuildMetadata);
-        var downloads = await database.Downloads.FindAsync(templateName, semVer.Major, semVer.Minor, semVer.Patch, semVer.PreRelease, semVer.BuildMetadata);
+        var metadata0 = await database.Metadata.FindAsync(id, semVer.Major, semVer.Minor, semVer.Patch, semVer.PreRelease, semVer.BuildMetadata);
+        var template0 = await database.Templates.FindAsync(id, semVer.Major, semVer.Minor, semVer.Patch, semVer.PreRelease, semVer.BuildMetadata);
+        var downloads = await database.Downloads.FindAsync(id, semVer.Major, semVer.Minor, semVer.Patch, semVer.PreRelease, semVer.BuildMetadata);
 
-        if (template == null)
+        if (template0 == null)
         {
             throw new Exception("Template not found!");
         }
 
         var allMetadata0 = await
             database.Metadata
-            .Where(p => p.Name == metadata0.Name)
+            .Where(p => p.Id == metadata0.Id)
             .ToArrayAsync();
 
         downloadCount = (downloads?.DownloadCount ?? 0);
@@ -133,15 +131,15 @@ else
     ///  <summary>
     /// Gets latest template
     /// </summary>
-    /// <param name="templateName"></param>
-    /// <param name="database"></param>
+    /// <param guid="id"></param>
+    /// <param SwateTemplateDb="database"></param>
     /// <returns></returns>
     /// <exception cref="Exception"></exception>
-    private async Task GetTemplate(string templateName, SwateTemplateDb database)
+    private async Task GetTemplate(Guid id, SwateTemplateDb database)
     {
         var allMetadata0 = await
                 database.Metadata
-                    .Where(p => p.Name == templateName)
+                    .Where(p => p.Id == id)
                     .ToArrayAsync();
 
         var latestMetadata =
@@ -154,7 +152,7 @@ else
 
         var latestTemplate =
             database.Templates
-            .Where(p => p.TemplateName == latestMetadata.Name && p.TemplateMajorVersion == latestMetadata.MajorVersion && p.TemplateMinorVersion == latestMetadata.MinorVersion && p.TemplatePatchVersion == latestMetadata.PatchVersion && p.TemplatePreReleaseVersionSuffix == latestMetadata.PreReleaseVersionSuffix && p.TemplateBuildMetadataVersionSuffix == latestMetadata.BuildMetadataVersionSuffix)
+            .Where(p => p.TemplateId == latestMetadata.Id && p.TemplateMajorVersion == latestMetadata.MajorVersion && p.TemplateMinorVersion == latestMetadata.MinorVersion && p.TemplatePatchVersion == latestMetadata.PatchVersion && p.TemplatePreReleaseVersionSuffix == latestMetadata.PreReleaseVersionSuffix && p.TemplateBuildMetadataVersionSuffix == latestMetadata.BuildMetadataVersionSuffix)
             .FirstOrDefault();
 
         if (latestMetadata == null)
@@ -162,7 +160,7 @@ else
             throw new Exception("Template not found!");
         }
 
-        var downloads = await database.Downloads.FindAsync(latestMetadata.Name, latestMetadata.MajorVersion, latestMetadata.MinorVersion, latestMetadata.PatchVersion, latestMetadata.PreReleaseVersionSuffix, latestMetadata.BuildMetadataVersionSuffix);
+        var downloads = await database.Downloads.FindAsync(latestMetadata.Id, latestMetadata.MajorVersion, latestMetadata.MinorVersion, latestMetadata.PatchVersion, latestMetadata.PreReleaseVersionSuffix, latestMetadata.BuildMetadataVersionSuffix);
 
 
         downloadCount = (downloads?.DownloadCount ?? 0);
