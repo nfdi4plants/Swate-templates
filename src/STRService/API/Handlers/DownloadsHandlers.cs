@@ -14,19 +14,19 @@ namespace STRService.API.Handlers
             return TypedResults.Ok(downloads);
         }
 
-        public static async Task<Results<Ok<Downloads[]>, NotFound<string>>> GetAllDownloadsByName(string name, SwateTemplateDb database)
+        public static async Task<Results<Ok<Downloads[]>, NotFound<string>>> GetAllDownloadsById(Guid id, SwateTemplateDb database)
         {
             var downloads =
                 await database.Downloads
-                    .Where(p => p.TemplateName == name)
+                    .Where(p => p.TemplateId == id)
                     .ToArrayAsync();
 
             return downloads is null || downloads.Length == 0
-                ? TypedResults.NotFound($"No download stats for template '{name}' available.")
+                ? TypedResults.NotFound($"No download stats for template '{id}' available.")
                 : TypedResults.Ok(downloads);
         }
 
-        public static async Task<Results<BadRequest<string>, NotFound<string>, Ok<Downloads>>> GetDownloadsByNameAndVersion(string name, string version, SwateTemplateDb database)
+        public static async Task<Results<BadRequest<string>, NotFound<string>, Ok<Downloads>>> GetDownloadsByIdAndVersion(Guid id, string version, SwateTemplateDb database)
         {
             var semVerOpt = SemVer.tryParse(version);
             if (semVerOpt is null)
@@ -35,10 +35,10 @@ namespace STRService.API.Handlers
             }
             var semVer = semVerOpt.Value;
 
-            var downloads = await database.Downloads.FindAsync(name, semVer.Major, semVer.Minor, semVer.Patch, semVer.PreRelease, semVer.BuildMetadata);
+            var downloads = await database.Downloads.FindAsync(id, semVer.Major, semVer.Minor, semVer.Patch, semVer.PreRelease, semVer.BuildMetadata);
 
             return downloads is null
-                ? TypedResults.NotFound($"No download stats for template '{name}' version '{version}' available.")
+                ? TypedResults.NotFound($"No download stats for template '{id}' version '{version}' available.")
                 : TypedResults.Ok(downloads);
         }
     }

@@ -17,6 +17,7 @@ else
         <thead>
             <tr>
                 <th>Name</th>
+                <th>Id</th>
                 <th>Description</th>
                 <th>Version</th>
                 <th>Downloads</th>
@@ -26,10 +27,11 @@ else
             @foreach (var item in metadata)
             {
                 <tr>
-                    <td><a href="template/@item.Name">@(item.Name)</a></td>
+                    <td><a href="template/@item.Id">@(item.Name)</a></td>
+                    <td>@(item.Id)</td>
                     <td>@(item.Description)</td>
                     <td>@(item.GetSemanticVersionString())</td>
-                    <td>@(downloads?.First(d => d.TemplateName == item.Name).DownloadCount)</td>
+                    <td>@(downloads?.First(d => d.TemplateId == item.Id).DownloadCount)</td>
                 </tr>
             }
         </tbody>
@@ -54,7 +56,7 @@ else
             .ToArrayAsync();
 
         var latestMetadata = metadata0
-            .GroupBy(m => m.Name)
+            .GroupBy(m => m.Id)
             .Select(m =>
                 m.ToArray()
                     .OrderByDescending(m => m.MajorVersion)
@@ -67,13 +69,13 @@ else
         // var downloadsTask = metadata0.Select(m => GetDownloadAsync(m));
         // var downloads0 = await Task.WhenAll(downloadsTask);
         var downloadsAll = await database.Downloads.ToArrayAsync();
-        var downloadsFiltered = downloadsAll.Where(d => latestMetadata.Any(m => m.Name == d.TemplateName && m.MajorVersion == d.TemplateMajorVersion && m.MinorVersion == d.TemplateMinorVersion && m.PatchVersion == d.TemplatePatchVersion)).ToArray();
+        var downloadsFiltered = downloadsAll.Where(d => latestMetadata.Any(m => m.Id == d.TemplateId && m.MajorVersion == d.TemplateMajorVersion && m.MinorVersion == d.TemplateMinorVersion && m.PatchVersion == d.TemplatePatchVersion)).ToArray();
 
         metadata = latestMetadata;
         downloads = downloadsFiltered;
     }
 
-    // public async Task<Downloads> GetDownloadAsync(SwateTemplateMetadata meta)
+    // public async Task<Downloads> GetDownloadAsync(Metadata meta)
     // {
     //     using SwateTemplateDb database = SwateTemplateDbContextFactory.CreateDbContext();
     //     {

@@ -109,6 +109,7 @@ namespace STRService.Data
 
                                 return new SwateTemplateMetadata
                                 {
+                                    Id = t.Id,
                                     Name = t.Name,
                                     Description = t.Description,
                                     MajorVersion = semVer.Value.Major,
@@ -139,6 +140,7 @@ namespace STRService.Data
 
                             return new SwateTemplate
                             {
+                                TemplateId = t.Id,
                                 TemplateName = t.Name,
                                 TemplateMajorVersion = semVer.Value.Major,
                                 TemplateMinorVersion = semVer.Value.Minor,
@@ -164,6 +166,7 @@ namespace STRService.Data
 
                             return new Downloads
                             {
+                                TemplateId = t.Id,
                                 TemplateName = t.Name,
                                 TemplateMajorVersion = semVer.Value.Major,
                                 TemplateMinorVersion = semVer.Value.Minor,

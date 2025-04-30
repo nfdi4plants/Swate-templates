@@ -1,7 +1,13 @@
 ﻿<tr>
-    <th scope="row"><a href="/template/@summary.Name">@summary.Name</a></th>
+    <th scope="row">
+        <a href="/template/@summary.Id" 
+            class="hover:underline transition-colors duration-200"
+            title="ID: @summary.Id">
+            @summary.Name
+        </a>
+    </th>
     <th scope="row"><small>@summary.Description</small></th>
-    <td><a href="/template/@summary.Name/@summary.LatestVersion">@summary.LatestVersion</a></td>
+    <td><a href="/template/@summary.Id/@summary.LatestVersion">@summary.LatestVersion</a></td>
     <td>@summary.ReleaseDate</td>
     <td>
         <TemplateTags tags="@summary.Tags"></TemplateTags>

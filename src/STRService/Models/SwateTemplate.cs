@@ -3,9 +3,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace STRService.Models
 {
-    [PrimaryKey(nameof(TemplateName), nameof(TemplateMajorVersion), nameof(TemplateMinorVersion), nameof(TemplatePatchVersion), nameof(TemplatePreReleaseVersionSuffix), nameof(TemplateBuildMetadataVersionSuffix))]
+    [PrimaryKey(nameof(TemplateId), nameof(TemplateMajorVersion), nameof(TemplateMinorVersion), nameof(TemplatePatchVersion), nameof(TemplatePreReleaseVersionSuffix), nameof(TemplateBuildMetadataVersionSuffix))]
     public class SwateTemplate
     {
+        /// <summary>
+        /// The unique identifier of the Swate template.
+        /// </summary>
+        /// <example>XXXXXXXX-XXXX-XXXX-XXX-XXXXXXXXXXXX</example>
+        public required Guid TemplateId { get; set; }
         /// <summary>
         /// The name of the Swate template.
         /// </summary>

@@ -2,6 +2,7 @@
 using STRService.Models;
 using Microsoft.EntityFrameworkCore;
 using STRIndex;
+using ARCtrl;
 using static STRIndex.Domain;
 
 namespace STRService.API.Handlers
@@ -19,10 +20,10 @@ namespace STRService.API.Handlers
             return TypedResults.Ok(templates);
         }
 
-        public static async Task<Results<Ok<SwateTemplate>, NotFound<string>, Conflict<string>>> GetLatestTemplateByName(string name, SwateTemplateDb database)
+        public static async Task<Results<Ok<SwateTemplate>, NotFound<string>, Conflict<string>>> GetLatestTemplateById(Guid id, SwateTemplateDb database)
         {
             var template = await database.Templates
-                .Where(p => p.TemplateName == name && p.TemplateBuildMetadataVersionSuffix == "" && p.TemplateBuildMetadataVersionSuffix == "") // only serve stable template versions here
+                .Where(p => p.TemplateId == id && p.TemplateBuildMetadataVersionSuffix == "" && p.TemplateBuildMetadataVersionSuffix == "") // only serve stable template versions here
                 .OrderByDescending(p => p.TemplateMajorVersion)
                 .ThenByDescending(p => p.TemplateMinorVersion)
                 .ThenByDescending(p => p.TemplatePatchVersion)
@@ -30,7 +31,7 @@ namespace STRService.API.Handlers
 
             if (template is null)
             {
-                return TypedResults.NotFound($"No template '{name}' available.");
+                return TypedResults.NotFound($"No template '{id}' available.");
             }
 
             SwateTemplateDb.IncrementDownloadCount(template, database);
@@ -39,7 +40,7 @@ namespace STRService.API.Handlers
             return TypedResults.Ok(template);
         }
 
-        public static async Task<Results<BadRequest<string>, NotFound<string>, Conflict<string>, Ok<SwateTemplate>>> GetTemplateByNameAndVersion(string name, string version, SwateTemplateDb database)
+        public static async Task<Results<BadRequest<string>, NotFound<string>, Conflict<string>, Ok<SwateTemplate>>> GetTemplateByIdAndVersion(Guid id, string version, SwateTemplateDb database)
         {
             var semVerOpt = SemVer.tryParse(version);
             if (semVerOpt is null)
@@ -48,11 +49,11 @@ namespace STRService.API.Handlers
             }
             var semVer = semVerOpt.Value;
 
-            var template = await database.Templates.FindAsync(name, semVer.Major, semVer.Minor, semVer.Patch, semVer.PreRelease, semVer.BuildMetadata);
+            var template = await database.Templates.FindAsync(id, semVer.Major, semVer.Minor, semVer.Patch, semVer.PreRelease, semVer.BuildMetadata);
 
             if (template is null)
             {
-                return TypedResults.NotFound($"No template '{name}' @ {version} available.");
+                return TypedResults.NotFound($"No template '{id}' @ {version} available.");
             }
 
             SwateTemplateDb.IncrementDownloadCount(template, database);
@@ -61,10 +62,13 @@ namespace STRService.API.Handlers
             return TypedResults.Ok(template);
         }
 
-        public static async Task<Results<Ok<SwateTemplate>, Conflict, UnauthorizedHttpResult, UnprocessableEntity<string>>> CreateTemplate(SwateTemplateMetadata metadata, string templateContent, SwateTemplateDb database)
+        public static async Task<Results<Ok<SwateTemplate>, Conflict, UnauthorizedHttpResult, UnprocessableEntity<string>>> CreateTemplate(SwateTemplateDto swateTemplateDto, SwateTemplateDb database)
         {
-            var existingTemplate = await database.Templates.FindAsync(metadata.Name, metadata.MajorVersion, metadata.MinorVersion, metadata.PatchVersion, metadata.PreReleaseVersionSuffix, metadata.BuildMetadataVersionSuffix);
-            var existingMetadata = await database.Templates.FindAsync(metadata.Name, metadata.MajorVersion, metadata.MinorVersion, metadata.PatchVersion, metadata.PreReleaseVersionSuffix, metadata.BuildMetadataVersionSuffix);
+            var metadata = swateTemplateDto.Metadata;
+            var templateContent = Wrapper.templateToJson(swateTemplateDto.Content);
+
+            var existingTemplate = await database.Templates.FindAsync(metadata.Id, metadata.MajorVersion, metadata.MinorVersion, metadata.PatchVersion, metadata.PreReleaseVersionSuffix, metadata.BuildMetadataVersionSuffix);
+            var existingMetadata = await database.Templates.FindAsync(metadata.Id, metadata.MajorVersion, metadata.MinorVersion, metadata.PatchVersion, metadata.PreReleaseVersionSuffix, metadata.BuildMetadataVersionSuffix);
             if (existingTemplate != null || existingMetadata != null)
             {
                 return TypedResults.Conflict();
@@ -74,6 +78,7 @@ namespace STRService.API.Handlers
 
             var template = new SwateTemplate
             {
+                TemplateId = metadata.Id,
                 TemplateName = metadata.Name,
                 TemplateMajorVersion = metadata.MajorVersion,
                 TemplateMinorVersion = metadata.MinorVersion,

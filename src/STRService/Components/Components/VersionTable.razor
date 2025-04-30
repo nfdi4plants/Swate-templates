@@ -3,6 +3,7 @@
     <thead>
         <tr>
             <td scope="col">Version</td>
+            <td scope="col">Name</td>
             <td scope="col">Release on</td>
         </tr>
     </thead>
@@ -11,7 +12,8 @@
         @foreach (var template in SortTemplates(templates))
         {
             <tr>
-                <td><a href="/template/@template.Name/@(template.GetSemanticVersionString())">@(template.GetSemanticVersionString())</a></td>
+                <td><a href="/template/@template.Id/@(template.GetSemanticVersionString())">@(template.GetSemanticVersionString())</a></td>
+                <td>@template.Name</td>
                 <td>@template.ReleaseDate</td>
             </tr>
         }

@@ -24,8 +24,8 @@ namespace STRService.Migrations
 
             modelBuilder.Entity("STRService.Models.Downloads", b =>
                 {
-                    b.Property<string>("TemplateName")
-                        .HasColumnType("text");
+                    b.Property<Guid>("TemplateId")
+                        .HasColumnType("uuid");
 
                     b.Property<int>("TemplateMajorVersion")
                         .HasColumnType("integer");
@@ -45,15 +45,19 @@ namespace STRService.Migrations
                     b.Property<int>("DownloadCount")
                         .HasColumnType("integer");
 
-                    b.HasKey("TemplateName", "TemplateMajorVersion", "TemplateMinorVersion", "TemplatePatchVersion", "TemplatePreReleaseVersionSuffix", "TemplateBuildMetadataVersionSuffix");
+                    b.Property<string>("TemplateName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("TemplateId", "TemplateMajorVersion", "TemplateMinorVersion", "TemplatePatchVersion", "TemplatePreReleaseVersionSuffix", "TemplateBuildMetadataVersionSuffix");
 
                     b.ToTable("Downloads");
                 });
 
             modelBuilder.Entity("STRService.Models.SwateTemplate", b =>
                 {
-                    b.Property<string>("TemplateName")
-                        .HasColumnType("text");
+                    b.Property<Guid>("TemplateId")
+                        .HasColumnType("uuid");
 
                     b.Property<int>("TemplateMajorVersion")
                         .HasColumnType("integer");
@@ -74,15 +78,19 @@ namespace STRService.Migrations
                         .IsRequired()
                         .HasColumnType("jsonb");
 
-                    b.HasKey("TemplateName", "TemplateMajorVersion", "TemplateMinorVersion", "TemplatePatchVersion", "TemplatePreReleaseVersionSuffix", "TemplateBuildMetadataVersionSuffix");
+                    b.Property<string>("TemplateName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("TemplateId", "TemplateMajorVersion", "TemplateMinorVersion", "TemplatePatchVersion", "TemplatePreReleaseVersionSuffix", "TemplateBuildMetadataVersionSuffix");
 
                     b.ToTable("Templates");
                 });
 
             modelBuilder.Entity("STRService.Models.SwateTemplateMetadata", b =>
                 {
-                    b.Property<string>("Name")
-                        .HasColumnType("text");
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
 
                     b.Property<int>("MajorVersion")
                         .HasColumnType("integer");
@@ -103,6 +111,10 @@ namespace STRService.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("Organisation")
                         .IsRequired()
                         .HasColumnType("text");
@@ -114,7 +126,7 @@ namespace STRService.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.HasKey("Name", "MajorVersion", "MinorVersion", "PatchVersion", "PreReleaseVersionSuffix", "BuildMetadataVersionSuffix");
+                    b.HasKey("Id", "MajorVersion", "MinorVersion", "PatchVersion", "PreReleaseVersionSuffix", "BuildMetadataVersionSuffix");
 
                     b.ToTable("Metadata");
                 });
@@ -123,8 +135,8 @@ namespace STRService.Migrations
                 {
                     b.OwnsMany("STRIndex.Domain+Author", "Authors", b1 =>
                         {
-                            b1.Property<string>("SwateTemplateMetadataName")
-                                .HasColumnType("text");
+                            b1.Property<Guid>("SwateTemplateMetadataId")
+                                .HasColumnType("uuid");
 
                             b1.Property<int>("SwateTemplateMetadataMajorVersion")
                                 .HasColumnType("integer");
@@ -157,20 +169,20 @@ namespace STRService.Migrations
                             b1.Property<string>("FullName")
                                 .HasColumnType("text");
 
-                            b1.HasKey("SwateTemplateMetadataName", "SwateTemplateMetadataMajorVersion", "SwateTemplateMetadataMinorVersion", "SwateTemplateMetadataPatchVersion", "SwateTemplateMetadataPreReleaseVersionSuffix", "SwateTemplateMetadataBuildMetadataVersionSuffix", "Id");
+                            b1.HasKey("SwateTemplateMetadataId", "SwateTemplateMetadataMajorVersion", "SwateTemplateMetadataMinorVersion", "SwateTemplateMetadataPatchVersion", "SwateTemplateMetadataPreReleaseVersionSuffix", "SwateTemplateMetadataBuildMetadataVersionSuffix", "Id");
 
                             b1.ToTable("Metadata");
 
                             b1.ToJson("Authors");
 
                             b1.WithOwner()
-                                .HasForeignKey("SwateTemplateMetadataName", "SwateTemplateMetadataMajorVersion", "SwateTemplateMetadataMinorVersion", "SwateTemplateMetadataPatchVersion", "SwateTemplateMetadataPreReleaseVersionSuffix", "SwateTemplateMetadataBuildMetadataVersionSuffix");
+                                .HasForeignKey("SwateTemplateMetadataId", "SwateTemplateMetadataMajorVersion", "SwateTemplateMetadataMinorVersion", "SwateTemplateMetadataPatchVersion", "SwateTemplateMetadataPreReleaseVersionSuffix", "SwateTemplateMetadataBuildMetadataVersionSuffix");
                         });
 
                     b.OwnsMany("STRIndex.Domain+OntologyAnnotation", "EndpointRepositories", b1 =>
                         {
-                            b1.Property<string>("SwateTemplateMetadataName")
-                                .HasColumnType("text");
+                            b1.Property<Guid>("SwateTemplateMetadataId")
+                                .HasColumnType("uuid");
 
                             b1.Property<int>("SwateTemplateMetadataMajorVersion")
                                 .HasColumnType("integer");
@@ -200,20 +212,20 @@ namespace STRService.Migrations
                             b1.Property<string>("TermSourceREF")
                                 .HasColumnType("text");
 
-                            b1.HasKey("SwateTemplateMetadataName", "SwateTemplateMetadataMajorVersion", "SwateTemplateMetadataMinorVersion", "SwateTemplateMetadataPatchVersion", "SwateTemplateMetadataPreReleaseVersionSuffix", "SwateTemplateMetadataBuildMetadataVersionSuffix", "Id");
+                            b1.HasKey("SwateTemplateMetadataId", "SwateTemplateMetadataMajorVersion", "SwateTemplateMetadataMinorVersion", "SwateTemplateMetadataPatchVersion", "SwateTemplateMetadataPreReleaseVersionSuffix", "SwateTemplateMetadataBuildMetadataVersionSuffix", "Id");
 
                             b1.ToTable("Metadata");
 
                             b1.ToJson("EndpointRepositories");
 
                             b1.WithOwner()
-                                .HasForeignKey("SwateTemplateMetadataName", "SwateTemplateMetadataMajorVersion", "SwateTemplateMetadataMinorVersion", "SwateTemplateMetadataPatchVersion", "SwateTemplateMetadataPreReleaseVersionSuffix", "SwateTemplateMetadataBuildMetadataVersionSuffix");
+                                .HasForeignKey("SwateTemplateMetadataId", "SwateTemplateMetadataMajorVersion", "SwateTemplateMetadataMinorVersion", "SwateTemplateMetadataPatchVersion", "SwateTemplateMetadataPreReleaseVersionSuffix", "SwateTemplateMetadataBuildMetadataVersionSuffix");
                         });
 
                     b.OwnsMany("STRIndex.Domain+OntologyAnnotation", "Tags", b1 =>
                         {
-                            b1.Property<string>("SwateTemplateMetadataName")
-                                .HasColumnType("text");
+                            b1.Property<Guid>("SwateTemplateMetadataId")
+                                .HasColumnType("uuid");
 
                             b1.Property<int>("SwateTemplateMetadataMajorVersion")
                                 .HasColumnType("integer");
@@ -243,14 +255,14 @@ namespace STRService.Migrations
                             b1.Property<string>("TermSourceREF")
                                 .HasColumnType("text");
 
-                            b1.HasKey("SwateTemplateMetadataName", "SwateTemplateMetadataMajorVersion", "SwateTemplateMetadataMinorVersion", "SwateTemplateMetadataPatchVersion", "SwateTemplateMetadataPreReleaseVersionSuffix", "SwateTemplateMetadataBuildMetadataVersionSuffix", "Id");
+                            b1.HasKey("SwateTemplateMetadataId", "SwateTemplateMetadataMajorVersion", "SwateTemplateMetadataMinorVersion", "SwateTemplateMetadataPatchVersion", "SwateTemplateMetadataPreReleaseVersionSuffix", "SwateTemplateMetadataBuildMetadataVersionSuffix", "Id");
 
                             b1.ToTable("Metadata");
 
                             b1.ToJson("Tags");
 
                             b1.WithOwner()
-                                .HasForeignKey("SwateTemplateMetadataName", "SwateTemplateMetadataMajorVersion", "SwateTemplateMetadataMinorVersion", "SwateTemplateMetadataPatchVersion", "SwateTemplateMetadataPreReleaseVersionSuffix", "SwateTemplateMetadataBuildMetadataVersionSuffix");
+                                .HasForeignKey("SwateTemplateMetadataId", "SwateTemplateMetadataMajorVersion", "SwateTemplateMetadataMinorVersion", "SwateTemplateMetadataPatchVersion", "SwateTemplateMetadataPreReleaseVersionSuffix", "SwateTemplateMetadataBuildMetadataVersionSuffix");
                         });
 
                     b.Navigation("Authors");

@@ -1,4 +1,6 @@
-﻿public static class URL
+﻿using System.Reflection;
+
+public static class URL
 {
     public static string DataPLANT = @"https://nfdi4plants.org";
 
