@@ -2,7 +2,7 @@ name: Release github
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, str ]
     
 jobs:
 

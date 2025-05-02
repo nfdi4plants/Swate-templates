@@ -387,10 +387,10 @@ type TestController (baseUrl: string, ?templatesPath) =
         this.MatchResult(result)
 
     member this.TestAreAllDBTemplatesAvailable(dbTemplate: SwateTemplate, localTemplates: Template []) =
-        testCase $"{dbTemplate.TemplateName}" <| fun _ ->
+        testCase $"{dbTemplate.TemplateName} {dbTemplate.TemplateId} {dbTemplate.TemplateMajorVersion}.{dbTemplate.TemplateMinorVersion}.{dbTemplate.TemplatePatchVersion}" <| fun _ ->
             let dbVersion = SemVer.SemVer.create(dbTemplate.TemplateMajorVersion, dbTemplate.TemplateMinorVersion, dbTemplate.TemplatePatchVersion).AsString()
-            let test = localTemplates |> Array.tryFind (fun localTemplate -> localTemplate.Name = dbTemplate.TemplateName && localTemplate.Version = dbVersion)
-            Expect.isTrue (test.IsSome) $"The template {dbTemplate.TemplateName} is locally not available {dbVersion}"
+            let test = localTemplates |> Array.tryFind (fun localTemplate -> localTemplate.Id = dbTemplate.TemplateId && localTemplate.Version = dbVersion)
+            Expect.isTrue (test.IsSome) $"The template {dbTemplate.TemplateName} with Id {dbTemplate.TemplateId} is locally not available"
 
     member this.RunAreAllDBTemplatesAvailable () =
         let dbTemplates = this.TemplateController.GetAllTemplates()
@@ -405,7 +405,9 @@ type TestController (baseUrl: string, ?templatesPath) =
         this.MatchResult(result)
 
     member this.RunAllTests() = 
-        let localTemplates = this.ReadAllTemplates() |> Array.filter (fun template -> template.Organisation.IsOfficial())
+        let localTemplates = this.ReadAllTemplates()
+        let officialTemplates = this.ReadAllTemplates() |> Array.filter (fun template -> template.Organisation.IsOfficial())
+
         let distinctTags = this.DistinctTags(ResizeArray localTemplates)
         let directories =
             DirectoryInfo(this.TemplatesPath).GetDirectories()
@@ -419,7 +421,7 @@ type TestController (baseUrl: string, ?templatesPath) =
         let convertibleTests = this.TestConvertibleTemplateFiles()
         let diversityTests = 
             localTemplates
-            |> Array.map (fun template -> this.TestForDiversity(template, localTemplates))
+            |> Array.map (fun template -> this.TestForDiversity(template, officialTemplates))
         let distinctTests = this.TestDistinctTags(ResizeArray localTemplates)
         let ambiguousTests =
             let groupedByNameTags = distinctTags |> Array.groupBy (fun oa -> oa.NameText)
