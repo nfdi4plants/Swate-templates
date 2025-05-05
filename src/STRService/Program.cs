@@ -85,6 +85,19 @@ if (app.Environment.IsDevelopment())
     app.UseHttpsRedirection();
 }
 
+if (app.Environment.IsProduction())
+{
+    // if we are in development mode, apply migrations and seed the database
+    // otherwise do not touch the database, and apply necessary migrations by exporting migration sql scripts
+    // e.g. via `dotnet ef migrations script`
+    using (var scope = app.Services.CreateScope())
+    {
+        var ctx = scope.ServiceProvider.GetRequiredService<SwateTemplateDb>();
+        ctx.Database.Migrate();
+        DataInitializer.SeedData(ctx);
+    }
+}
+
 if (!app.Environment.IsProduction())
 {
     app.UseHttpsRedirection();
