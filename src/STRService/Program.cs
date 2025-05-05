@@ -94,7 +94,6 @@ if (app.Environment.IsProduction())
     {
         var ctx = scope.ServiceProvider.GetRequiredService<SwateTemplateDb>();
         ctx.Database.Migrate();
-        DataInitializer.SeedData(ctx);
     }
 }
 
