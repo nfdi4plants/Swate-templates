@@ -1,4 +1,4 @@
-name: "pipeline"
+name: "Publish service image"
 
 on:
   push:
