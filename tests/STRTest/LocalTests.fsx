@@ -9,6 +9,7 @@
 #r @"C:/Users/Patri/source/repos/Swate-templates/bin/Debug/System.IO.Packaging.dll"
 
 #r @"C:/Users/Patri/source/repos/Swate-templates/bin/Debug/STRIndex.dll"
+#r @"C:/Users/Patri/source/repos/Swate-templates/tests/STRTest/bin/Debug/net8.0/STRClient.dll"
 #r @"C:/Users/Patri/source/repos/Swate-templates/bin/Debug/STRService.dll"
 
 #r "nuget: Fable.Core"
@@ -31,6 +32,7 @@ open FsSpreadsheet.Net
 open Expecto
 
 open STRTest
+open STRClient
 open STRIndex
 open STRApplication
 open STRService.Data
@@ -38,6 +40,6 @@ open STRService.Models
 
 let url = "https://localhost:49218/api/v1"
 
-let testController = new STRTest.TestController(url)
+let testController = new STRTest.TestController()
 
 testController.RunAllTests()

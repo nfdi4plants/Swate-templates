@@ -15,133 +15,7 @@ open STRService.Models
 
 open FSharp.Data
 
-type TemplateController (baseUrl: string) =        
-
-    member this.BaseUrl = baseUrl //"https://str.nfdi4plants.org/api/v1"
-
-    member this.GetAllMetadata () : SwateTemplateMetadata [] =
-        let url = $"{this.BaseUrl}/metadata"
-        let response =
-            Http.Request(
-                url,
-                httpMethod = "GET",
-                headers = [
-                    "Content-Type", "application/json"
-                ]
-            )
-        let result = 
-            match response.Body with
-            | Text bodyText ->
-                JsonConvert.DeserializeObject<SwateTemplateMetadata []>(bodyText)
-            | Binary _ ->
-                failwith "Expected text response but got binary"
-        result
-
-    member this.GetMetadataById (id: Guid) : SwateTemplateMetadata =
-        let url = $"{this.BaseUrl}/metadata/{id}"
-        let response =
-            Http.Request(
-                url,
-                httpMethod = "GET",
-                headers = [
-                    "Content-Type", "application/json"
-                ]
-            )
-        let result = 
-            match response.Body with
-            | Text bodyText ->
-                JsonConvert.DeserializeObject<SwateTemplateMetadata>(bodyText)
-            | Binary _ ->
-                failwith "Expected text response but got binary"
-        result
-
-    member this.GetMetadataByKeys (name: string, version: string) : SwateTemplateMetadata =
-        let url = $"{this.BaseUrl}/metadata/{id}/{version}"
-        let response =
-            Http.Request(
-                url,
-                httpMethod = "GET",
-                headers = [
-                    "Content-Type", "application/json"
-                ]
-            )
-        let result = 
-            match response.Body with
-            | Text bodyText ->
-                JsonConvert.DeserializeObject<SwateTemplateMetadata>(bodyText)
-            | Binary _ ->
-                failwith "Expected text response but got binary"
-        result
-
-    member this.GetAllTemplates () : SwateTemplate [] =
-        let url = $"{this.BaseUrl}/templates"
-        let response =
-            Http.Request(
-                url,
-                httpMethod = "GET",
-                headers = [
-                    "Content-Type", "application/json"
-                ]
-            )
-        let result = 
-            match response.Body with
-            | Text bodyText ->
-                JsonConvert.DeserializeObject<SwateTemplate []>(bodyText)
-            | Binary _ ->
-                failwith "Expected text response but got binary"
-        result
-
-    member this.GetTemplateByName (name: string) : SwateTemplate =
-        let url = $"{this.BaseUrl}/templates/{name}"
-        let response =
-            Http.Request(
-                url,
-                httpMethod = "GET",
-                headers = [
-                    "Content-Type", "application/json"
-                ]
-            )
-        let result = 
-            match response.Body with
-            | Text bodyText ->
-                JsonConvert.DeserializeObject<SwateTemplate>(bodyText)
-            | Binary _ ->
-                failwith "Expected text response but got binary"
-        result
-
-    member this.GetTemplateByKeys (id: Guid, version: string) : SwateTemplate =
-        let url = $"{this.BaseUrl}/templates/{id}/{version}"
-        let response =
-            Http.Request(
-                url,
-                httpMethod = "GET",
-                headers = [
-                    "Content-Type", "application/json"
-                ]
-            )
-        let result = 
-            match response.Body with
-            | Text bodyText ->
-                JsonConvert.DeserializeObject<SwateTemplate>(bodyText)
-            | Binary _ ->
-                failwith "Expected text response but got binary"
-        result
-
-    member this.PostAsync (dto: SwateTemplateDto, authenticatioToken) : HttpResponse =
-        let url = $"{this.BaseUrl}/templates"
-
-        let json = SwateTemplateDto.ToJsonString(dto)
-        let requestBody = TextRequest json
-
-        Http.Request(
-            url,
-            httpMethod = "POST",
-            headers = [
-                "X-API-KEY", authenticatioToken
-                "Content-Type", "application/json"
-            ],
-            body = requestBody
-        )
+type TemplateController () =        
 
     member this.FindSolutionRoot (dir: DirectoryInfo) =
         let rec findSolutionRoot (dir: DirectoryInfo) =
@@ -188,6 +62,81 @@ type TemplateController (baseUrl: string) =
                 newFileDirectory.Create()
             file.MoveTo($"{newFileDirectory}/{file.Name}", false)
 
+    member this.FindExistingParentDirectory (directory: DirectoryInfo, sourceDirectoryNames: DirectoryInfo []) =
+        let rec findParentDirectory (dir: DirectoryInfo) (parentdirectories: string) =
+            let potDir =
+                sourceDirectoryNames
+                |> Array.tryFind (fun item -> (item.Name.ToLower()) = (dir.Name.ToLower()))
+            if potDir.IsSome then $"{potDir.Value.FullName}/{parentdirectories}"
+            else findParentDirectory dir.Parent $"{dir.Name}/{parentdirectories}"
+        findParentDirectory directory.Parent directory.Name
+
+    member this.CreateDirectoryForExternalTemplate (file: FileInfo) =        
+        let fileName = this.CleanFileNameFromInfo(file)
+
+        let sourceDirectories = 
+            let solutionRoot = this.FindSolutionRoot (DirectoryInfo(System.Environment.CurrentDirectory))
+            let templatesPath = Path.Combine(solutionRoot, "templates")
+            Directory.GetDirectories(templatesPath, "*", SearchOption.AllDirectories)
+            |> Array.map (fun item -> new DirectoryInfo(item))
+
+        let sourceDirectoryNames = 
+            sourceDirectories
+            |> Array.map (fun item -> item.Name.ToLower())
+
+        match sourceDirectoryNames with
+        //Check whether a directory with the name of the file exists or not
+        | directoryNames when Array.contains (fileName.ToLower()) directoryNames ->
+            let newFileDirectory = 
+                let directory =
+                    sourceDirectories
+                    |> Array.find (fun item -> (item.Name.ToLower()).EndsWith(fileName.ToLower()))
+                DirectoryInfo($"{directory}")
+            let path = Regex.Replace(newFileDirectory.FullName, @"\\", "/")
+            let newFile = new FileInfo($"{path}/{file.Name}")
+
+            if not newFile.Exists then 
+                file.CopyTo($"{path}/{file.Name}", false) |> ignore
+                printfn "copied file: %s" file.Name
+
+        //Check whether a directory with the name of the files parent directory exists or not
+        | directoryNames when Array.contains (file.Directory.Name.ToLower()) directoryNames ->
+            let newFileDirectory = 
+                let directory =
+                    sourceDirectories
+                    |> Array.find (fun item -> (item.Name.ToLower()).EndsWith(file.Directory.Name.ToLower()))
+                DirectoryInfo($"{directory}/{fileName}")
+
+            let path = Regex.Replace(newFileDirectory.FullName, @"\\", "/")
+
+            if not newFileDirectory.Exists then
+                newFileDirectory.Create()
+                printfn "created directory: %s" file.Name
+
+            let newFile = new FileInfo($"{path}/{file.Name}")
+
+            if not newFile.Exists then 
+                file.CopyTo($"{path}/{file.Name}", false) |> ignore
+                printfn "copied file: %s" file.Name
+
+        | _ ->
+            let newFileDirectory = 
+                let path = this.FindExistingParentDirectory(file.Directory, sourceDirectories)
+                new DirectoryInfo(path)
+            let path = Regex.Replace(newFileDirectory.FullName, @"\\", "/")
+
+            printfn "path: %s" path
+
+            if not newFileDirectory.Exists then
+                newFileDirectory.Create()
+                printfn "created directory: %s" file.Name
+
+            let newFile = new FileInfo($"{path}/{file.Name}")
+
+            if not newFile.Exists then 
+                file.CopyTo($"{path}/{file.Name}", false) |> ignore
+                printfn "copied file: %s" file.Name
+
     member this.HasRightParentDirectory (fileInfo: FileInfo) =
         let parentDirectory = fileInfo.Directory
         let folderName = this.CleanFileNameFromInfo fileInfo
@@ -200,3 +149,7 @@ type TemplateController (baseUrl: string) =
         let newPath = Path.Combine(fileInfo.DirectoryName, newFileName)
         fileInfo.MoveTo(newPath)
         FileInfo(newPath)
+
+    member this.CreateTemplateFromXlsx (fileInfo: FileInfo) =
+        FsWorkbook.fromXlsxFile fileInfo.FullName
+        |> Spreadsheet.Template.fromFsWorkbook
