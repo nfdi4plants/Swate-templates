@@ -17,10 +17,10 @@ else
         <thead>
             <tr>
                 <th>Name</th>
-                <th>Id</th>
                 <th>Description</th>
                 <th>Version</th>
                 <th>Downloads</th>
+                <th>Id</th>
             </tr>
         </thead>
         <tbody>
@@ -28,10 +28,10 @@ else
             {
                 <tr>
                     <td><a href="template/@item.Id">@(item.Name)</a></td>
-                    <td>@(item.Id)</td>
                     <td>@(item.Description)</td>
                     <td>@(item.GetSemanticVersionString())</td>
                     <td>@(downloads?.First(d => d.TemplateId == item.Id).DownloadCount)</td>
+                    <td>@(item.Id)</td>
                 </tr>
             }
         </tbody>
