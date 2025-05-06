@@ -11,7 +11,7 @@ flowchart TD
   end
     n5 --o n2
     n1 --o n2
-    n4 --o n2 & n5
+    n4 --o n2 & n5 & n1
     n6 --o n4 & n5 & n2 & n1
     n7["Contains F#-&gt;C# Wrappers and Helper functions"] --> n2
     n8["Contains wrapper for STRClient, as well as functions to handle IO for templates. This is also used to push templates to db"] --> n4

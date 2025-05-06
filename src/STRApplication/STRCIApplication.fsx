@@ -15,7 +15,7 @@
 #r "nuget: ARCtrl"
 #r "nuget: FSharp.Data"
 
-#load @"../STRApplication/TemplateController.fs"
+#load @"../STRApplication/STRCIController.fs"
 
 open System
 open System.IO
@@ -27,14 +27,14 @@ open FsSpreadsheet
 open FsSpreadsheet.Net
 
 open STRIndex
-open STRApplication
+open STRCI
 open STRService.Data
 open STRService.Models
 
 let url = "https://localhost:60539/api/v1"
-let templateController = new TemplateController("url")
+let strciController = new STRCIController()
 
-let solutionRoot = templateController.FindSolutionRoot (DirectoryInfo(System.Environment.CurrentDirectory))
+let solutionRoot = strciController.FindSolutionRoot (DirectoryInfo(System.Environment.CurrentDirectory))
 let templatesPath = Path.Combine(solutionRoot, "templates")
 let newTemplatesPath = "C:/Users/Patri/Downloads/templates"
 

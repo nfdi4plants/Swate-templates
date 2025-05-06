@@ -1,4 +1,4 @@
-﻿namespace STRApplication
+﻿namespace STRCI
 
 open System
 open System.IO
@@ -15,7 +15,14 @@ open STRService.Models
 
 open FSharp.Data
 
-type TemplateController () =        
+open STRClient
+
+type STRCIController () =        
+
+    member this.Client =
+        let httpClient = new System.Net.Http.HttpClient()
+        httpClient.DefaultRequestHeaders.Add("X-API-KEY", "")
+        new STRClient.Client(httpClient)
 
     member this.FindSolutionRoot (dir: DirectoryInfo) =
         let rec findSolutionRoot (dir: DirectoryInfo) =

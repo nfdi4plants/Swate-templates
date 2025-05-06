@@ -17,7 +17,7 @@
 #r "nuget: FSharp.Data"
 #r "nuget: Expecto"
 
-#load @"../..\src/STRApplication/TemplateController.fs"
+#load @"../..\src/STRApplication/STRCIController.fs"
 #load @"../STRTest/TestController.fs"
 
 open System
@@ -34,11 +34,9 @@ open Expecto
 open STRTest
 open STRClient
 open STRIndex
-open STRApplication
+open STRCI
 open STRService.Data
 open STRService.Models
-
-let url = "https://localhost:49218/api/v1"
 
 let testController = new STRTest.TestController()
 
