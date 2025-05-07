@@ -10,7 +10,7 @@ namespace STRService.Models
     public class SwateTemplateDto
     {
         public static SwateTemplateDto Create(
-            Template content,
+            SwateTemplate content,
             SwateTemplateMetadata metadata) =>
                 new SwateTemplateDto
                 {
@@ -18,8 +18,7 @@ namespace STRService.Models
                     Metadata = metadata
                 };
 
-        [JsonConverter(typeof(TemplateJsonConverter))]
-        public required Template Content { get; set; }
+        public required SwateTemplate Content { get; set; }
         public required SwateTemplateMetadata Metadata { get; set; }
 
         public static SwateTemplateDto FromJsonString(string json)

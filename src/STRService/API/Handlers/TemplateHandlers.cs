@@ -65,7 +65,7 @@ namespace STRService.API.Handlers
         public static async Task<Results<Ok<SwateTemplate>, Conflict, UnauthorizedHttpResult, UnprocessableEntity<string>>> CreateTemplate(SwateTemplateDto swateTemplateDto, SwateTemplateDb database)
         {
             var metadata = swateTemplateDto.Metadata;
-            var templateContent = Wrapper.templateToJson(swateTemplateDto.Content);
+            var templateContent = swateTemplateDto.Content.TemplateContent;
 
             var existingTemplate = await database.Templates.FindAsync(metadata.Id, metadata.MajorVersion, metadata.MinorVersion, metadata.PatchVersion, metadata.PreReleaseVersionSuffix, metadata.BuildMetadataVersionSuffix);
             var existingMetadata = await database.Templates.FindAsync(metadata.Id, metadata.MajorVersion, metadata.MinorVersion, metadata.PatchVersion, metadata.PreReleaseVersionSuffix, metadata.BuildMetadataVersionSuffix);
