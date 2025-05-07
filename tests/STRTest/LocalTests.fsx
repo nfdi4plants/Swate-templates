@@ -17,7 +17,7 @@
 #r "nuget: FSharp.Data"
 #r "nuget: Expecto"
 
-#load @"../..\src/STRApplication/STRCIController.fs"
+#load @"../..\src/STRCI/STRCIController.fs"
 #load @"../STRTest/TestController.fs"
 
 open System

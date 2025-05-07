@@ -68,8 +68,6 @@ type TestController (?templatesPath) =
 
     member this.VersionPattern = @"_v\d+\.\d+\.\d+$"
 
-    member this.STRCIController = new STRCIController()
-
     member this.Client =
         let httpClient = new System.Net.Http.HttpClient()
         httpClient.DefaultRequestHeaders.Add("X-API-KEY", "")
@@ -78,7 +76,7 @@ type TestController (?templatesPath) =
     member this.TemplatesPath =
         if templatesPath.IsSome then templatesPath.Value
         else
-            let solutionRoot = this.STRCIController.FindSolutionRoot (DirectoryInfo(System.Environment.CurrentDirectory))
+            let solutionRoot = STRCIController.FindSolutionRoot (DirectoryInfo(System.Environment.CurrentDirectory))
             Path.Combine(solutionRoot, "templates")
 
     member this.MatchResult result =
@@ -348,11 +346,11 @@ type TestController (?templatesPath) =
 
     member this.TestCheckParentFolder(file: FileInfo, index) =
 
-        let folderName = this.STRCIController.CleanFileNameFromInfo file
+        let folderName = STRCIController.CleanFileNameFromInfo file
 
         testCase $"{folderName}_{index}" <| fun _ ->
             let parentDirectory = file.Directory
-            let folderName = this.STRCIController.CleanFileNameFromInfo file
+            let folderName = STRCIController.CleanFileNameFromInfo file
             Expect.equal (parentDirectory.Name.ToLower()) (folderName.ToLower()) $"Expected parent folder {folderName} but got {parentDirectory.Name}"
 
     member this.RunTestCheckParentFolder(templatePath) =

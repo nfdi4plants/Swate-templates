@@ -17,26 +17,26 @@ open FSharp.Data
 
 open STRClient
 
-type STRCIController () =        
+type STRCIController =        
 
-    member this.Client =
+    static member Client () =
         let httpClient = new System.Net.Http.HttpClient()
         httpClient.DefaultRequestHeaders.Add("X-API-KEY", "")
         new STRClient.Client(httpClient)
 
-    member this.FindSolutionRoot (dir: DirectoryInfo) =
+    static member FindSolutionRoot (dir: DirectoryInfo) =
         let rec findSolutionRoot (dir: DirectoryInfo) =
             if dir = null then failwith "Solution file not found"
             elif dir.GetFiles("*.sln").Length > 0 then dir.FullName
             else findSolutionRoot dir.Parent
         findSolutionRoot dir
 
-    member this.CleanFileNameFromInfo (file: FileInfo) =
+    static member CleanFileNameFromInfo (file: FileInfo) =
         let nameWithoutExt = Path.GetFileNameWithoutExtension(file.Name)
         let pattern = @"_v\d+\.\d+\.\d+$"
         Regex.Replace(nameWithoutExt, pattern, "")
 
-    member this.CopyDirectory (sourceDir: string, targetDir: string) =
+    static member CopyDirectory (sourceDir: string, targetDir: string) =
         let rec copyDirectory (sourceDir: string) (targetDir: string) =
             let source = DirectoryInfo(sourceDir)
             let target = DirectoryInfo(targetDir)
@@ -58,8 +58,8 @@ type STRCIController () =
                 copyDirectory subDir.FullName nextTargetSubDir)
         copyDirectory sourceDir targetDir
 
-    member this.CreateDirectoryForTemplate (file: FileInfo) =        
-        let fileName = this.CleanFileNameFromInfo(file)
+    static member CreateDirectoryForTemplate (file: FileInfo) =        
+        let fileName = STRCIController.CleanFileNameFromInfo(file)
         let fileDirectory = file.Directory.FullName
         if fileDirectory.ToLower().Contains(fileName.ToLower()) then
             file.MoveTo($"{fileDirectory}/{file.Name}", false)
@@ -69,7 +69,7 @@ type STRCIController () =
                 newFileDirectory.Create()
             file.MoveTo($"{newFileDirectory}/{file.Name}", false)
 
-    member this.FindExistingParentDirectory (directory: DirectoryInfo, sourceDirectoryNames: DirectoryInfo []) =
+    static member FindExistingParentDirectory (directory: DirectoryInfo, sourceDirectoryNames: DirectoryInfo []) =
         let rec findParentDirectory (dir: DirectoryInfo) (parentdirectories: string) =
             let potDir =
                 sourceDirectoryNames
@@ -78,11 +78,11 @@ type STRCIController () =
             else findParentDirectory dir.Parent $"{dir.Name}/{parentdirectories}"
         findParentDirectory directory.Parent directory.Name
 
-    member this.CreateDirectoryForExternalTemplate (file: FileInfo) =        
-        let fileName = this.CleanFileNameFromInfo(file)
+    static member CreateDirectoryForExternalTemplate (file: FileInfo) =        
+        let fileName = STRCIController.CleanFileNameFromInfo(file)
 
         let sourceDirectories = 
-            let solutionRoot = this.FindSolutionRoot (DirectoryInfo(System.Environment.CurrentDirectory))
+            let solutionRoot = STRCIController.FindSolutionRoot (DirectoryInfo(System.Environment.CurrentDirectory))
             let templatesPath = Path.Combine(solutionRoot, "templates")
             Directory.GetDirectories(templatesPath, "*", SearchOption.AllDirectories)
             |> Array.map (fun item -> new DirectoryInfo(item))
@@ -128,7 +128,7 @@ type STRCIController () =
 
         | _ ->
             let newFileDirectory = 
-                let path = this.FindExistingParentDirectory(file.Directory, sourceDirectories)
+                let path = STRCIController.FindExistingParentDirectory(file.Directory, sourceDirectories)
                 new DirectoryInfo(path)
             let path = Regex.Replace(newFileDirectory.FullName, @"\\", "/")
 
@@ -144,19 +144,19 @@ type STRCIController () =
                 file.CopyTo($"{path}/{file.Name}", false) |> ignore
                 printfn "copied file: %s" file.Name
 
-    member this.HasRightParentDirectory (fileInfo: FileInfo) =
+    static member HasRightParentDirectory (fileInfo: FileInfo) =
         let parentDirectory = fileInfo.Directory
-        let folderName = this.CleanFileNameFromInfo fileInfo
+        let folderName = STRCIController.CleanFileNameFromInfo fileInfo
         parentDirectory.FullName.ToLower().EndsWith(folderName.ToLower())
 
-    member this.UpdateFileName (fileInfo: FileInfo) =
+    static member UpdateFileName (fileInfo: FileInfo) =
         let template = fileInfo.FullName |> (FsWorkbook.fromXlsxFile >> Spreadsheet.Template.fromFsWorkbook)
-        let fileName = this.CleanFileNameFromInfo fileInfo
+        let fileName = STRCIController.CleanFileNameFromInfo fileInfo
         let newFileName = $"{fileName}_v{template.Version}{fileInfo.Extension}"
         let newPath = Path.Combine(fileInfo.DirectoryName, newFileName)
         fileInfo.MoveTo(newPath)
         FileInfo(newPath)
 
-    member this.CreateTemplateFromXlsx (fileInfo: FileInfo) =
+    static member CreateTemplateFromXlsx (fileInfo: FileInfo) =
         FsWorkbook.fromXlsxFile fileInfo.FullName
         |> Spreadsheet.Template.fromFsWorkbook
