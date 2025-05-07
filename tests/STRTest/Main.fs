@@ -33,7 +33,7 @@ let allTests =
         |> Array.mapi (fun id tag -> testController.TestTagForSimiliarity(tag, distinctTags, id, ResizeArray localTemplates))
     let parentFolderTests =
         fileInfos
-        |> Array.map (fun fileInfo -> testController.TestCheckParentFolder(fileInfo))
+        |> Array.mapi (fun i fileInfo -> testController.TestCheckParentFolder(fileInfo, i))
     //let runAreAllDBTemplatesAvailableTests =
     //    dbTemplates
     //    |> Array.map (fun dbTemplate -> testController.TestAreAllDBTemplatesAvailable(dbTemplate, localTemplates))

@@ -20,7 +20,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\STRApplication\STRApplication.fsproj" />
+    <ProjectReference Include="..\..\src\STRCI\STRCI.fsproj" />
+    <ProjectReference Include="..\..\src\STRClient\STRClient.csproj" />
     <ProjectReference Include="..\..\src\STRIndex\STRIndex.fsproj" />
     <ProjectReference Include="..\..\src\STRService\STRService.csproj" />
   </ItemGroup>

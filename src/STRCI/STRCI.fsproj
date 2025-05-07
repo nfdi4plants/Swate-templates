@@ -6,8 +6,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="TemplateApplication.fsx" />
-    <Compile Include="TemplateController.fs" />
+    <None Include="STRCIApplication.fsx" />
+    <Compile Include="STRCIController.fs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -16,6 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\STRClient\STRClient.csproj" />
     <ProjectReference Include="..\STRIndex\STRIndex.fsproj" />
     <ProjectReference Include="..\STRService\STRService.csproj" />
   </ItemGroup>

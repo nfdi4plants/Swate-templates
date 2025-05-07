@@ -71,30 +71,21 @@ app.UseSwaggerUi(settings => {
     settings.ValidateSpecification = true;
 }); 
 
-if (app.Environment.IsDevelopment())
+// if we are in development mode, apply migrations and seed the database
+// otherwise do not touch the database, and apply necessary migrations by exporting migration sql scripts
+// e.g. via `dotnet ef migrations script`
+using (var scope = app.Services.CreateScope())
 {
-    // if we are in development mode, apply migrations and seed the database
-    // otherwise do not touch the database, and apply necessary migrations by exporting migration sql scripts
-    // e.g. via `dotnet ef migrations script`
-    using (var scope = app.Services.CreateScope())
+    var ctx = scope.ServiceProvider.GetRequiredService<SwateTemplateDb>();
+    ctx.Database.Migrate();
+    if (app.Environment.IsDevelopment())
     {
-        var ctx = scope.ServiceProvider.GetRequiredService<SwateTemplateDb>();
-        ctx.Database.Migrate();
         DataInitializer.SeedData(ctx);
     }
-    app.UseHttpsRedirection();
 }
-
-if (app.Environment.IsProduction())
+if (app.Environment.IsDevelopment())
 {
-    // if we are in development mode, apply migrations and seed the database
-    // otherwise do not touch the database, and apply necessary migrations by exporting migration sql scripts
-    // e.g. via `dotnet ef migrations script`
-    using (var scope = app.Services.CreateScope())
-    {
-        var ctx = scope.ServiceProvider.GetRequiredService<SwateTemplateDb>();
-        ctx.Database.Migrate();
-    }
+    app.UseHttpsRedirection();
 }
 
 if (!app.Environment.IsProduction())

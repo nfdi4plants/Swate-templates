@@ -7,10 +7,11 @@ open System.Text.RegularExpressions
 open FsSpreadsheet
 open FsSpreadsheet.Net
 
-open ARCtrl
-
-open STRApplication
+open STRCI
 open STRService.Models
+open STRClient
+
+open ARCtrl
 
 open Expecto
 
@@ -63,17 +64,19 @@ module SorensenDice =
 open Helper
 open Constants
 
-type TestController (baseUrl: string, ?templatesPath) = 
+type TestController (?templatesPath) = 
 
-    member this.BaseUrl = baseUrl //"https://str.nfdi4plants.org/api/v1"
     member this.VersionPattern = @"_v\d+\.\d+\.\d+$"
 
-    member this.TemplateController = new TemplateController(this.BaseUrl)
+    member this.Client =
+        let httpClient = new System.Net.Http.HttpClient()
+        httpClient.DefaultRequestHeaders.Add("X-API-KEY", "")
+        new STRClient.Client(httpClient)
 
     member this.TemplatesPath =
         if templatesPath.IsSome then templatesPath.Value
         else
-            let solutionRoot = this.TemplateController.FindSolutionRoot (DirectoryInfo(System.Environment.CurrentDirectory))
+            let solutionRoot = STRCIController.FindSolutionRoot (DirectoryInfo(System.Environment.CurrentDirectory))
             Path.Combine(solutionRoot, "templates")
 
     member this.MatchResult result =
@@ -149,7 +152,7 @@ type TestController (baseUrl: string, ?templatesPath) =
 
 
     /// Assumption: Similiarity is defined by headers
-    member this.EnsureTemplateDiverse (template:Template, templates: Template [], ?threshhold) =
+    member this.EnsureTemplateDiverse (template: Template, templates: Template [], ?threshhold) =
         let threshhold = defaultArg threshhold TemplateSimilarityThershold // Minimum difference
         let headers = template.Table.Headers |> Seq.map (fun h -> h.ToContent()) |> Set
         let allHeaders = templates |> Array.map (fun x -> x.Id, x.Name, x.Table.Headers |> Seq.map (fun h -> h.ToContent()) |> Set)
@@ -166,10 +169,13 @@ type TestController (baseUrl: string, ?templatesPath) =
                     None
         )
 
-    member this.TestForDiversity (template:Template, templates:Template [], ?threshhold) = 
+    member this.TestForDiversity (template: Template, templates: Template [], ?threshhold) = 
         let threshhold = defaultArg threshhold TemplateSimilarityThershold // Minimum difference
-        testCase $"{template.Name}_{template.Id}" <| fun _ ->
-            let r = this.EnsureTemplateDiverse(template, templates, threshhold)
+        testCase $"{template.Name}_{template.Id}_{template.Version}" <| fun _ ->
+            let fileterdTemplates =
+                templates
+                |> Array.filter (fun item -> item.Id <> template.Id)
+            let r = this.EnsureTemplateDiverse(template, fileterdTemplates, threshhold)
             let msg = 
                 let sb = StringBuilder()
                 sb.AppendLine(sprintf "## Found similiar templates for `%s` in:" template.Name) |> ignore
@@ -338,13 +344,13 @@ type TestController (baseUrl: string, ?templatesPath) =
 
         this.MatchResult(result)
 
-    member this.TestCheckParentFolder(file: FileInfo) =
+    member this.TestCheckParentFolder(file: FileInfo, index) =
 
-        let folderName = this.TemplateController.CleanFileNameFromInfo file
+        let folderName = STRCIController.CleanFileNameFromInfo file
 
-        testCase $"{folderName}" <| fun _ ->
+        testCase $"{folderName}_{index}" <| fun _ ->
             let parentDirectory = file.Directory
-            let folderName = this.TemplateController.CleanFileNameFromInfo file
+            let folderName = STRCIController.CleanFileNameFromInfo file
             Expect.equal (parentDirectory.Name.ToLower()) (folderName.ToLower()) $"Expected parent folder {folderName} but got {parentDirectory.Name}"
 
     member this.RunTestCheckParentFolder(templatePath) =
@@ -357,7 +363,7 @@ type TestController (baseUrl: string, ?templatesPath) =
                 directory.GetFiles("*.xlsx", SearchOption.AllDirectories))
         let testSetup =
             fileInfos
-            |> Array.map (fun fileInfo -> this.TestCheckParentFolder(fileInfo))
+            |> Array.mapi (fun i fileInfo -> this.TestCheckParentFolder(fileInfo, i))
             |> List.ofArray
         let tests = testList "Check template parent folders" (testSetup)
         let result = Tests.runTestsWithCLIArgs [] [||] tests
@@ -387,13 +393,13 @@ type TestController (baseUrl: string, ?templatesPath) =
         this.MatchResult(result)
 
     member this.TestAreAllDBTemplatesAvailable(dbTemplate: SwateTemplate, localTemplates: Template []) =
-        testCase $"{dbTemplate.TemplateName} {dbTemplate.TemplateId} {dbTemplate.TemplateMajorVersion}.{dbTemplate.TemplateMinorVersion}.{dbTemplate.TemplatePatchVersion}" <| fun _ ->
+        testCase $"{dbTemplate.TemplateName}_{dbTemplate.TemplateId}_{dbTemplate.TemplateMajorVersion}.{dbTemplate.TemplateMinorVersion}.{dbTemplate.TemplatePatchVersion}" <| fun _ ->
             let dbVersion = SemVer.SemVer.create(dbTemplate.TemplateMajorVersion, dbTemplate.TemplateMinorVersion, dbTemplate.TemplatePatchVersion).AsString()
             let test = localTemplates |> Array.tryFind (fun localTemplate -> localTemplate.Id = dbTemplate.TemplateId && localTemplate.Version = dbVersion)
             Expect.isTrue (test.IsSome) $"The template {dbTemplate.TemplateName} with Id {dbTemplate.TemplateId} is locally not available"
 
     member this.RunAreAllDBTemplatesAvailable () =
-        let dbTemplates = this.TemplateController.GetAllTemplates()
+        let dbTemplates = this.Client.GetAllTemplatesAsync().Result |> Array.ofSeq
         let localTemplates = this.ReadAllTemplates()
         let testSetup =
             dbTemplates
@@ -416,7 +422,7 @@ type TestController (baseUrl: string, ?templatesPath) =
             directories
             |> Array.collect(fun directory ->
                 directory.GetFiles("*.xlsx", SearchOption.AllDirectories))
-        let dbTemplates = this.TemplateController.GetAllTemplates()
+        let dbTemplates = this.Client.GetAllTemplatesAsync().Result |> Array.ofSeq
 
         let convertibleTests = this.TestConvertibleTemplateFiles()
         let diversityTests = 
@@ -433,7 +439,7 @@ type TestController (baseUrl: string, ?templatesPath) =
             |> Array.mapi (fun id tag -> this.TestTagForSimiliarity(tag, distinctTags, id, ResizeArray localTemplates))
         let parentFolderTests =
             fileInfos
-            |> Array.map (fun fileInfo -> this.TestCheckParentFolder(fileInfo))
+            |> Array.mapi (fun i fileInfo -> this.TestCheckParentFolder(fileInfo, i))
         let runAreAllDBTemplatesAvailableTests =
             dbTemplates
             |> Array.map (fun dbTemplate -> this.TestAreAllDBTemplatesAvailable(dbTemplate, localTemplates))
