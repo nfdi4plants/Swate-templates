@@ -7,7 +7,7 @@ open STRCI
 
 let token =
     match Environment.GetEnvironmentVariable("STRC_PAT") with
-    | null | "" -> failwith "STRCI_TOKEN environment variable is not set!"
+    | null | "" -> failwith "STRC_PAT environment variable is not set!"
     | t -> t
 
 let client = STRCIController.Client(token)

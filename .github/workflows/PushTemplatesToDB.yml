@@ -1,4 +1,4 @@
-name: Test Pull-Request
+name: Push Templates to Database
 
 on:
     pull_request:
