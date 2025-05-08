@@ -5,13 +5,15 @@ on:
     
 jobs:
   
-  test-QualityEnsurace:
+  action-PushTemplatesToDB:
     runs-on: windows-latest
 
     steps:
       - uses: actions/checkout@v3
 
       - name: Setup .NET
+        env:
+            STRC_PAT: ${{ secrets.STRC_PAT }}
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: '8.0.x'  # or whatever version you're targeting

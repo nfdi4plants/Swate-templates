@@ -5,12 +5,7 @@ open System.IO
 
 open Expecto
 
-let token =
-    match Environment.GetEnvironmentVariable("STRC_PAT") with
-    | null | "" -> failwith "STRC_PAT environment variable is not set!"
-    | t -> t
-
-let testController = new TestController(token)
+let testController = new TestController("")
 
 let allTests =
     let localTemplates = testController.ReadAllTemplates() |> Array.filter (fun template -> template.Organisation.IsOfficial())
