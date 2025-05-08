@@ -4,6 +4,7 @@ open System
 open System.IO
 open STRCI
 
+
 let token =
     match Environment.GetEnvironmentVariable("STRC_PAT") with
     | null | "" -> failwith "STRCI_TOKEN environment variable is not set!"
