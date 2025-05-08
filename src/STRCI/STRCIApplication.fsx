@@ -114,13 +114,11 @@ let newTemplatesPath = "C:/Users/Patri/Downloads/templates"
 let client = STRCIController.Client("TestToken")
 
 //Set client baseURL for testing
-client.BaseUrl <- (createTestURL 62835)
+//client.BaseUrl <- (createTestURL 62835)
 printfn "client.BaseUrl: %s" client.BaseUrl
 
 let dbTemplates = client.GetAllTemplatesAsync().Result |> Array.ofSeq
 printfn "templates: %i" (Array.length dbTemplates)
-
-//let dictionary = (Collections.Generic.Dictionary<(int*int), CompositeCell> [])
 
 //let testGuid = Guid.NewGuid()
 //let arcTable = ArcTable.create("TestPlapla", ResizeArray [||], dictionary)
@@ -175,20 +173,20 @@ printfn "templates: %i" (Array.length dbTemplates)
 //let newTemplates = client.GetAllTemplatesAsync().Result |> Array.ofSeq
 //printfn "newTemplates: %i" (Array.length newTemplates)
 
-let directories = DirectoryInfo(templatesPath).GetDirectories()
+//let directories = DirectoryInfo(templatesPath).GetDirectories()
 
-let fileInfos =
-    directories
-    |> Array.collect(fun directory ->
-        directory.GetFiles("*.xlsx", SearchOption.AllDirectories))
+//let fileInfos =
+//    directories
+//    |> Array.collect(fun directory ->
+//        directory.GetFiles("*.xlsx", SearchOption.AllDirectories))
 
-let localTemplates =
-    fileInfos
-    |> Array.map (fun item -> STRCIController.CreateTemplateFromXlsx(item))
+//let localTemplates =
+//    fileInfos
+//    |> Array.map (fun item -> STRCIController.CreateTemplateFromXlsx(item))
 
-let result =
-    localTemplates
-    |> Array.map (fun item -> STRCIController.IsTemplateInDB(item, dbTemplates))
+//let result =
+//    localTemplates
+//    |> Array.map (fun item -> STRCIController.IsTemplateInDB(item, dbTemplates))
 
-result
-|> Array.iter (fun item -> printfn "Template exists in db: %s" (item.ToString()))
+//result
+//|> Array.iter (fun item -> printfn "Template exists in db: %s" (item.ToString()))

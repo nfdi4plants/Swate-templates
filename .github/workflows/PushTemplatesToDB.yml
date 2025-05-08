@@ -1,7 +1,8 @@
 name: Push Templates to Database
 
 on:
-    pull_request:
+    push:
+        branches: [ main ]
     
 jobs:
   
