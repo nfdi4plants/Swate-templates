@@ -1,0 +1,23 @@
+name: Test Pull-Request
+
+on:
+    push:
+        branches: [ main ]
+    pull_request:
+        branches: [ main ]
+    
+jobs:
+  
+  test-QualityEnsurace:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.0.x'  # or whatever version you're targeting
+          
+      - name: "[Test] qualityEnsurace"
+        run: dotnet run --project src/STRCI/STRCI.fsproj

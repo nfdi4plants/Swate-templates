@@ -5,23 +5,17 @@ open System.IO
 open System.Text.RegularExpressions
 
 open ARCtrl
+open ARCtrl.Json
+open ARCtrl.Helper
 
 open FsSpreadsheet
 open FsSpreadsheet.Net
 
-open Newtonsoft.Json
-
-open STRService.Models
-
-open FSharp.Data
-
-open STRClient
-
 type STRCIController =        
 
-    static member Client () =
+    static member Client (authenticationToken: string) =
         let httpClient = new System.Net.Http.HttpClient()
-        httpClient.DefaultRequestHeaders.Add("X-API-KEY", "")
+        httpClient.DefaultRequestHeaders.Add("X-API-KEY", authenticationToken)
         new STRClient.Client(httpClient)
 
     static member FindSolutionRoot (dir: DirectoryInfo) =
@@ -160,3 +154,92 @@ type STRCIController =
     static member CreateTemplateFromXlsx (fileInfo: FileInfo) =
         FsWorkbook.fromXlsxFile fileInfo.FullName
         |> Spreadsheet.Template.fromFsWorkbook
+
+    static member IsTemplateInDB (template: Template, dbTemplates: STRClient.SwateTemplate []) =
+        let potTemplate = Array.tryFind (fun (item: STRClient.SwateTemplate) -> 
+            let dbVersion = SemVer.SemVer.create(item.TemplateMajorVersion, item.TemplateMinorVersion, item.TemplatePatchVersion).AsString()
+            item.TemplateId = template.Id && dbVersion = template.Version) dbTemplates
+        if potTemplate.IsSome then true
+        else false
+
+    static member createSwateClientTemplate (template: ARCtrl.Template) =
+        let swateTemplate = new STRClient.SwateTemplate()
+
+        let content = template.toJsonString()
+
+        let majorVersion = if template.SemVer.IsSome then template.SemVer.Value.Major else 0
+        let minorVersion = if template.SemVer.IsSome then template.SemVer.Value.Minor else 0
+        let patchVersion = if template.SemVer.IsSome then template.SemVer.Value.Patch else 0
+
+        let preReleaseVersionSuffix = if template.SemVer.IsSome && template.SemVer.Value.PreRelease.IsSome then template.SemVer.Value.PreRelease.Value else ""
+        let buildMetadataVersionSuffix = if template.SemVer.IsSome && template.SemVer.Value.Metadata.IsSome then template.SemVer.Value.Metadata.Value else ""
+
+        swateTemplate.TemplateId <- template.Id
+        swateTemplate.TemplateName <- template.Name
+        swateTemplate.TemplateMajorVersion <- majorVersion
+        swateTemplate.TemplateMinorVersion <- minorVersion
+        swateTemplate.TemplatePatchVersion <- patchVersion
+        swateTemplate.TemplatePreReleaseVersionSuffix <- preReleaseVersionSuffix
+        swateTemplate.TemplateBuildMetadataVersionSuffix <- buildMetadataVersionSuffix
+        swateTemplate.TemplateContent <- content
+        swateTemplate
+
+    static member createClientOntologyAnnotation (ontologyAnnotation: ARCtrl.OntologyAnnotation) =
+        let swateOntologyAnnotation = STRService.Data.DataInitializer.MapOntologyAnnotation(ontologyAnnotation)
+        let clientOntologyAnnotation = new STRClient.OntologyAnnotation()
+        clientOntologyAnnotation.Name <- swateOntologyAnnotation.Name
+        clientOntologyAnnotation.TermAccessionNumber <- swateOntologyAnnotation.TermAccessionNumber
+        clientOntologyAnnotation.TermSourceREF <- swateOntologyAnnotation.TermSourceREF
+        clientOntologyAnnotation
+
+    static member createClientAuthor (person: ARCtrl.Person) =
+        let author = STRService.Data.DataInitializer.MapAuthor(person)
+        let clientAuthor = new STRClient.Author()
+        clientAuthor.FullName <- author.FullName
+        clientAuthor.Email <- author.Email
+        clientAuthor.Affiliation <- author.Affiliation
+        clientAuthor.AffiliationLink <- author.AffiliationLink
+        clientAuthor
+
+    static member createSwateClientMetadata (template: ARCtrl.Template) =
+
+        let majorVersion = if template.SemVer.IsSome then template.SemVer.Value.Major else 0
+        let minorVersion = if template.SemVer.IsSome then template.SemVer.Value.Minor else 0
+        let patchVersion = if template.SemVer.IsSome then template.SemVer.Value.Patch else 0
+
+        let preReleaseVersionSuffix = if template.SemVer.IsSome && template.SemVer.Value.PreRelease.IsSome then template.SemVer.Value.PreRelease.Value else ""
+        let buildMetadataVersionSuffix = if template.SemVer.IsSome && template.SemVer.Value.Metadata.IsSome then template.SemVer.Value.Metadata.Value else ""
+
+        let endpointRepositories =
+            template.EndpointRepositories
+            |> Array.ofSeq
+            |> Array.map (fun ontologyAnnotation -> STRCIController.createClientOntologyAnnotation(ontologyAnnotation))
+            |> ResizeArray :> System.Collections.Generic.ICollection<STRClient.OntologyAnnotation>
+
+        let tags =
+            template.Tags
+            |> Array.ofSeq
+            |> Array.map (fun ontologyAnnotation -> STRCIController.createClientOntologyAnnotation(ontologyAnnotation))
+            |> ResizeArray :> System.Collections.Generic.ICollection<STRClient.OntologyAnnotation>
+
+        let authors =
+            template.Authors
+            |> Array.ofSeq
+            |> Array.map (fun person -> STRCIController.createClientAuthor(person))
+            |> ResizeArray :> System.Collections.Generic.ICollection<STRClient.Author>
+
+        let swateTemplate = new STRClient.SwateTemplateMetadata()
+        swateTemplate.Id <- template.Id
+        swateTemplate.Name <- template.Name
+        swateTemplate.Description <- template.Description
+        swateTemplate.MajorVersion <- majorVersion
+        swateTemplate.MinorVersion <- minorVersion
+        swateTemplate.PatchVersion <- patchVersion
+        swateTemplate.PreReleaseVersionSuffix <- preReleaseVersionSuffix
+        swateTemplate.BuildMetadataVersionSuffix <- buildMetadataVersionSuffix
+        swateTemplate.Organisation <- template.Organisation.ToString()
+        swateTemplate.EndpointRepositories <- endpointRepositories
+        swateTemplate.ReleaseDate <- DateTimeOffset()
+        swateTemplate.Tags <- tags
+        swateTemplate.Authors <- authors
+        swateTemplate
