@@ -17,11 +17,11 @@ namespace STRService.API.Endpoints
 
             group.MapGet("/{id}", TemplateHandlers.GetLatestTemplateById)
                 .WithOpenApi()
-                .WithName("GetLatestTemplateByName");
+                .WithName("GetLatestTemplateById");
 
             group.MapGet("/{id}/{version}", TemplateHandlers.GetTemplateByIdAndVersion)
                 .WithOpenApi()
-                .WithName("GetTemplateByNameAndVersion");
+                .WithName("GetTemplateByIdAndVersion");
 
             group.MapPost("/", TemplateHandlers.CreateTemplate)
                 .WithOpenApi()

@@ -11,6 +11,24 @@ open ARCtrl.Helper
 open FsSpreadsheet
 open FsSpreadsheet.Net
 
+module Helper =
+
+    type Logger(path : string) =
+    
+        let fileWriter = new StreamWriter(path)
+
+        member this.Info(s) = 
+            printfn "INFO: %s" s
+            fileWriter.WriteLine(sprintf "INFO: %s" s)
+            fileWriter.Flush()
+
+        member this.Error(s) = 
+            printfn "ERROR: %s" s
+            fileWriter.WriteLine(sprintf "ERROR: %s" s)
+            fileWriter.Flush()
+
+open Helper
+
 type STRCIController =        
 
     static member Client (authenticationToken: string) =
@@ -24,6 +42,17 @@ type STRCIController =
             elif dir.GetFiles("*.sln").Length > 0 then dir.FullName
             else findSolutionRoot dir.Parent
         findSolutionRoot dir
+
+    static member GetAllTemplateFiles (dir: DirectoryInfo) =
+        let solutionRoot = STRCIController.FindSolutionRoot (dir)
+
+        let templatesPath = Path.Combine(solutionRoot, "templates")
+
+        let directories = DirectoryInfo(templatesPath).GetDirectories()
+
+        directories
+        |> Array.collect(fun directory ->
+            directory.GetFiles("*.xlsx", SearchOption.AllDirectories))
 
     static member CleanFileNameFromInfo (file: FileInfo) =
         let nameWithoutExt = Path.GetFileNameWithoutExtension(file.Name)
@@ -241,3 +270,103 @@ type STRCIController =
         swateMetadata.PreReleaseVersionSuffix <- preReleaseVersionSuffix
         swateMetadata.BuildMetadataVersionSuffix <- buildMetadataVersionSuffix
         swateMetadata
+
+    static member CreateFileNames(version) =
+        let currentDirectory = DirectoryInfo(System.Environment.CurrentDirectory)
+        let solutionRoot = STRCIController.FindSolutionRoot(currentDirectory)
+
+        let outputPath = Path.Combine(solutionRoot, "src/templates-to-json")
+        let outputFileName = Path.Combine(outputPath, $"templates_v{version}.json")
+        let reportFileName = Path.Combine(outputPath, $"report_v{version}.txt")
+        currentDirectory, outputPath, outputFileName, reportFileName
+
+    static member GetLatestTemplates(currentDirectory, log: Logger) =
+        let files = STRCIController.GetAllTemplateFiles(currentDirectory)
+        
+        let templates = 
+            files
+            |> Array.choose (fun f -> 
+                try 
+                    Some (STRCIController.CreateTemplateFromXlsx f)
+                with
+                | ex -> 
+                    log.Error(sprintf "Error loading template %s: %s" f.Name ex.Message)
+                    None
+            )
+
+        log.Info(sprintf "Success! Read %d templates" templates.Length)
+
+        let getLatestTemplate (templates: Template []) =
+            templates
+            |> Array.sortByDescending (fun template -> template.Version)
+            //enables checking, whether the templates are 
+            //|> Array.map (fun template -> 
+            //    printfn "template.Name: %s template.Version: %s" template.Name template.Version
+            //    template)
+            |> Array.head
+
+        let latestTemplates =
+            let groupedTemplates =
+                templates
+                |> Array.groupBy (fun template -> template.Id)
+            groupedTemplates
+            |> Array.map (fun (_, templates) -> 
+                getLatestTemplate templates
+            )
+        latestTemplates
+
+    static member TemplatesToJsonV1 () =
+
+        let version = "1.0.0"
+
+        let currentDirectory, outputPath, outputFileName, reportFileName = STRCIController.CreateFileNames(version)
+
+        let ensureDirectory (dirPath : string) =
+            if not (Directory.Exists (dirPath)) then
+                Directory.CreateDirectory (dirPath) |> ignore
+
+        ensureDirectory outputPath
+
+        let log = Logger(reportFileName)
+
+        log.Info("Starting templates-to-json.fsx")
+
+        let latestTemplates = STRCIController.GetLatestTemplates(currentDirectory, log)
+
+        let json = 
+            latestTemplates 
+            |> Json.Templates.toJsonString 2
+
+        log.Info("Write json")
+
+        File.WriteAllText(outputFileName, json)
+
+        log.Info("Finished templates-to-json.fsx")
+
+    static member TemplatesToJsonV2 () =
+
+        let version = "2.0.0"
+
+        let currentDirectory, outputPath, outputFileName, reportFileName = STRCIController.CreateFileNames(version)
+
+        let ensureDirectory (dirPath : string) =
+            if not (Directory.Exists (dirPath)) then
+                Directory.CreateDirectory (dirPath) |> ignore
+
+        ensureDirectory outputPath
+
+        let log = Logger(reportFileName)
+
+        log.Info("Starting templates-to-json.fsx")
+
+        let latestTemplates = STRCIController.GetLatestTemplates(currentDirectory, log)
+
+        let json = 
+            latestTemplates 
+            |> Templates.toJsonString 0
+
+        log.Info("Write json")
+
+        File.WriteAllText(outputFileName, json)
+
+        log.Info("Finished templates-to-json.fsx")

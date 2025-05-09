@@ -26,4 +26,4 @@ jobs:
       - name: Push missing templates to Database
         env:
           STR_PAT: ${{ secrets.STR_PAT }}
-        run: dotnet run --project src/STRCI/STRCI.fsproj
+        run: dotnet run --project src/STRCI/STRCI.fsproj -- CreateTemplatesInDB
