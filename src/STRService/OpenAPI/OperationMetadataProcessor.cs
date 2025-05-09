@@ -23,14 +23,14 @@ namespace STRService.OpenAPI
                 }
             },
             {
-                "GetLatestTemplateByName", new Dictionary<string, string>
+                "GetLatestTemplateById", new Dictionary<string, string>
                 {
                     { "Summary", "Get the latest version of a Swate template" },
                     { "Description", "Get the latest version of a Swate template from the template registry. Template content is a base64 encoded byte array containing the template executable." }
                 }
             },
             {
-                "GetTemplateByNameAndVersion", new Dictionary<string, string>
+                "GetTemplateByIdAndVersion", new Dictionary<string, string>
                 {
                     { "Summary", "Get a specific version of a Swate template" },
                     { "Description", "Get a specific version of a Swate template from the template registry. Template content is a base64 encoded byte array containing the template executable." }
@@ -44,14 +44,14 @@ namespace STRService.OpenAPI
                 }
             },
             {
-                "GetLatestTemplateMetadataByName", new Dictionary<string, string>
+                "GetLatestTemplateMetadataById", new Dictionary<string, string>
                 {
                     { "Summary", "Get the metadata for latest version of a Swate template" },
                     { "Description", "Get the latest version of a Swate template from the template registry. Template content is a base64 encoded byte array containing the template executable." }
                 }
             },
             {
-                "GetTemplateMetadataByNameAndVersion", new Dictionary<string, string>
+                "GetTemplateMetadataByIdAndVersion", new Dictionary<string, string>
                 {
                     { "Summary", "Get metadata for a specific version of a Swate template" },
                     { "Description", "Get a specific version of a Swate template from the template registry. Template content is a base64 encoded byte array containing the template executable." }
@@ -65,14 +65,14 @@ namespace STRService.OpenAPI
                 }
             },
             {
-                "GetAllDownloadsByName", new Dictionary<string, string>
+                "GetAllDownloadsById", new Dictionary<string, string>
                 {
                     { "Summary", "Get download statistics for all versions specific template" },
                     { "Description", "Get download statistics for all versions specific template" }
                 }
             },
             {
-                "GetDownloadsByNameAndVersion", new Dictionary<string, string>
+                "GetDownloadsByIdAndVersion", new Dictionary<string, string>
                 {
                     { "Summary", "Get download statistics for a specific version of a specific template" },
                     { "Description", "Get download statistics for a specific version of a specific template" }

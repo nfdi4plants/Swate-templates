@@ -15,11 +15,11 @@ namespace STRService.API.Endpoints
 
             group.MapGet("/downloads/{id}", DownloadsHandlers.GetAllDownloadsById)
                 .WithOpenApi()
-                .WithName("GetAllDownloadsByName");
+                .WithName("GetAllDownloadsById");
 
             group.MapGet("/downloads/{id}/{version}", DownloadsHandlers.GetDownloadsByIdAndVersion)
                 .WithOpenApi()
-                .WithName("GetDownloadsByNameAndVersion");
+                .WithName("GetDownloadsByIdAndVersion");
 
             return group.WithTags("Statistics"); ;
         }

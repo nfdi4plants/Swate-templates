@@ -17,11 +17,11 @@ namespace STRService.API.Endpoints
 
             group.MapGet("/{id}", TemplateMetadataHandlers.GetLatestTemplateMetadataById)
                 .WithOpenApi()
-                .WithName("GetLatestTemplateMetadataByName");
+                .WithName("GetLatestTemplateMetadataById");
 
             group.MapGet("/{id}/{version}", TemplateMetadataHandlers.GetTemplateMetadataByIdAndVersion)
                 .WithOpenApi()
-                .WithName("GetTemplateMetadataByNameAndVersion");
+                .WithName("GetTemplateMetadataByIdAndVersion");
 
             return group.WithTags("Swate Template Metadata");
         }
