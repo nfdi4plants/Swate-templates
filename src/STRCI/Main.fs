@@ -30,8 +30,7 @@ let localTemplates =
 
 let dbTemplates = client.GetAllTemplatesAsync().Result |> Array.ofSeq
 
-[<EntryPoint>]
-let main argv = 
+let createTemplatesInDB () = 
     localTemplates
     |> Array.iter (fun item -> 
         let isTemplateInDB = STRCIController.IsTemplateInDB(item, dbTemplates)
@@ -44,4 +43,18 @@ let main argv =
             client.CreateTemplateAsync(swateTemplateDto).Result |> ignore
     )
 
-    0
+[<EntryPoint>]
+let main argv = 
+    match argv |> Array.toList with
+    | ["Release_1.0.0"] ->
+        STRCIController.TemplatesToJsonV1()
+        0
+    | ["Release_2.0.0"] ->
+        STRCIController.TemplatesToJsonV2()
+        1
+    | ["CreateTemplatesInDB"] ->
+        createTemplatesInDB()
+        2
+    | _ ->
+        printfn "Not the right Usage given"
+        1
