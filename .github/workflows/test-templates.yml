@@ -9,7 +9,7 @@ on:
 jobs:
 
   test-readability:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - name: Setup .NET 6.0
@@ -20,7 +20,7 @@ jobs:
         run: dotnet fsi CI/templatesEnsure.fsx
 
   quality-control-tag-coherence:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
 
     needs: test-readability
     steps:
@@ -33,7 +33,7 @@ jobs:
         run: dotnet fsi CI/coherentTagsEnsure.fsx
 
   quality-control-tag-categories:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
 
     needs: test-readability
     steps:
@@ -46,7 +46,7 @@ jobs:
         run: dotnet fsi CI/tagCategoryEnsure.fsx
   
   # quality-control-template-diversity:
-  #   runs-on: windows-latest
+  #   runs-on: ubuntu-latest
 
   #   needs: test-readability
   #   steps:
