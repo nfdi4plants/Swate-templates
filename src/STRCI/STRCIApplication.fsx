@@ -50,25 +50,25 @@ let newTemplatesPath = "C:/Users/Patri/Downloads/templates"
 //|> Array.map (fun directory ->
 //    templateController.CopyDirectory(directory.FullName, $"{testTemplatesPath}/{directory.Name}"))
 
-//let directories = DirectoryInfo(templatesPath).GetDirectories()
+let directories = DirectoryInfo(templatesPath).GetDirectories()
 
-//let fileInfos =
-//    directories
-//    |> Array.collect(fun directory ->
-//        directory.GetFiles("*.xlsx", SearchOption.AllDirectories))
+let fileInfos =
+    directories
+    |> Array.collect(fun directory ->
+        directory.GetFiles("*.xlsx", SearchOption.AllDirectories))
 
-//fileInfos
-//|> Array.map (fun item -> templateController.CreateDirectoryForTemplate item)
+fileInfos
+|> Array.map (fun item -> STRCIController.CreateDirectoryForTemplate item)
 
-//let updatedNewDicetories = DirectoryInfo(templatesPath).GetDirectories()
+let updatedNewDicetories = DirectoryInfo(templatesPath).GetDirectories()
 
-//let newFileInfos =
-//    updatedNewDicetories
-//    |> Array.collect(fun directory ->
-//        directory.GetFiles("*.xlsx", SearchOption.AllDirectories))
+let newFileInfos =
+    updatedNewDicetories
+    |> Array.collect(fun directory ->
+        directory.GetFiles("*.xlsx", SearchOption.AllDirectories))
 
-//newFileInfos
-//|> Array.map (fun item -> templateController.UpdateFileName item)
+newFileInfos
+|> Array.map (fun item -> STRCIController.UpdateFileName item)
 
 //let newDirectories = DirectoryInfo(newTemplatesPath).GetDirectories()
 
@@ -78,7 +78,7 @@ let newTemplatesPath = "C:/Users/Patri/Downloads/templates"
 //        directory.GetFiles("*.xlsx", SearchOption.AllDirectories))
 
 //newFileInfos
-//|> Array.map (fun item -> templateController.UpdateFileName item)
+//|> Array.map (fun item -> STRCIController.UpdateFileName item)
 
 //let updatedNewDicetories = DirectoryInfo(newTemplatesPath).GetDirectories()
 
@@ -111,14 +111,14 @@ let newTemplatesPath = "C:/Users/Patri/Downloads/templates"
 //filteredTemplates
 //|> Array.iter (fun (key, version, name) -> printfn "id: %s, version: %s, name: %s" (key.ToString()) version name)
 
-let client = STRCIController.Client("TestToken")
+//let client = STRCIController.Client("TestToken")
 
-//Set client baseURL for testing
-//client.BaseUrl <- (createTestURL 62835)
-printfn "client.BaseUrl: %s" client.BaseUrl
+////Set client baseURL for testing
+////client.BaseUrl <- (createTestURL 62835)
+//printfn "client.BaseUrl: %s" client.BaseUrl
 
-let dbTemplates = client.GetAllTemplatesAsync().Result |> Array.ofSeq
-printfn "templates: %i" (Array.length dbTemplates)
+//let dbTemplates = client.GetAllTemplatesAsync().Result |> Array.ofSeq
+//printfn "templates: %i" (Array.length dbTemplates)
 
 //let testGuid = Guid.NewGuid()
 //let arcTable = ArcTable.create("TestPlapla", ResizeArray [||], dictionary)
