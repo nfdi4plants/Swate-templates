@@ -159,32 +159,34 @@ type STRCIController =
         let potTemplate = Array.tryFind (fun (item: STRClient.SwateTemplate) -> 
             let dbVersion = SemVer.SemVer.create(item.TemplateMajorVersion, item.TemplateMinorVersion, item.TemplatePatchVersion).AsString()
             item.TemplateId = template.Id && dbVersion = template.Version) dbTemplates
-        if potTemplate.IsSome then true
-        else false
+        potTemplate.IsSome
 
-    static member createSwateClientTemplate (template: ARCtrl.Template) =
+    static member GetVersionInformation (template: ARCtrl.Template) =
+        if template.SemVer.IsSome then
+            let semVer = template.SemVer.Value
+            let preReleaseVersionSuffix = defaultArg semVer.PreRelease ""
+            let buildMetadataVersionSuffix = defaultArg semVer.Metadata ""
+            semVer.Major, semVer.Minor, semVer.Patch, preReleaseVersionSuffix, buildMetadataVersionSuffix
+        else
+            0, 0, 0, "", ""
+
+    static member CreateSwateClientTemplate (template: ARCtrl.Template) =
         let swateTemplate = new STRClient.SwateTemplate()
 
         let content = template.toJsonString()
-
-        let majorVersion = if template.SemVer.IsSome then template.SemVer.Value.Major else 0
-        let minorVersion = if template.SemVer.IsSome then template.SemVer.Value.Minor else 0
-        let patchVersion = if template.SemVer.IsSome then template.SemVer.Value.Patch else 0
-
-        let preReleaseVersionSuffix = if template.SemVer.IsSome && template.SemVer.Value.PreRelease.IsSome then template.SemVer.Value.PreRelease.Value else ""
-        let buildMetadataVersionSuffix = if template.SemVer.IsSome && template.SemVer.Value.Metadata.IsSome then template.SemVer.Value.Metadata.Value else ""
+        let majorVersion, minorVersion, patchVersion, preReleaseVersionSuffix, buildMetadataVersionSuffix = STRCIController.GetVersionInformation(template)
 
         swateTemplate.TemplateId <- template.Id
         swateTemplate.TemplateName <- template.Name
+        swateTemplate.TemplateContent <- content
         swateTemplate.TemplateMajorVersion <- majorVersion
         swateTemplate.TemplateMinorVersion <- minorVersion
         swateTemplate.TemplatePatchVersion <- patchVersion
         swateTemplate.TemplatePreReleaseVersionSuffix <- preReleaseVersionSuffix
         swateTemplate.TemplateBuildMetadataVersionSuffix <- buildMetadataVersionSuffix
-        swateTemplate.TemplateContent <- content
         swateTemplate
 
-    static member createClientOntologyAnnotation (ontologyAnnotation: ARCtrl.OntologyAnnotation) =
+    static member CreateClientOntologyAnnotation (ontologyAnnotation: ARCtrl.OntologyAnnotation) =
         let swateOntologyAnnotation = STRService.Data.DataInitializer.MapOntologyAnnotation(ontologyAnnotation)
         let clientOntologyAnnotation = new STRClient.OntologyAnnotation()
         clientOntologyAnnotation.Name <- swateOntologyAnnotation.Name
@@ -201,25 +203,18 @@ type STRCIController =
         clientAuthor.AffiliationLink <- author.AffiliationLink
         clientAuthor
 
-    static member createSwateClientMetadata (template: ARCtrl.Template) =
-
-        let majorVersion = if template.SemVer.IsSome then template.SemVer.Value.Major else 0
-        let minorVersion = if template.SemVer.IsSome then template.SemVer.Value.Minor else 0
-        let patchVersion = if template.SemVer.IsSome then template.SemVer.Value.Patch else 0
-
-        let preReleaseVersionSuffix = if template.SemVer.IsSome && template.SemVer.Value.PreRelease.IsSome then template.SemVer.Value.PreRelease.Value else ""
-        let buildMetadataVersionSuffix = if template.SemVer.IsSome && template.SemVer.Value.Metadata.IsSome then template.SemVer.Value.Metadata.Value else ""
+    static member CreateSwateClientMetadata (template: ARCtrl.Template) =
 
         let endpointRepositories =
             template.EndpointRepositories
             |> Array.ofSeq
-            |> Array.map (fun ontologyAnnotation -> STRCIController.createClientOntologyAnnotation(ontologyAnnotation))
+            |> Array.map (fun ontologyAnnotation -> STRCIController.CreateClientOntologyAnnotation(ontologyAnnotation))
             |> ResizeArray :> System.Collections.Generic.ICollection<STRClient.OntologyAnnotation>
 
         let tags =
             template.Tags
             |> Array.ofSeq
-            |> Array.map (fun ontologyAnnotation -> STRCIController.createClientOntologyAnnotation(ontologyAnnotation))
+            |> Array.map (fun ontologyAnnotation -> STRCIController.CreateClientOntologyAnnotation(ontologyAnnotation))
             |> ResizeArray :> System.Collections.Generic.ICollection<STRClient.OntologyAnnotation>
 
         let authors =
@@ -228,18 +223,21 @@ type STRCIController =
             |> Array.map (fun person -> STRCIController.createClientAuthor(person))
             |> ResizeArray :> System.Collections.Generic.ICollection<STRClient.Author>
 
-        let swateTemplate = new STRClient.SwateTemplateMetadata()
-        swateTemplate.Id <- template.Id
-        swateTemplate.Name <- template.Name
-        swateTemplate.Description <- template.Description
-        swateTemplate.MajorVersion <- majorVersion
-        swateTemplate.MinorVersion <- minorVersion
-        swateTemplate.PatchVersion <- patchVersion
-        swateTemplate.PreReleaseVersionSuffix <- preReleaseVersionSuffix
-        swateTemplate.BuildMetadataVersionSuffix <- buildMetadataVersionSuffix
-        swateTemplate.Organisation <- template.Organisation.ToString()
-        swateTemplate.EndpointRepositories <- endpointRepositories
-        swateTemplate.ReleaseDate <- DateTimeOffset()
-        swateTemplate.Tags <- tags
-        swateTemplate.Authors <- authors
-        swateTemplate
+        let majorVersion, minorVersion, patchVersion, preReleaseVersionSuffix, buildMetadataVersionSuffix = STRCIController.GetVersionInformation(template)
+
+        let swateMetadata = new STRClient.SwateTemplateMetadata()
+
+        swateMetadata.Id <- template.Id
+        swateMetadata.Name <- template.Name
+        swateMetadata.Description <- template.Description
+        swateMetadata.Organisation <- template.Organisation.ToString()
+        swateMetadata.EndpointRepositories <- endpointRepositories
+        swateMetadata.ReleaseDate <- DateTimeOffset()
+        swateMetadata.Tags <- tags
+        swateMetadata.Authors <- authors
+        swateMetadata.MajorVersion <- majorVersion
+        swateMetadata.MinorVersion <- minorVersion
+        swateMetadata.PatchVersion <- patchVersion
+        swateMetadata.PreReleaseVersionSuffix <- preReleaseVersionSuffix
+        swateMetadata.BuildMetadataVersionSuffix <- buildMetadataVersionSuffix
+        swateMetadata

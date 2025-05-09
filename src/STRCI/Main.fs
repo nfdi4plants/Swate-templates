@@ -36,8 +36,8 @@ let main argv =
     |> Array.iter (fun item -> 
         let isTemplateInDB = STRCIController.IsTemplateInDB(item, dbTemplates)
         if not isTemplateInDB then
-            let swateTemplate = STRCIController.createSwateClientTemplate(item)
-            let metaData = STRCIController.createSwateClientMetadata(item)
+            let swateTemplate = STRCIController.CreateSwateClientTemplate(item)
+            let metaData = STRCIController.CreateSwateClientMetadata(item)
             let swateTemplateDto = new STRClient.SwateTemplateDto()
             swateTemplateDto.Content <- swateTemplate
             swateTemplateDto.Metadata <- metaData
