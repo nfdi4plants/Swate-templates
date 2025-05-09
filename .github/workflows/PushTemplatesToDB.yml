@@ -6,7 +6,7 @@ on:
     
 jobs:
   action-PushTemplatesToDB:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v3
@@ -21,10 +21,7 @@ jobs:
 
       - name: Generate NSwag Client
         run: |
-          nswag openapi2csclient \
-            /input:https://str.nfdi4plants.org/swagger/v1/swagger.json \
-            /output:src/STRCI/STRClient.cs \
-            /namespace:STRClient
+          nswag openapi2csclient /input:https://str.nfdi4plants.org/swagger/v1/swagger.json /output:src/STRCI/STRClient.cs /namespace:STRClient
 
       - name: Push missing templates to Database
         env:
