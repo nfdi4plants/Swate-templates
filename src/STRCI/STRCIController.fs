@@ -5,23 +5,17 @@ open System.IO
 open System.Text.RegularExpressions
 
 open ARCtrl
+open ARCtrl.Json
+open ARCtrl.Helper
 
 open FsSpreadsheet
 open FsSpreadsheet.Net
 
-open Newtonsoft.Json
-
-open STRService.Models
-
-open FSharp.Data
-
-open STRClient
-
 type STRCIController =        
 
-    static member Client () =
+    static member Client (authenticationToken: string) =
         let httpClient = new System.Net.Http.HttpClient()
-        httpClient.DefaultRequestHeaders.Add("X-API-KEY", "")
+        httpClient.DefaultRequestHeaders.Add("X-API-KEY", authenticationToken)
         new STRClient.Client(httpClient)
 
     static member FindSolutionRoot (dir: DirectoryInfo) =
@@ -160,3 +154,90 @@ type STRCIController =
     static member CreateTemplateFromXlsx (fileInfo: FileInfo) =
         FsWorkbook.fromXlsxFile fileInfo.FullName
         |> Spreadsheet.Template.fromFsWorkbook
+
+    static member IsTemplateInDB (template: Template, dbTemplates: STRClient.SwateTemplate []) =
+        let potTemplate = Array.tryFind (fun (item: STRClient.SwateTemplate) -> 
+            let dbVersion = SemVer.SemVer.create(item.TemplateMajorVersion, item.TemplateMinorVersion, item.TemplatePatchVersion).AsString()
+            item.TemplateId = template.Id && dbVersion = template.Version) dbTemplates
+        potTemplate.IsSome
+
+    static member GetVersionInformation (template: ARCtrl.Template) =
+        if template.SemVer.IsSome then
+            let semVer = template.SemVer.Value
+            let preReleaseVersionSuffix = defaultArg semVer.PreRelease ""
+            let buildMetadataVersionSuffix = defaultArg semVer.Metadata ""
+            semVer.Major, semVer.Minor, semVer.Patch, preReleaseVersionSuffix, buildMetadataVersionSuffix
+        else
+            0, 0, 0, "", ""
+
+    static member CreateSwateClientTemplate (template: ARCtrl.Template) =
+        let swateTemplate = new STRClient.SwateTemplate()
+
+        let content = template.toJsonString()
+        let majorVersion, minorVersion, patchVersion, preReleaseVersionSuffix, buildMetadataVersionSuffix = STRCIController.GetVersionInformation(template)
+
+        swateTemplate.TemplateId <- template.Id
+        swateTemplate.TemplateName <- template.Name
+        swateTemplate.TemplateContent <- content
+        swateTemplate.TemplateMajorVersion <- majorVersion
+        swateTemplate.TemplateMinorVersion <- minorVersion
+        swateTemplate.TemplatePatchVersion <- patchVersion
+        swateTemplate.TemplatePreReleaseVersionSuffix <- preReleaseVersionSuffix
+        swateTemplate.TemplateBuildMetadataVersionSuffix <- buildMetadataVersionSuffix
+        swateTemplate
+
+    static member CreateClientOntologyAnnotation (ontologyAnnotation: ARCtrl.OntologyAnnotation) =
+        let swateOntologyAnnotation = STRService.Data.DataInitializer.MapOntologyAnnotation(ontologyAnnotation)
+        let clientOntologyAnnotation = new STRClient.OntologyAnnotation()
+        clientOntologyAnnotation.Name <- swateOntologyAnnotation.Name
+        clientOntologyAnnotation.TermAccessionNumber <- swateOntologyAnnotation.TermAccessionNumber
+        clientOntologyAnnotation.TermSourceREF <- swateOntologyAnnotation.TermSourceREF
+        clientOntologyAnnotation
+
+    static member createClientAuthor (person: ARCtrl.Person) =
+        let author = STRService.Data.DataInitializer.MapAuthor(person)
+        let clientAuthor = new STRClient.Author()
+        clientAuthor.FullName <- author.FullName
+        clientAuthor.Email <- author.Email
+        clientAuthor.Affiliation <- author.Affiliation
+        clientAuthor.AffiliationLink <- author.AffiliationLink
+        clientAuthor
+
+    static member CreateSwateClientMetadata (template: ARCtrl.Template) =
+
+        let endpointRepositories =
+            template.EndpointRepositories
+            |> Array.ofSeq
+            |> Array.map (fun ontologyAnnotation -> STRCIController.CreateClientOntologyAnnotation(ontologyAnnotation))
+            |> ResizeArray :> System.Collections.Generic.ICollection<STRClient.OntologyAnnotation>
+
+        let tags =
+            template.Tags
+            |> Array.ofSeq
+            |> Array.map (fun ontologyAnnotation -> STRCIController.CreateClientOntologyAnnotation(ontologyAnnotation))
+            |> ResizeArray :> System.Collections.Generic.ICollection<STRClient.OntologyAnnotation>
+
+        let authors =
+            template.Authors
+            |> Array.ofSeq
+            |> Array.map (fun person -> STRCIController.createClientAuthor(person))
+            |> ResizeArray :> System.Collections.Generic.ICollection<STRClient.Author>
+
+        let majorVersion, minorVersion, patchVersion, preReleaseVersionSuffix, buildMetadataVersionSuffix = STRCIController.GetVersionInformation(template)
+
+        let swateMetadata = new STRClient.SwateTemplateMetadata()
+
+        swateMetadata.Id <- template.Id
+        swateMetadata.Name <- template.Name
+        swateMetadata.Description <- template.Description
+        swateMetadata.Organisation <- template.Organisation.ToString()
+        swateMetadata.EndpointRepositories <- endpointRepositories
+        swateMetadata.ReleaseDate <- DateTimeOffset()
+        swateMetadata.Tags <- tags
+        swateMetadata.Authors <- authors
+        swateMetadata.MajorVersion <- majorVersion
+        swateMetadata.MinorVersion <- minorVersion
+        swateMetadata.PatchVersion <- patchVersion
+        swateMetadata.PreReleaseVersionSuffix <- preReleaseVersionSuffix
+        swateMetadata.BuildMetadataVersionSuffix <- buildMetadataVersionSuffix
+        swateMetadata

@@ -17,12 +17,17 @@ namespace STRService.Models
     {
         public static SwateTemplateMetadata Create(
             Guid id,
-            string name, string description,
-            int majorVersion, int minorVersion,
-            int patchVersion, string preReleaseVersionSuffix,
+            string name, 
+            string description,
+            int majorVersion, 
+            int minorVersion,
+            int patchVersion, 
+            string preReleaseVersionSuffix,
             string buildMetadataVersionSuffix,
-            string organisation, ICollection<OntologyAnnotation> endpointRepositories,
-            DateOnly releaseDate, ICollection<OntologyAnnotation> tags,
+            string organisation, 
+            ICollection<OntologyAnnotation> endpointRepositories,
+            DateOnly releaseDate, 
+            ICollection<OntologyAnnotation> tags,
             ICollection<Author> authors) =>
                 new SwateTemplateMetadata
                 {

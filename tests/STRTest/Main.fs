@@ -1,10 +1,11 @@
 ﻿module STRTest.Tests
 
+open System
 open System.IO
 
 open Expecto
 
-let testController = new TestController("https://str.nfdi4plants.org/api/v1")
+let testController = new TestController("")
 
 let allTests =
     let localTemplates = testController.ReadAllTemplates() |> Array.filter (fun template -> template.Organisation.IsOfficial())
@@ -16,7 +17,7 @@ let allTests =
         directories
         |> Array.collect(fun directory ->
             directory.GetFiles("*.xlsx", SearchOption.AllDirectories))
-    //let dbTemplates = testController.TemplateController.GetAllTemplates()
+    let dbTemplates = testController.Client.GetAllTemplatesAsync().Result |> Array.ofSeq
 
     let convertibleTests = testController.TestConvertibleTemplateFiles()
     let diversityTests = 
@@ -34,9 +35,9 @@ let allTests =
     let parentFolderTests =
         fileInfos
         |> Array.mapi (fun i fileInfo -> testController.TestCheckParentFolder(fileInfo, i))
-    //let runAreAllDBTemplatesAvailableTests =
-    //    dbTemplates
-    //    |> Array.map (fun dbTemplate -> testController.TestAreAllDBTemplatesAvailable(dbTemplate, localTemplates))
+    let runAreAllDBTemplatesAvailableTests =
+        dbTemplates
+        |> Array.map (fun dbTemplate -> testController.TestAreAllDBTemplatesAvailable(dbTemplate, localTemplates))
 
     let allTest =
         [|
@@ -45,7 +46,7 @@ let allTests =
             ambiguousTests
             similarityTests
             parentFolderTests
-            //runAreAllDBTemplatesAvailableTests
+            runAreAllDBTemplatesAvailableTests
         |]
         |> Array.concat
         |> List.ofArray

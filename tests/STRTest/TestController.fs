@@ -392,7 +392,7 @@ type TestController (?templatesPath) =
 
         this.MatchResult(result)
 
-    member this.TestAreAllDBTemplatesAvailable(dbTemplate: SwateTemplate, localTemplates: Template []) =
+    member this.TestAreAllDBTemplatesAvailable(dbTemplate: STRClient.SwateTemplate, localTemplates: Template []) =
         testCase $"{dbTemplate.TemplateName}_{dbTemplate.TemplateId}_{dbTemplate.TemplateMajorVersion}.{dbTemplate.TemplateMinorVersion}.{dbTemplate.TemplatePatchVersion}" <| fun _ ->
             let dbVersion = SemVer.SemVer.create(dbTemplate.TemplateMajorVersion, dbTemplate.TemplateMinorVersion, dbTemplate.TemplatePatchVersion).AsString()
             let test = localTemplates |> Array.tryFind (fun localTemplate -> localTemplate.Id = dbTemplate.TemplateId && localTemplate.Version = dbVersion)

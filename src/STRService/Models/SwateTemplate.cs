@@ -6,6 +6,27 @@ namespace STRService.Models
     [PrimaryKey(nameof(TemplateId), nameof(TemplateMajorVersion), nameof(TemplateMinorVersion), nameof(TemplatePatchVersion), nameof(TemplatePreReleaseVersionSuffix), nameof(TemplateBuildMetadataVersionSuffix))]
     public class SwateTemplate
     {
+        public static SwateTemplate Create(
+            Guid id,
+            string name, 
+            int majorVersion, 
+            int minorVersion,
+            int patchVersion, 
+            string preReleaseVersionSuffix,
+            string buildMetadataVersionSuffix,
+            string content) =>
+                new SwateTemplate
+                {
+                    TemplateId = id,
+                    TemplateName = name,
+                    TemplateMajorVersion = majorVersion,
+                    TemplateMinorVersion = minorVersion,
+                    TemplatePatchVersion = patchVersion,
+                    TemplatePreReleaseVersionSuffix = preReleaseVersionSuffix,
+                    TemplateBuildMetadataVersionSuffix = buildMetadataVersionSuffix,
+                    TemplateContent = content
+                };
+
         /// <summary>
         /// The unique identifier of the Swate template.
         /// </summary>
