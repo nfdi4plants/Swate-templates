@@ -57,4 +57,4 @@ let main argv =
         2
     | _ ->
         printfn "Not the right Usage given"
-        1
+        3
