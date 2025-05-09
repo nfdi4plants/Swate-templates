@@ -1,11 +1,10 @@
 name: Push Templates to Database
 
 on:
-    push:
-        branches: [ main ]
+  push:
+    branches: [ main, str ]
     
 jobs:
-  
   action-PushTemplatesToDB:
     runs-on: windows-latest
 
@@ -15,9 +14,19 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: '8.0.x'  # or whatever version you're targeting
-          
-      - name: "[Action] Push missing templates to Database"
+          dotnet-version: '8.0.x'
+
+      - name: Install NSwag CLI
+        run: dotnet tool install --global NSwag.ConsoleCore
+
+      - name: Generate NSwag Client
+        run: |
+          nswag openapi2csclient \
+            /input:https://str.nfdi4plants.org/swagger/v1/swagger.json \
+            /output:src/STRCI/STRClient.cs \
+            /namespace:STRClient
+
+      - name: Push missing templates to Database
         env:
-            STR_PAT: ${{ secrets.STR_PAT }}
+          STR_PAT: ${{ secrets.STR_PAT }}
         run: dotnet run --project src/STRCI/STRCI.fsproj
