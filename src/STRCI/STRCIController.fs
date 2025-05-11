@@ -271,13 +271,13 @@ type STRCIController =
         swateMetadata.BuildMetadataVersionSuffix <- buildMetadataVersionSuffix
         swateMetadata
 
-    static member CreateFileNames(version) =
+    static member CreateFileNames(?version) =
         let currentDirectory = DirectoryInfo(System.Environment.CurrentDirectory)
         let solutionRoot = STRCIController.FindSolutionRoot(currentDirectory)
 
         let outputPath = Path.Combine(solutionRoot, "src/templates-to-json")
-        let outputFileName = Path.Combine(outputPath, $"templates_v{version}.json")
-        let reportFileName = Path.Combine(outputPath, $"report_v{version}.txt")
+        let outputFileName = Path.Combine(outputPath, if version.IsSome then $"templates_v{version.Value}.json" else $"templates.json")
+        let reportFileName = Path.Combine(outputPath, if version.IsSome then $"report_v{version.Value}.txt" else $"report.txt")
         currentDirectory, outputPath, outputFileName, reportFileName
 
     static member GetLatestTemplates(currentDirectory, log: Logger) =
@@ -317,9 +317,7 @@ type STRCIController =
 
     static member TemplatesToJsonV1 () =
 
-        let version = "1.0.0"
-
-        let currentDirectory, outputPath, outputFileName, reportFileName = STRCIController.CreateFileNames(version)
+        let currentDirectory, outputPath, outputFileName, reportFileName = STRCIController.CreateFileNames()
 
         let ensureDirectory (dirPath : string) =
             if not (Directory.Exists (dirPath)) then
