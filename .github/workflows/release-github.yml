@@ -27,7 +27,7 @@ jobs:
         prerelease: false
         title: "Template Json"
         files: |
-            templates-to-json/report_v1.0.0.txt
-            templates-to-json/templates_v1.0.0.json
+            templates-to-json/report.txt
+            templates-to-json/templates.json
             templates-to-json/report_v2.0.0.txt
             templates-to-json/templates_v2.0.0.json
