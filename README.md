@@ -22,7 +22,7 @@
 #### Update STRService
 
 * Add new functionality or fix a bug
-* Generate STRClient.cs by follwong this [step](.github/CONTRIBUTING.md#3-strclient-generation)
+* Generate STRClient.cs by following this [step](.github/CONTRIBUTING.md#3-strclient-generation)
 * Fix potential problems in the newly generated STRClient.cs
 * Commit changes and create PR to main
 
