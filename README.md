@@ -31,7 +31,7 @@ The relationship of the different projects are represented [here](https://github
    
     `npm install`
 
-3. When you are adapting the api layer create a new client in order to avoid possible problems when pushing to main. Run one of this lines, in the project root of STRClient depending on the nswag version you are using.
+3. When you are adapting the api layer create a new client in order to avoid possible problems when pushing to main. Run one of this lines, in the project root of STRClient depending on the nswag version you are using.(#strclient-generation)
 
 
 Utilize a local version of nswag
@@ -58,5 +58,5 @@ nswag openapi2csclient /input:https://str.nfdi4plants.org/swagger/v1/swagger.jso
 
 #### How to contribute to STRService
 
-* Update the STRClient.cs file after you have finished your work in order to avoid failings when pushing to main. Run the command given by step [3](#local setup)
+* Update the STRClient.cs file after you have finished your work in order to avoid failings when pushing to main. Run the command [given here] (#strclient-generation)
 
