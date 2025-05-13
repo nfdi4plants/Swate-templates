@@ -47,6 +47,16 @@ You can find a representation of the STR porject relationships [here](tree/str/s
 
 #### Pull-Request to main
 
+* Run tests for templates
+* Checks whether all local templates are parable or not
+* Checks for required diversity of official templates
+* Check for distinct tags
+* Check for Ambiguousness
+* Check for similarity of provided tags
+* Check for right named parent folder of templates
+* Check for right versioning of template file name
+* Check whether all database tempaltes are locally available or not
+
 [(wip) Graph of the workflow](tree/Feature_STR_UpdateContributionGuide/src/STRCI)
 
 ## Contributing
