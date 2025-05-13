@@ -41,9 +41,11 @@ You can find a representation of the STR porject relationships [here](tree/str/s
 #### Update STRService
 
 * Add new functionality or fix a bug
-* Generate STRClient anew by follwong this [step](#strclient-generation)
+* Generate STRClient anew by follwong this [step](#3-strclient-generation)
 * Fix potential problems in the newly generated STRClient.cs
 * Commit changes and create PR to main
+
+#### Pull-Request to main
 
 [(wip) Graph of the workflow](tree/Feature_STR_UpdateContributionGuide/src/STRCI)
 
