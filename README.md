@@ -16,7 +16,7 @@ You can find a representation of the STR porject relationships [here](https://gi
     - verify with `nswag --version` (Tested with v14.4.0)
 - [.NET SDK](https://dotnet.microsoft.com/en-us/download)
     - verify with `dotnet --version` (Tested with 7.0.306)
--  [Docker Desktop] (https://www.docker.com/products/docker-desktop/)
+-  [Docker Desktop](https://www.docker.com/products/docker-desktop/)
     - verify with `docker --version` (Tested with 28.0.0)
 
 #### Worflow
