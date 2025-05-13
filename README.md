@@ -28,7 +28,7 @@ You can find a representation of the STR porject relationships [here](tree/str/s
 * Move the template into a subdirectory of [Templates](templates)
 * Create a directory with the name of the template and move the template into it
 * Rename the template file based on this pattern: Filename_vMaijorversion.MinorVersion.Patchversion
-* Commit changes
+* Commit changes and create PR to main
 
 #### Update Template
 
@@ -36,11 +36,14 @@ You can find a representation of the STR porject relationships [here](tree/str/s
 * The newly copied template stays in the same folder as the original one
 * Rename the copied template file based on this pattern: Filename_vMaijorversion.MinorVersion.Patchversion
 * Update the file content, using [Swate](https://github.com/nfdi4plants/Swate) or [ARCtrl](https://github.com/nfdi4plants/ARCtrl)
-* Commit changes
+* Commit changes and create PR to main
 
 #### Update STRService
 
-
+* Add new functionality or fix a bug
+* Generate STRClient anew by follwong this [step](#strclient-generation)
+* Fix potential problems in the newly generated STRClient.cs
+* Commit changes and create PR to main
 
 [(wip) Graph of the workflow](tree/Feature_STR_UpdateContributionGuide/src/STRCI)
 
@@ -84,5 +87,5 @@ nswag openapi2csclient /input:https://str.nfdi4plants.org/swagger/v1/swagger.jso
 
 #### How to contribute to STRService
 
-* Update the STRClient.cs file after you have finished your work in order to avoid failings when pushing to main. Run the following [command](#strclient-generation)
+* Update the STRClient.cs file after you have finished your work in order to avoid failings when pushing to main. Follow this [step](#strclient-generation)
 
