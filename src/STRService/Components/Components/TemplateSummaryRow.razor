@@ -6,7 +6,15 @@
             @summary.Name
         </a>
     </th>
-    <th scope="row"><small>@summary.Description</small></th>
+    <th scope="row">
+        <small>
+            @(string.IsNullOrEmpty(summary.Description)
+                ? ""
+                : summary.Description.Length > 75
+                ? summary.Description.Substring(0, 75) + "..."
+                : summary.Description)
+        </small>
+    </th>
     <td><a href="/template/@summary.Id/@summary.LatestVersion">@summary.LatestVersion</a></td>
     <td>@summary.ReleaseDate</td>
     <td>
