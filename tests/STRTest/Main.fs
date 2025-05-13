@@ -5,7 +5,7 @@ open System.IO
 
 open Expecto
 
-let testController = new TestController("")
+let testController = new TestController()
 
 let allTests =
     let localTemplates = testController.ReadAllTemplates() |> Array.filter (fun template -> template.Organisation.IsOfficial())

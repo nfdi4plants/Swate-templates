@@ -2,8 +2,9 @@
 
 open System
 open System.IO
-open STRCI
+open System.Diagnostics
 
+open STRCI
 
 let token =
     match Environment.GetEnvironmentVariable("STR_PAT") with
@@ -47,7 +48,13 @@ let createTemplatesInDB () =
 let main argv = 
     match argv |> Array.toList with
     | ["Release_1.0.0"] ->
-        STRCIController.TemplatesToJsonV1()
+        let path = @"../STRCI/templates-to-json_v1.0.0.fsx"
+        let psi = ProcessStartInfo("dotnet", $"fsi {path}")
+        psi.RedirectStandardOutput <- true
+        psi.UseShellExecute <- false
+        let proc = Process.Start(psi)
+        let output = proc.StandardOutput.ReadToEnd()
+        proc.WaitForExit()
         0
     | ["Release_2.0.0"] ->
         STRCIController.TemplatesToJsonV2()

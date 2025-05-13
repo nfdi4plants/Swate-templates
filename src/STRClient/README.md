@@ -16,4 +16,4 @@ or
 
 ```bash
 nswag openapi2csclient /input:https://str.nfdi4plants.org/swagger/v1/swagger.json /output:STRClient.cs /namespace:STRClient
-```bash
+```

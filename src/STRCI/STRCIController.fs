@@ -261,7 +261,7 @@ type STRCIController =
         swateMetadata.Description <- template.Description
         swateMetadata.Organisation <- template.Organisation.ToString()
         swateMetadata.EndpointRepositories <- endpointRepositories
-        swateMetadata.ReleaseDate <- DateTimeOffset()
+        swateMetadata.ReleaseDate <- DateTimeOffset.Now
         swateMetadata.Tags <- tags
         swateMetadata.Authors <- authors
         swateMetadata.MajorVersion <- majorVersion
