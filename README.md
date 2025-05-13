@@ -46,7 +46,7 @@ You can finde the Template Registry Service [here](https://str.nfdi4plants.org/)
 
 You can find the OpenAPI (Swagger) specification [here](https://str.nfdi4plants.org/swagger/index.html).
 
-You can find a representation of the STR porject relationships [here](tree/str/src).
+You can find a representation of the STR porject relationships [here](src).
 
 #### Requirements
 
@@ -59,7 +59,7 @@ You can find a representation of the STR porject relationships [here](tree/str/s
 -  [Docker Desktop](https://www.docker.com/products/docker-desktop/)
     - verify with `docker --version` (Tested with 4.40.0)
 
-[(wip) Graph of the workflow](tree/Feature_STR_UpdateContributionGuide/src/STRCI)
+[(wip) Graph of the workflow](src/STRCI)
 
 ## Contributing
 
