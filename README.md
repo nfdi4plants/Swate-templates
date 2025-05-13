@@ -21,17 +21,17 @@ The relationship of the different projects are represented [here](https://github
 
 ## Contributing
 
-#### Local Setup
+### Local Setup
 
-##### 1. Setup dotnet tools
+#### 1. Setup dotnet tools
 
    `dotnet tool restore`
 
-##### 2. Install NPM dependencies
+#### 2. Install NPM dependencies
    
     `npm install`
 
-##### 3. STRClient Generation
+#### 3. STRClient Generation
 
 Run one of the following commands, in the project root of STRClient, depending on the nswag version you are using.
 
