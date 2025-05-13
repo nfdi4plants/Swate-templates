@@ -51,3 +51,12 @@ nswag openapi2csclient /input:https://str.nfdi4plants.org/swagger/v1/swagger.jso
 4. In Visual Studio you have to select docker-compose as the starting project and then you can start it for local tests
 
 ![Logo](images/SelectDockerDesktop.png)
+
+#### How to add a new Template
+
+* use new template for PRs!
+
+#### How to contribute to STRService
+
+* Update the STRClient.cs file after you have finished your work in order to avoid failings when pushing to main. Run the command given by step [3](#### Local Setup)
+
