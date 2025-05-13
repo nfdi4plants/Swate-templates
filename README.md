@@ -12,12 +12,12 @@ You can find a representation of the STR porject relationships [here](tree/str/s
 
 - [npm and nswag]
     - install nswag with 'dotnet tool install --global NSwag.ConsoleCore' (Tested with v14.4.0)
-    - verify with `npm --version` (Tested with v9.2.0)
-    - verify with `nswag --version` (Tested with v14.4.0)
+    - verify with `npm --version` (Tested with 9.2.0)
+    - verify with `nswag --version` (Tested with 14.4.0)
 - [.NET SDK](https://dotnet.microsoft.com/en-us/download)
     - verify with `dotnet --version` (Tested with 7.0.306)
 -  [Docker Desktop](https://www.docker.com/products/docker-desktop/)
-    - verify with `docker --version` (Tested with 28.0.0)
+    - verify with `docker --version` (Tested with 4.40.0)
 
 #### Worflow
 
