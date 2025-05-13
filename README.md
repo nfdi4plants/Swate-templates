@@ -2,7 +2,7 @@
 
 Swate template registry is a tool used to add new templates to the database, publish existing ones and enable viewing those.
 
-The service for checking and downloading templates can be found [here] (https://str.nfdi4plants.org/).
+The service for checking and downloading templates can be found [here](https://str.nfdi4plants.org/).
 
 The swagger code for the open api is [here](https://str.nfdi4plants.org/swagger/index.html).
 
@@ -49,3 +49,5 @@ nswag openapi2csclient /input:https://str.nfdi4plants.org/swagger/v1/swagger.jso
 ```
 
 4. In Visual Studio you have to select docker-compose as the starting project and then you can start it for local tests
+
+![Select Docker Desktop in Visual Studio]("images/SelectDockerDesktop.png")
