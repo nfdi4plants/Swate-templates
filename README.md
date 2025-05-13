@@ -50,4 +50,4 @@ nswag openapi2csclient /input:https://str.nfdi4plants.org/swagger/v1/swagger.jso
 
 4. In Visual Studio you have to select docker-compose as the starting project and then you can start it for local tests
 
-![Select Docker Desktop in Visual Studio]("images/SelectDockerDesktop.png")
+![Logo](images/SelectDockerDesktop.png)
