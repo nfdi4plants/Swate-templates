@@ -37,6 +37,8 @@
 * Check for right named parent folder of templates
 * Check for right versioning of template file name
 * Check whether all database tempaltes are locally available or not
+* Generates new STRClient.cs when a change to api related code happened -> Can break the release
+* Release of STR and generation of new JSON file
 
 ## Overview
 
