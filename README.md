@@ -1,16 +1,49 @@
-# Swate Templates
+# Swate Template Registry
 
-A collection of minimal information standard templates for [Swate](https://nfdi4plants.org/nfdi4plants.knowledgebase/docs/implementation/Swate.html).
+Swate template registry is a tool used to add new templates to the database, publish existing ones and enable viewing those.
 
-The templates in this repository are crawled by [Swobup](https://github.com/nfdi4plants/Swobup) and written into the production Swate database.
+The service for checking and downloading templates can be found [here] (https://str.nfdi4plants.org/).
+The swagger code for the open api is [here](https://str.nfdi4plants.org/swagger/index.html).
+The relationship of the different projects are represented [here](https://github.com/nfdi4plants/Swate-templates/tree/str/src).
 
-Anyone can access them via the [template search](https://nfdi4plants.org/nfdi4plants.knowledgebase/docs/SwateManual/Docs05-Templates.html) function.
+#### Requirementss
 
-:rocket: In addition, the templates are now automatically converted via a github-action upon every push into a [templates.json](https://github.com/nfdi4plants/Swate-templates/releases/download/latest/templates.json) file, which contains **all** templates.
-Note, that this feature is not yet implemented into all associated tools (e.g. Swate, SwateDB). For details check "releases" on the right.
+- [npm and nswag]
+    - install nswag with 'dotnet tool install --global NSwag.ConsoleCore' (Tested with v14.4.0)
+    - verify with `npm --version` (Tested with v9.2.0)
+    - verify with `nswag --version` (Tested with v14.4.0)
+- [.NET SDK](https://dotnet.microsoft.com/en-us/download)
+    - verify with `dotnet --version` (Tested with 7.0.306)
+-  [Docker Desktop] (https://www.docker.com/products/docker-desktop/)
+    - verify with `docker --version` (Tested with 28.0.0)
 
----
+## Contributing
 
-# Contribution Guide
+#### Local Setup
 
-You can find the contribution guide in the [Knowledge Base](https://nfdi4plants.org/nfdi4plants.knowledgebase/docs/guides/swate_template-contribution.html).
+1. Setup dotnet tools
+
+   `dotnet tool restore`
+
+2. Install NPM dependencies
+   
+    `npm install`
+
+3. When you are adapting the api layer create a new client in order to avoid possible problems when pushing to main. Run one of this lines, in the project root of STRClient depending on the nswag version you are using.
+
+
+Utilize a local version of nswag
+
+```bash
+<path to nswag tool>\NSwag\Net80\dotnet-nswag.exe openapi2csclient /input:https://str.nfdi4plants.org/swagger/v1/swagger.json /namespace:STRClient /output:STRClient.cs
+```
+
+or
+
+Utilize the nswag CLI being installed as part of the .NET project
+
+```bash
+nswag openapi2csclient /input:https://str.nfdi4plants.org/swagger/v1/swagger.json /output:STRClient.cs /namespace:STRClient
+```
+
+4. In Visual Studio you have to select docker-compose as the starting project and then you can start it for local tests
