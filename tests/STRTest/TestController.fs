@@ -440,6 +440,9 @@ type TestController (?templatesPath) =
         let parentFolderTests =
             fileInfos
             |> Array.mapi (fun i fileInfo -> this.TestCheckParentFolder(fileInfo, i))
+        let versioningTests =
+            fileInfos
+            |> Array.map (fun fileInfo -> this.TestCheckFileVersioning(fileInfo))
         let runAreAllDBTemplatesAvailableTests =
             dbTemplates
             |> Array.map (fun dbTemplate -> this.TestAreAllDBTemplatesAvailable(dbTemplate, localTemplates))
@@ -451,6 +454,7 @@ type TestController (?templatesPath) =
                 ambiguousTests
                 similarityTests
                 parentFolderTests
+                versioningTests
                 runAreAllDBTemplatesAvailableTests
             |]
             |> Array.concat

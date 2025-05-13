@@ -55,7 +55,7 @@ nswag openapi2csclient /input:https://str.nfdi4plants.org/swagger/v1/swagger.jso
 
 #### How to add a new Template
 
-* use new template for PRs!
+* Use the Template(s) requested issue-template when adding new or updating existing templates
 
 #### How to contribute to STRService
 
