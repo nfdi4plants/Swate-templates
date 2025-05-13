@@ -19,7 +19,28 @@ You can find a representation of the STR porject relationships [here](tree/str/s
 -  [Docker Desktop](https://www.docker.com/products/docker-desktop/)
     - verify with `docker --version` (Tested with 4.40.0)
 
-#### Worflow
+## Worflow
+
+#### Create Template
+
+* Check whether a similar template exists already or not and you really need a new one
+* Create a new template with [Swate](https://github.com/nfdi4plants/Swate) or [ARCtrl](https://github.com/nfdi4plants/ARCtrl)
+* Move the template into a subdirectory of [Templates](templates)
+* Create a directory with the name of the template and move the template into it
+* Rename the template file based on this pattern: Filename_vMaijorversion.MinorVersion.Patchversion
+* Commit changes
+
+#### Update Template
+
+* Copy existing template
+* The newly copied template stays in the same folder as the original one
+* Rename the copied template file based on this pattern: Filename_vMaijorversion.MinorVersion.Patchversion
+* Update the file content, using [Swate](https://github.com/nfdi4plants/Swate) or [ARCtrl](https://github.com/nfdi4plants/ARCtrl)
+* Commit changes
+
+#### Update STRService
+
+
 
 [(wip) Graph of the workflow](tree/Feature_STR_UpdateContributionGuide/src/STRCI)
 
