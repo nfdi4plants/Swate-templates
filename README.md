@@ -58,5 +58,5 @@ nswag openapi2csclient /input:https://str.nfdi4plants.org/swagger/v1/swagger.jso
 
 #### How to contribute to STRService
 
-* Update the STRClient.cs file after you have finished your work in order to avoid failings when pushing to main. Run the command given by step [3](#### Local Setup)
+* Update the STRClient.cs file after you have finished your work in order to avoid failings when pushing to main. Run the command given by step [3](#local setup)
 
