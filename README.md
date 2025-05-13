@@ -1,24 +1,5 @@
 # Swate Template Registry
 
-Swate template registry is a tool used to add new templates to the database, update existing ones, and enable viewing those.
-
-You can finde the Template Registry Service [here](https://str.nfdi4plants.org/).
-
-You can find the OpenAPI (Swagger) specification [here](https://str.nfdi4plants.org/swagger/index.html).
-
-You can find a representation of the STR porject relationships [here](tree/str/src).
-
-#### Requirements
-
-- [npm and nswag]
-    - install nswag with 'dotnet tool install --global NSwag.ConsoleCore' (Tested with v14.4.0)
-    - verify with `npm --version` (Tested with 9.2.0)
-    - verify with `nswag --version` (Tested with 14.4.0)
-- [.NET SDK](https://dotnet.microsoft.com/en-us/download)
-    - verify with `dotnet --version` (Tested with 7.0.306)
--  [Docker Desktop](https://www.docker.com/products/docker-desktop/)
-    - verify with `docker --version` (Tested with 4.40.0)
-
 ## Worflow
 
 #### Create Template
@@ -57,7 +38,28 @@ You can find a representation of the STR porject relationships [here](tree/str/s
 * Check for right versioning of template file name
 * Check whether all database tempaltes are locally available or not
 
-[(wip) Graph of the workflow](tree/Feature_STR_UpdateContributionGuide/src/STRCI)
+## Overview
+
+Swate template registry is a tool used to add new templates to the database, update existing ones, and enable viewing those.
+
+You can finde the Template Registry Service [here](https://str.nfdi4plants.org/).
+
+You can find the OpenAPI (Swagger) specification [here](https://str.nfdi4plants.org/swagger/index.html).
+
+You can find a representation of the STR porject relationships [here](str/src).
+
+#### Requirements
+
+- [npm and nswag]
+    - install nswag with 'dotnet tool install --global NSwag.ConsoleCore' (Tested with v14.4.0)
+    - verify with `npm --version` (Tested with 9.2.0)
+    - verify with `nswag --version` (Tested with 14.4.0)
+- [.NET SDK](https://dotnet.microsoft.com/en-us/download)
+    - verify with `dotnet --version` (Tested with 7.0.306)
+-  [Docker Desktop](https://www.docker.com/products/docker-desktop/)
+    - verify with `docker --version` (Tested with 4.40.0)
+
+[(wip) Graph of the workflow](Feature_STR_UpdateContributionGuide/src/STRCI)
 
 ## Contributing
 
