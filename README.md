@@ -1,12 +1,12 @@
 # Swate Template Registry
 
-Swate template registry is a tool used to add new templates to the database, publish existing ones and enable viewing those.
+Swate template registry is a tool used to add new templates to the database, update existing ones, and enable viewing those.
 
-The service for checking and downloading templates can be found [here](https://str.nfdi4plants.org/).
+You can finde the Template Registry Service [here](https://str.nfdi4plants.org/).
 
-The swagger code for the open api is [here](https://str.nfdi4plants.org/swagger/index.html).
+You can find the OpenAPI (Swagger) specification [here](https://str.nfdi4plants.org/swagger/index.html).
 
-The relationship of the different projects are represented [here](https://github.com/nfdi4plants/Swate-templates/tree/str/src).
+You can find a representation of the STR porject relationships [here](https://github.com/nfdi4plants/Swate-templates/tree/str/src).
 
 #### Requirements
 
