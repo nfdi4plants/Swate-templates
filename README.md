@@ -8,7 +8,7 @@ The swagger code for the open api is [here](https://str.nfdi4plants.org/swagger/
 
 The relationship of the different projects are represented [here](https://github.com/nfdi4plants/Swate-templates/tree/str/src).
 
-#### Requirementss
+#### Requirements
 
 - [npm and nswag]
     - install nswag with 'dotnet tool install --global NSwag.ConsoleCore' (Tested with v14.4.0)
@@ -18,6 +18,10 @@ The relationship of the different projects are represented [here](https://github
     - verify with `dotnet --version` (Tested with 7.0.306)
 -  [Docker Desktop] (https://www.docker.com/products/docker-desktop/)
     - verify with `docker --version` (Tested with 28.0.0)
+
+#### Worflow
+
+[(wip) Graph of the workflow](https://github.com/nfdi4plants/Swate-templates/tree/Feature_STR_UpdateContributionGuide/src/STRCI)
 
 ## Contributing
 
