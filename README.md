@@ -6,7 +6,7 @@ You can finde the Template Registry Service [here](https://str.nfdi4plants.org/)
 
 You can find the OpenAPI (Swagger) specification [here](https://str.nfdi4plants.org/swagger/index.html).
 
-You can find a representation of the STR porject relationships [here](https://github.com/nfdi4plants/Swate-templates/tree/str/src).
+You can find a representation of the STR porject relationships [here](tree/str/src).
 
 #### Requirements
 
@@ -21,7 +21,7 @@ You can find a representation of the STR porject relationships [here](https://gi
 
 #### Worflow
 
-[(wip) Graph of the workflow](https://github.com/nfdi4plants/Swate-templates/tree/Feature_STR_UpdateContributionGuide/src/STRCI)
+[(wip) Graph of the workflow](tree/Feature_STR_UpdateContributionGuide/src/STRCI)
 
 ## Contributing
 
