@@ -51,6 +51,9 @@ let main argv =
         //let path = @"../STRCI/templates-to-json_v1.0.0.fsx"
         let relativePath = @"../STRCI/Test.fsx"
         let fullPath = Path.GetFullPath(relativePath, Directory.GetCurrentDirectory())
+
+        printfn "fullPath: %s" fullPath
+
         let psi = ProcessStartInfo("dotnet", $"fsi \"{fullPath}\"")
 
         psi.RedirectStandardOutput <- true
