@@ -47,32 +47,12 @@ let createTemplatesInDB () =
 [<EntryPoint>]
 let main argv = 
     match argv |> Array.toList with
-    | ["Release_1.0.0"] ->
-        //let path = @"../STRCI/templates-to-json_v1.0.0.fsx"
-        let relativePath = "../src/STRCI/Test.fsx"
-        let fullPath = Path.GetFullPath(relativePath, Directory.GetCurrentDirectory())
-
-        let fullPath = System.IO.Path.Combine(System.Environment.CurrentDirectory, "STRCI/Test.fsx")
-
-        //System.Environment.CurrentDirectory 
-
-        printfn "Running script at: %s" fullPath
-
-        let psi = ProcessStartInfo("dotnet", $"fsi {fullPath}")
-        psi.RedirectStandardOutput <- true
-        psi.UseShellExecute <- false
-        psi.WorkingDirectory <- Directory.GetCurrentDirectory()
-
-        let proc = Process.Start(psi)
-        let output = proc.StandardOutput.ReadToEnd()
-        proc.WaitForExit()
+    | ["Release_2.0.0"] ->
+        STRCIController.TemplatesToJsonV2()
         0
-    //| ["Release_2.0.0"] ->
-    //    STRCIController.TemplatesToJsonV2()
-    //    1
-    //| ["CreateTemplatesInDB"] ->
-    //    createTemplatesInDB()
-    //    2
+    | ["CreateTemplatesInDB"] ->
+        createTemplatesInDB()
+        1
     | _ ->
         printfn "Not the right Usage given"
-        3
+        2

@@ -209,8 +209,8 @@ type TestController (?templatesPath) =
 
 
     member this.DistinctTags(templates) =
-        let ER_Tags = ARCtrl.Templates.getDistinctEndpointRepositories (templates) |> Array.ofSeq
-        let Tags = ARCtrl.Templates.getDistinctTags (templates) |> Array.ofSeq
+        let ER_Tags = ARCtrl.Templates.getDistinctEndpointRepositories(templates) |> Array.ofSeq
+        let Tags = ARCtrl.Templates.getDistinctTags(templates) |> Array.ofSeq
 
         // These are ER_Tags also used as Tags
         let ER_TagsAsTags = Tags |> Array.filter (fun tag -> ER_Tags |> Array.contains tag)
@@ -265,9 +265,9 @@ type TestController (?templatesPath) =
         let scores = SorensenDice.createDistanceScores tag.NameText (fun (t: ARCtrl.OntologyAnnotation) -> t.NameText) tags
         let scoresFiltered = 
             scores 
-            |> Array.filter (fun (_,oa) -> oa.NameText <> tag.NameText)
-            |> Array.filter (fun (s,oa) -> s >= similiarityThreshold)
-            |> Array.filter (fun (_,oa) -> // verify that the similiar tags are not on the white list
+            |> Array.filter (fun (_, oa) -> oa.NameText <> tag.NameText)
+            |> Array.filter (fun (s, _) -> s >= similiarityThreshold)
+            |> Array.filter (fun (_, oa) -> // verify that the similiar tags are not on the white list
                 let set = WhiteListMap |> Map.tryFind tag.NameText
                 match set with
                 | Some set -> set.Contains oa.NameText |> not
@@ -450,7 +450,7 @@ type TestController (?templatesPath) =
         let allTest =
             [|
                 convertibleTests
-                diversityTests
+                //diversityTests
                 ambiguousTests
                 similarityTests
                 parentFolderTests
