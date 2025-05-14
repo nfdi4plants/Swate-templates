@@ -49,7 +49,7 @@ let main argv =
     match argv |> Array.toList with
     | ["Release_1.0.0"] ->
         //let path = @"../STRCI/templates-to-json_v1.0.0.fsx"
-        let relativePath = "/STRCI/Test.fsx"
+        let relativePath = "../src/STRCI/Test.fsx"
         let fullPath = Path.GetFullPath(relativePath, Directory.GetCurrentDirectory())
 
         if not (File.Exists(fullPath)) then
