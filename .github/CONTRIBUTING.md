@@ -28,13 +28,13 @@ Utilize the nswag CLI being installed as part of the .NET project
 nswag openapi2csclient /input:https://str.nfdi4plants.org/swagger/v1/swagger.json /output:STRClient.cs /namespace:STRClient
 ```
 
-4. In Visual Studio you have to select docker-compose as the starting project and then you can start it for local tests
+#### 4. In Visual Studio you have to select docker-compose as the starting project and then you can start it for local tests
 
 ![Logo](images/SelectDockerDesktop.png)
 
 #### How to add a new Template
 
-* Use the Template(s) requested issue-template when adding new or updating existing templates
+* When adding new or updating existing templates, create an issue using the "Template(s) request" issue-template, add or update the templates and create a pull-request
 
 #### How to contribute to STRService
 
