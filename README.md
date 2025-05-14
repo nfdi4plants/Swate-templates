@@ -62,3 +62,7 @@ You can find a representation of the STR project relationships [here](src).
     - verify with `docker --version` (Tested with 4.40.0)
 
 [(wip) Graph of the workflow](src/STRCI)
+
+#### Contributing
+
+A guide on how to contribute new templates or the STR service can be found [here](.github\CONTRIBUTING.md)
