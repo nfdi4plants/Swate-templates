@@ -52,6 +52,8 @@ let main argv =
         let relativePath = "../STRCI/Test.fsx"
         let fullPath = Path.GetFullPath(relativePath, Directory.GetCurrentDirectory())
 
+        printfn "fullPath: %s" fullPath
+
         let psi = ProcessStartInfo("fsi", $"\"{fullPath}\"")
 
         psi.RedirectStandardOutput <- true
