@@ -1,12 +1,12 @@
 # Swate Template Registry
 
-## Worflow
+## Workflow
 
 #### Create Template
 
 * Check whether a similar template exists already or not and you really need a new one
-* Create a new template with [Swate](https://github.com/nfdi4plants/Swate) or [ARCtrl](https://github.com/nfdi4plants/ARCtrl)
-* Move the template into a subdirectory of [Templates](templates)
+* Create a new template with [Swate](https://github.com/nfdi4plants/Swate) or [ARCtrl](https://github.com/nfdi4plants/ARCtrl), following the [template creation guide}(https://nfdi4plants.github.io/nfdi4plants.knowledgebase/swate/swate-template-contribution/)
+* Move the template into a subdirectory of [Templates](templates) corresponding to your organization
 * Create a directory with the name of the template and move the template into it
 * Rename the template file based on this pattern: Filename_vMaijorversion.MinorVersion.Patchversion
 * Commit changes and create PR to main
@@ -15,8 +15,8 @@
 
 * Copy existing template
 * The newly copied template stays in the same folder as the original one
-* Rename the copied template file based on this pattern: Filename_vMaijorversion.MinorVersion.Patchversion
-* Update the file content, using [Swate](https://github.com/nfdi4plants/Swate) or [ARCtrl](https://github.com/nfdi4plants/ARCtrl)
+* Rename the copied template file based on this pattern: Filename_vMaijorversion.MinorVersion.Patchversion, updating the version
+* Update the file content, using [Swate](https://github.com/nfdi4plants/Swate) or [ARCtrl](https://github.com/nfdi4plants/ARCtrl), and update the version in the template metadata
 * Commit changes and create PR to main
 
 #### Update STRService
@@ -28,15 +28,15 @@
 
 #### Pull-Request to main
 
-* Run tests for templates
-* Checks whether all local templates are parable or not
+* The following tests are run, when a pull-request to main is created:
+* Ccheck whether all local templates can be parsed
 * Checks for required diversity of official templates
 * Check for distinct tags
 * Check for Ambiguousness
 * Check for similarity of provided tags
-* Check for right named parent folder of templates
-* Check for right versioning of template file name
-* Check whether all database tempaltes are locally available or not
+* Check for correctly named parent folder of templates
+* Check for correct versioning of template file name
+* Check whether all database templates are locally available or not
 * Generates new STRClient.cs when a change to api related code happened -> Can break the release
 * Release of STR and generation of new JSON file
 
@@ -44,11 +44,11 @@
 
 Swate template registry is a tool used to add new templates to the database, update existing ones, and enable viewing those.
 
-You can finde the Template Registry Service [here](https://str.nfdi4plants.org/).
+You can find the Template Registry Service [here](https://str.nfdi4plants.org/).
 
 You can find the OpenAPI (Swagger) specification [here](https://str.nfdi4plants.org/swagger/index.html).
 
-You can find a representation of the STR porject relationships [here](src).
+You can find a representation of the STR project relationships [here](src).
 
 #### Requirements
 
