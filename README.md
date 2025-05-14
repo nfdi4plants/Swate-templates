@@ -1,5 +1,9 @@
 # Swate Template Registry
 
+Swate template registry is a tool used to add new templates to the database, update existing ones, and enable viewing those.
+
+You can find the Template Registry Service [here](https://str.nfdi4plants.org/).
+
 ## Workflow
 
 #### Create Template
@@ -30,21 +34,20 @@
 
 * The following tests are run, when a pull-request to main is created:
 * Check whether all local templates can be parsed
-* Checks for required diversity of official templates
 * Check for distinct tags (Endpoint repository tags vs. general tags)
 * Check for ambiguousness of tags
 * Check for similarity of provided tags
 * Check for correctly named parent folder of templates
 * Check for correct versioning of template file name
 * Check whether all database templates are locally available or not
-* Generates new STRClient.cs when a change to api related code happened -> Can break the release
-* Release of STR and generation of new JSON file
+
+Check whether the tests are running through or not and if not fix the problem!
+
+Generates new STRClient.cs when a change to api related code happened -> Can break the release
+
+Release of STR and generation of new JSON file
 
 ## Overview
-
-Swate template registry is a tool used to add new templates to the database, update existing ones, and enable viewing those.
-
-You can find the Template Registry Service [here](https://str.nfdi4plants.org/).
 
 You can find the OpenAPI (Swagger) specification [here](https://str.nfdi4plants.org/swagger/index.html).
 
