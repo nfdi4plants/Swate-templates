@@ -15,10 +15,8 @@
     G --> H(Run Tests for local templates)
     H --> I(Tests:
         - Parse templates
-        - Check official ones for diversity
-        - Check for distinct tags
-        - Check for ambiguousness
-        - Check tags for similarity
+        - Check for distinction betweeen endpoint repository tags and normal ones
+        - Check for ambiguousness among all tags
         - Check for right parent folder
         - Check for right versioning
         - Are all db templates available
