@@ -52,15 +52,19 @@ let main argv =
         let relativePath = "../STRCI/Test.fsx"
         let fullPath = Path.GetFullPath(relativePath, Directory.GetCurrentDirectory())
 
-        printfn "fullPath: %s" fullPath
+        printfn "Running script at: %s" fullPath
 
-        let psi = ProcessStartInfo("fsi", $"\"{fullPath}\"")
-
+        let psi = ProcessStartInfo("dotnet", "fsi")
+        psi.RedirectStandardInput <- true
         psi.RedirectStandardOutput <- true
         psi.UseShellExecute <- false
-        psi.WorkingDirectory <- Directory.GetCurrentDirectory()
+        psi.WorkingDirectory <- Path.GetDirectoryName(fullPath)
 
         let proc = Process.Start(psi)
+        let scriptText = File.ReadAllText(fullPath)
+        proc.StandardInput.Write(scriptText)
+        proc.StandardInput.Close()
+
         let output = proc.StandardOutput.ReadToEnd()
         proc.WaitForExit()
         0
