@@ -48,7 +48,8 @@ let createTemplatesInDB () =
 let main argv = 
     match argv |> Array.toList with
     | ["Release_1.0.0"] ->
-        let path = @"../STRCI/templates-to-json_v1.0.0.fsx"
+        //let path = @"../STRCI/templates-to-json_v1.0.0.fsx"
+        let path =  @"../STRCI/Test.fsx"
         let psi = ProcessStartInfo("dotnet", $"fsi {path}")
         psi.RedirectStandardOutput <- true
         psi.UseShellExecute <- false
@@ -56,12 +57,12 @@ let main argv =
         let output = proc.StandardOutput.ReadToEnd()
         proc.WaitForExit()
         0
-    | ["Release_2.0.0"] ->
-        STRCIController.TemplatesToJsonV2()
-        1
-    | ["CreateTemplatesInDB"] ->
-        createTemplatesInDB()
-        2
+    //| ["Release_2.0.0"] ->
+    //    STRCIController.TemplatesToJsonV2()
+    //    1
+    //| ["CreateTemplatesInDB"] ->
+    //    createTemplatesInDB()
+    //    2
     | _ ->
         printfn "Not the right Usage given"
         3
