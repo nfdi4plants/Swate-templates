@@ -54,7 +54,7 @@ let main argv =
 
         printfn "fullPath: %s" fullPath
 
-        let psi = ProcessStartInfo("dotnet", $"fsi \"{fullPath}\"")
+        let psi = ProcessStartInfo("dotnet", $"fsi --exec \"{fullPath}\"")
 
         psi.RedirectStandardOutput <- true
         psi.UseShellExecute <- false
