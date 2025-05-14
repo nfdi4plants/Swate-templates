@@ -51,14 +51,14 @@ let main argv =
         //let path = @"../STRCI/templates-to-json_v1.0.0.fsx"
         let relativePath = "../STRCI/Test.fsx"
         let fullPath = Path.GetFullPath(relativePath, Directory.GetCurrentDirectory())
-
+        let workingDir = Path.GetDirectoryName(fullPath)
         printfn "Running script at: %s" fullPath
 
         let psi = ProcessStartInfo("dotnet", "fsi")
         psi.RedirectStandardInput <- true
         psi.RedirectStandardOutput <- true
         psi.UseShellExecute <- false
-        psi.WorkingDirectory <- Path.GetDirectoryName(fullPath)
+        psi.WorkingDirectory <- workingDir
 
         let proc = Process.Start(psi)
         let scriptText = File.ReadAllText(fullPath)
