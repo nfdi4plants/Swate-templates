@@ -51,18 +51,18 @@ let main argv =
         //let path = @"../STRCI/templates-to-json_v1.0.0.fsx"
         let relativePath = "../STRCI/Test.fsx"
         let fullPath = Path.GetFullPath(relativePath, Directory.GetCurrentDirectory())
+
+        if not (File.Exists(fullPath)) then
+            failwithf "Script file not found: %s" fullPath
+
         printfn "Running script at: %s" fullPath
 
-        let psi = ProcessStartInfo("dotnet", "fsi")
-        psi.RedirectStandardInput <- true
+        let psi = ProcessStartInfo("dotnet", $"fsi {fullPath}")
         psi.RedirectStandardOutput <- true
         psi.UseShellExecute <- false
+        psi.WorkingDirectory <- Directory.GetCurrentDirectory()
 
         let proc = Process.Start(psi)
-        let scriptText = File.ReadAllText(fullPath)
-        proc.StandardInput.Write(scriptText)
-        proc.StandardInput.Close()
-
         let output = proc.StandardOutput.ReadToEnd()
         proc.WaitForExit()
         0
