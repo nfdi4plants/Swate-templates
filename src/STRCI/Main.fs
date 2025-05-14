@@ -49,9 +49,9 @@ let main argv =
     match argv |> Array.toList with
     | ["Release_1.0.0"] ->
         //let path = @"../STRCI/templates-to-json_v1.0.0.fsx"
-        let relativePath =  @"../STRCI/Test.fsx"
-        let path = Path.GetFullPath(relativePath, Directory.GetCurrentDirectory())
-        let psi = ProcessStartInfo("dotnet", $"fsi {path}")
+        let relativePath = @"../STRCI/Test.fsx"
+        let fullPath = Path.GetFullPath(relativePath, Directory.GetCurrentDirectory())
+        let psi = ProcessStartInfo("dotnet", $"fsi \"{fullPath}\"")
         psi.RedirectStandardOutput <- true
         psi.UseShellExecute <- false
         let proc = Process.Start(psi)
