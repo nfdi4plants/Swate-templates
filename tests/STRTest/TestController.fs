@@ -66,7 +66,7 @@ open Constants
 
 type TestController (?templatesPath) = 
 
-    member this.VersionPattern = @"_v\d+\.\d+\.\d+$"
+    member this.VersionPattern = @"_v\d+\.\d+\.\d+"
 
     member this.Client =
         let httpClient = new System.Net.Http.HttpClient()
@@ -370,12 +370,41 @@ type TestController (?templatesPath) =
 
         this.MatchResult(result)
 
+    member this.TestCheckFileNameVersioning(file: FileInfo, i) =
+        testCase $"{file.Name}_{i}" <| fun _ ->
+            let fileName = Path.GetFileNameWithoutExtension(file.Name)
+            Expect.isTrue (Regex.IsMatch(fileName, this.VersionPattern)) $"The file {file.Name} contains no version information"
+
+    member this.RunTestCheckFileNameVersioning(templatePath) =
+        let directories =
+            DirectoryInfo(templatePath).GetDirectories()
+            |> Array.filter (fun directory -> not (directory.Name.ToLower() = "test"))
+        let fileInfos =
+            directories
+            |> Array.collect(fun directory ->
+                directory.GetFiles("*.xlsx", SearchOption.AllDirectories))
+        let testSetup =
+            fileInfos
+            |> Array.mapi (fun i fileInfo -> this.TestCheckFileNameVersioning(fileInfo, i))
+            |> List.ofArray
+        let tests = testList "Check template file name versioning" (testSetup)
+        let result = Tests.runTestsWithCLIArgs [] [||] tests
+
+        this.MatchResult(result)
+
+    member this.CheckFileVersioning(file: FileInfo) =
+        let regex = new Regex(this.VersionPattern)
+        let potMatch = regex.Match(file.Name)
+        let fileVersion = if System.String.IsNullOrWhiteSpace(potMatch.Value) then "" else potMatch.Value.Substring(2)
+        let template = STRCIController.CreateTemplateFromXlsx file
+        fileVersion = template.Version && not (System.String.IsNullOrWhiteSpace fileVersion)
+
     member this.TestCheckFileVersioning(file: FileInfo) =
         testCase $"{file.Name}" <| fun _ ->
-            let fileName = Path.GetFileNameWithoutExtension(file.Name)
-            Expect.equal (Regex.IsMatch(fileName, this.VersionPattern)) true $"The file {file.Name} contains no version information"
+            let rightVersion = this.CheckFileVersioning(file)
+            Expect.isTrue rightVersion $"The file {file.Name} contains no version information"
 
-    member this.RunTestCheckFileVersioning(templatePath) =
+     member this.RunTestCheckCheckFileVersioning(templatePath) =
         let directories =
             DirectoryInfo(templatePath).GetDirectories()
             |> Array.filter (fun directory -> not (directory.Name.ToLower() = "test"))
@@ -440,6 +469,9 @@ type TestController (?templatesPath) =
         let parentFolderTests =
             fileInfos
             |> Array.mapi (fun i fileInfo -> this.TestCheckParentFolder(fileInfo, i))
+        let fileNameVersioningTests =
+            fileInfos
+            |> Array.mapi (fun i fileInfo -> this.TestCheckFileNameVersioning(fileInfo, i))
         let versioningTests =
             fileInfos
             |> Array.map (fun fileInfo -> this.TestCheckFileVersioning(fileInfo))
@@ -454,6 +486,7 @@ type TestController (?templatesPath) =
                 ambiguousTests
                 similarityTests
                 parentFolderTests
+                fileNameVersioningTests
                 versioningTests
                 runAreAllDBTemplatesAvailableTests
             |]
