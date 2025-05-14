@@ -52,6 +52,10 @@ let main argv =
         let relativePath = "../src/STRCI/Test.fsx"
         let fullPath = Path.GetFullPath(relativePath, Directory.GetCurrentDirectory())
 
+        let fullPath = System.IO.Path.Combine(System.Environment.CurrentDirectory, "Test.fsx")
+
+        //System.Environment.CurrentDirectory 
+
         if not (File.Exists(fullPath)) then
             failwithf "Script file not found: %s" fullPath
 
