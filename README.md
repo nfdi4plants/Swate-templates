@@ -41,7 +41,7 @@ You can find the Template Registry Service [here](https://str.nfdi4plants.org/).
 * Check for correct versioning of template file name
 * Check whether all database templates are locally available or not
 
-Check whether the tests are running through or not and if not fix the problem!
+Check whether the tests are passing. If they fail, try to fix the problem or wait for a response from the curators!
 
 Generates new STRClient.cs when a change to api related code happened -> Can break the release
 
