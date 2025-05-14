@@ -48,7 +48,8 @@ else
 
     private TemplateSummary[] FilteredTemplates => string.IsNullOrWhiteSpace(searchTerm)
         ? TemplateSummaries
-        : TemplateSummaries?.Where(r => r.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)).ToArray();
+        : TemplateSummaries?.Where(r => r.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase))
+        .ToArray();
 
 
     protected override async Task OnInitializedAsync()
@@ -94,7 +95,9 @@ else
                             TotalDownloads = downloads
                         };
                     }
-                ).ToArray();
+                )
+                .OrderBy(r => r.Name)
+                .ToArray();
 
         TemplateSummaries = templateSummaries;
     }

@@ -1,16 +1,71 @@
-# Swate Templates
+# Swate Template Registry
 
-A collection of minimal information standard templates for [Swate](https://nfdi4plants.org/nfdi4plants.knowledgebase/docs/implementation/Swate.html).
+Swate template registry is a tool used to add new templates to the database, update existing ones, and enable viewing those.
 
-The templates in this repository are crawled by [Swobup](https://github.com/nfdi4plants/Swobup) and written into the production Swate database.
+You can find the Template Registry Service [here](https://str.nfdi4plants.org/).
 
-Anyone can access them via the [template search](https://nfdi4plants.org/nfdi4plants.knowledgebase/docs/SwateManual/Docs05-Templates.html) function.
+## Workflow
 
-:rocket: In addition, the templates are now automatically converted via a github-action upon every push into a [templates.json](https://github.com/nfdi4plants/Swate-templates/releases/download/latest/templates.json) file, which contains **all** templates.
-Note, that this feature is not yet implemented into all associated tools (e.g. Swate, SwateDB). For details check "releases" on the right.
+#### Create Template
 
----
+* Check whether a similar template exists already or not and you really need a new one
+* Create a new template with [Swate](https://github.com/nfdi4plants/Swate) or [ARCtrl](https://github.com/nfdi4plants/ARCtrl), following the [template creation guide](https://nfdi4plants.github.io/nfdi4plants.knowledgebase/swate/swate-template-contribution/)
+* Move the template into a subdirectory of [Templates](templates) corresponding to your organization
+* Create a directory with the name of the template and move the template into it
+* Rename the template file based on this pattern: Filename_vMaijorversion.MinorVersion.Patchversion
+* Commit changes and create PR to main
 
-# Contribution Guide
+#### Update Template
 
-You can find the contribution guide in the [Knowledge Base](https://nfdi4plants.org/nfdi4plants.knowledgebase/docs/guides/swate_template-contribution.html).
+* Copy existing template
+* The newly copied template stays in the same folder as the original one
+* Rename the copied template file based on this pattern: Filename_vMaijorversion.MinorVersion.Patchversion, updating the version
+* Update the file content, using [Swate](https://github.com/nfdi4plants/Swate) or [ARCtrl](https://github.com/nfdi4plants/ARCtrl), and update the version in the template metadata
+* Commit changes and create PR to main
+
+#### Update STRService
+
+* Add new functionality or fix a bug
+* Generate STRClient.cs by following this [step](.github/CONTRIBUTING.md#3-strclient-generation)
+* Fix potential problems in the newly generated STRClient.cs
+* Commit changes and create PR to main
+
+#### Pull-Request to main
+
+* The following tests are run, when a pull-request to main is created:
+* Check whether all local templates can be parsed
+* Check for distinct tags (Endpoint repository tags vs. general tags)
+* Check for ambiguousness of tags
+* Check for similarity of provided tags
+* Check for correctly named parent folder of templates
+* Check for correct versioning of template file name
+* Check whether all database templates are locally available or not
+
+Check whether the tests are passing. If they fail, try to fix the problem or wait for a response from the curators!
+
+Generates new STRClient.cs when a change to api related code happened -> Can break the release
+
+Release of STR and generation of new JSON file
+
+## Overview
+
+You can find the OpenAPI (Swagger) specification [here](https://str.nfdi4plants.org/swagger/index.html).
+
+You can find a representation of the STR project relationships [here](src).
+
+#### Requirements
+
+- [npm and nswag]
+    - install nswag with 'dotnet tool install --global NSwag.ConsoleCore' (Tested with v14.4.0)
+    - verify with `npm --version` (Tested with 9.2.0)
+    - verify with `nswag --version` (Tested with 14.4.0)
+- [.NET SDK](https://dotnet.microsoft.com/en-us/download)
+    - verify with `dotnet --version` (Tested with 7.0.306)
+-  [Docker Desktop](https://www.docker.com/products/docker-desktop/)
+    - verify with `docker --version` (Tested with 4.40.0)
+
+[(wip) Graph of the workflow](src/STRCI)
+
+#### Contributing
+
+A guide on how to contribute new templates or the STR service can be found [here](.github/CONTRIBUTING.md)
