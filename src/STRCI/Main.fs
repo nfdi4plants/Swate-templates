@@ -52,7 +52,8 @@ let main argv =
         let relativePath = "../STRCI/Test.fsx"
         let fullPath = Path.GetFullPath(relativePath, Directory.GetCurrentDirectory())
 
-        let psi = ProcessStartInfo("dotnet", $"fsi --exec \"{fullPath}\"")
+        let psi = ProcessStartInfo("fsi", $"\"{fullPath}\"")
+
         psi.RedirectStandardOutput <- true
         psi.UseShellExecute <- false
         psi.WorkingDirectory <- Directory.GetCurrentDirectory()
