@@ -315,32 +315,6 @@ type STRCIController =
             )
         latestTemplates
 
-    static member TemplatesToJsonV1 () =
-
-        let currentDirectory, outputPath, outputFileName, reportFileName = STRCIController.CreateFileNames()
-
-        let ensureDirectory (dirPath : string) =
-            if not (Directory.Exists (dirPath)) then
-                Directory.CreateDirectory (dirPath) |> ignore
-
-        ensureDirectory outputPath
-
-        let log = Logger(reportFileName)
-
-        log.Info("Starting templates-to-json.fsx")
-
-        let latestTemplates = STRCIController.GetLatestTemplates(currentDirectory, log)
-
-        let json = 
-            latestTemplates 
-            |> Json.Templates.toJsonString 2
-
-        log.Info("Write json")
-
-        File.WriteAllText(outputFileName, json)
-
-        log.Info("Finished templates-to-json.fsx")
-
     static member TemplatesToJsonV2 () =
 
         let version = "2.0.0"

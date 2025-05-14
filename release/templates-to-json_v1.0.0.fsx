@@ -49,6 +49,15 @@ let xlsxFiles = files |> Array.filter (fun f -> f.EndsWith(".xlsx"))
 
 log.Info(sprintf "Found %d xlsx files" xlsxFiles.Length)
 
+let getLatestTemplate (templates: (string * Template) []) =
+     templates
+     |> Array.sortByDescending (fun (name, template) -> template.Version)
+     //enables checking, whether the templates are 
+     //|> Array.map (fun template -> 
+     //    printfn "template.Name: %s template.Version: %s" template.Name template.Version
+     //    template)
+     |> Array.head
+
 let templates = 
     xlsxFiles
     |> Array.choose (fun f -> 
@@ -63,10 +72,19 @@ let templates =
             None
     )
 
+let latestTemplates =
+    let groupedTemplates =
+        templates
+        |> Array.groupBy (fun (name, template) -> template.Id)
+    groupedTemplates
+    |> Array.map (fun (_, templates) -> 
+        getLatestTemplate templates
+    )
+
 log.Info(sprintf "Success! Read %d templates" templates.Length)
 
 let json = 
-    templates 
+    latestTemplates 
     |> Json.Templates.toJsonString 2
 
 log.Info("Write json")
