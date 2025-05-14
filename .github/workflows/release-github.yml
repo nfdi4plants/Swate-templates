@@ -17,4 +17,6 @@ jobs:
       with:
         dotnet-version: '8.0.x'
     - name: convert and publish 1.0.0
+      env:
+        STR_PAT: ${{ secrets.STR_PAT }}
       run: dotnet run --project src/STRCI/STRCI.fsproj -- Release_1.0.0
