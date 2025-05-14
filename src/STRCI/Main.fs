@@ -52,7 +52,7 @@ let main argv =
         let relativePath = "../src/STRCI/Test.fsx"
         let fullPath = Path.GetFullPath(relativePath, Directory.GetCurrentDirectory())
 
-        let fullPath = System.IO.Path.Combine(System.Environment.CurrentDirectory, "Test.fsx")
+        let fullPath = System.IO.Path.Combine(System.Environment.CurrentDirectory, "src/STRCI/Test.fsx")
 
         //System.Environment.CurrentDirectory 
 
