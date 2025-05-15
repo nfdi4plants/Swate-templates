@@ -19,7 +19,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="ARCtrl" Version="2.0.0-beta.3" />
+    <PackageReference Include="ARCtrl" Version="2.0.0-beta.2" />
     <PackageReference Include="FsSpreadsheet.Net" Version="6.2.0" />
   </ItemGroup>
 
