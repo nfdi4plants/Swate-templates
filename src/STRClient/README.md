@@ -17,19 +17,3 @@ or
 ```bash
 nswag openapi2csclient /input:https://str.nfdi4plants.org/swagger/v1/swagger.json /output:STRClient.cs /namespace:STRClient
 ```
-
-# Workflow
-
-```mermaid
-    flowchart TD
-    A[Add / update features] --> B{Create new STRClient manually}
-    B --> D(Nothing happens)
-    B --> |Changes to API| C(Created / updated STRClient.cs)
-    C --> |Errors in STRClient.cd| A
-    C --> E
-    D --> E(Push to main)
-    E --> F(Create new STRClient automatically)
-    F --> |Errors in STRClient.cd| G(No release)
-    F --> H(Release)
-    
-```
