@@ -64,7 +64,7 @@ You can find a representation of the STR project relationships [here](src).
 -  [Docker Desktop](https://www.docker.com/products/docker-desktop/)
     - verify with `docker --version` (Tested with 4.40.0)
 
-[(wip) Graph of the workflow](src/STRCI)
+[Graph of the workflow](src/STRCI)
 
 #### Contributing
 
