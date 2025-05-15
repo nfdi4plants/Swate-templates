@@ -58,7 +58,7 @@ let main argv =
         0
     | ["CreateTemplatesInDB"] ->
         createTemplatesInDB()
-        1
+        0
     | _ ->
         printfn "Not the right Usage given"
-        2
+        1
