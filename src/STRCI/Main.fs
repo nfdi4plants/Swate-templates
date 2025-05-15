@@ -2,7 +2,6 @@
 
 open System
 open System.IO
-open System.Diagnostics
 
 open STRCI
 
@@ -33,7 +32,7 @@ let dbTemplates = client.GetAllTemplatesAsync().Result |> Array.ofSeq
 
 let createTemplatesInDB () = 
     localTemplates
-    |> Array.iter (fun item -> 
+    |> Array.map (fun item -> 
         let isTemplateInDB = STRCIController.IsTemplateInDB(item, dbTemplates)
         if not isTemplateInDB then
             let swateTemplate = STRCIController.CreateSwateClientTemplate(item)
@@ -41,7 +40,14 @@ let createTemplatesInDB () =
             let swateTemplateDto = new STRClient.SwateTemplateDto()
             swateTemplateDto.Content <- swateTemplate
             swateTemplateDto.Metadata <- metaData
-            client.CreateTemplateAsync(swateTemplateDto).Result |> ignore
+            let result = client.CreateTemplateAsync(swateTemplateDto)
+            
+            match result with
+            | success when success.IsCompletedSuccessfully -> success.Result
+            | failure when failure.IsFaulted -> raise failure.Exception
+            | _  -> raise (Exception("Unexpected task state during template creation in db"))
+        else 
+            null
     )
 
 [<EntryPoint>]
