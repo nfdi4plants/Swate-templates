@@ -57,138 +57,41 @@ let fileInfos =
     |> Array.collect(fun directory ->
         directory.GetFiles("*.xlsx", SearchOption.AllDirectories))
 
-fileInfos
-|> Array.map (fun item -> STRCIController.CreateDirectoryForTemplate item)
+//fileInfos
+//|> Array.map (fun item -> STRCIController.CreateDirectoryForTemplate item)
 
-let updatedNewDicetories = DirectoryInfo(templatesPath).GetDirectories()
-
-let newFileInfos =
-    updatedNewDicetories
-    |> Array.collect(fun directory ->
-        directory.GetFiles("*.xlsx", SearchOption.AllDirectories))
-
-newFileInfos
-|> Array.map (fun item -> STRCIController.UpdateFileName item)
-
-//let newDirectories = DirectoryInfo(newTemplatesPath).GetDirectories()
+//let updatedNewDicetories = DirectoryInfo(templatesPath).GetDirectories()
 
 //let newFileInfos =
-//    newDirectories
+//    updatedNewDicetories
 //    |> Array.collect(fun directory ->
 //        directory.GetFiles("*.xlsx", SearchOption.AllDirectories))
 
 //newFileInfos
 //|> Array.map (fun item -> STRCIController.UpdateFileName item)
 
-//let updatedNewDicetories = DirectoryInfo(newTemplatesPath).GetDirectories()
-
-//let updatedNewFileInfos =
-//    updatedNewDicetories
-//    |> Array.collect(fun directory ->
-//        directory.GetFiles("*.xlsx", SearchOption.AllDirectories))
-
-//updatedNewFileInfos
-//|> Array.map (fun item -> templateController.CreateDirectoryForExternalTemplate item)
-
-//let directories = DirectoryInfo(templatesPath).GetDirectories()
-
-//let fileInfos =
-//    directories
-//    |> Array.collect(fun directory ->
-//        directory.GetFiles("*.xlsx", SearchOption.AllDirectories))
-
-//let templates =
-//    fileInfos
-//    |> Array.map (fun item -> templateController.CreateTemplateFromXlsx(item))
-
-//let filteredTemplates =
-//    templates
-//    |> Array.groupBy (fun item -> item.Id, item.Version)
-//    |> Array.filter (fun (_, item) -> item.Length > 1)
-//    |> Array.collect (fun (_, item) -> item)
-//    |> Array.map (fun item -> item.Id, item.Version, item.Name)
-
-//filteredTemplates
-//|> Array.iter (fun (key, version, name) -> printfn "id: %s, version: %s, name: %s" (key.ToString()) version name)
-
-//let client = STRCIController.Client("TestToken")
+//let client = STRCIController.Client(token)
 
 ////Set client baseURL for testing
-////client.BaseUrl <- (createTestURL 62835)
+//client.BaseUrl <- (createTestURL 59667)
+
 //printfn "client.BaseUrl: %s" client.BaseUrl
-
-//let dbTemplates = client.GetAllTemplatesAsync().Result |> Array.ofSeq
-//printfn "templates: %i" (Array.length dbTemplates)
-
-//let testGuid = Guid.NewGuid()
-//let arcTable = ArcTable.create("TestPlapla", ResizeArray [||], dictionary)
-//let emptyOntologyAnnotations = new List<STRIndex.Domain.OntologyAnnotation>() :> ICollection<STRIndex.Domain.OntologyAnnotation>
-//let clientEmptyOntologyAnnotations = new List<STRClient.OntologyAnnotation>() :> ICollection<STRClient.OntologyAnnotation>
-//let emptyAuthors = new List<STRIndex.Domain.Author>() :> ICollection<STRIndex.Domain.Author>
-//let clientEmptyAuthors = new List<STRClient.Author>() :> ICollection<STRClient.Author>
-//let templateContent = Template.create(testGuid, arcTable, "Test_Plapla", "Description of Plapla").toJsonString()
-
-//let swateTemplate = SwateTemplate.Create(testGuid, "Test_Plapla", 0, 0, 1, "Suffix", "MoreSuffix", templateContent)
-//let swateTemplateMetadata = SwateTemplateMetadata.Create(testGuid, "Test_Plapla", "Description of Plapla", 0, 0, 1, "Suffix", "MoreSuffix", "RPTU", emptyOntologyAnnotations, DateOnly(), emptyOntologyAnnotations, emptyAuthors)
-
-//let clientTemplate = 
-//    let x = new STRClient.SwateTemplate()
-//    x.TemplateId <- swateTemplate.TemplateId
-//    x.TemplateName <- swateTemplate.TemplateName
-//    x.TemplateMajorVersion <- swateTemplate.TemplateMajorVersion
-//    x.TemplateMinorVersion <- swateTemplate.TemplateMinorVersion
-//    x.TemplatePatchVersion <- swateTemplate.TemplatePatchVersion
-//    x.TemplatePreReleaseVersionSuffix <- swateTemplate.TemplatePreReleaseVersionSuffix
-//    x.TemplateBuildMetadataVersionSuffix <- swateTemplate.TemplateBuildMetadataVersionSuffix
-//    x.TemplateContent <- swateTemplate.TemplateContent
-//    x
-
-//let clientMetadata = 
-//    let x = new STRClient.SwateTemplateMetadata()
-//    x.Id <- swateTemplateMetadata.Id
-//    x.Name <- swateTemplateMetadata.Name
-//    x.Description <- swateTemplateMetadata.Description
-//    x.MajorVersion <- swateTemplateMetadata.MajorVersion
-//    x.MinorVersion <- swateTemplateMetadata.MinorVersion
-//    x.PatchVersion <- swateTemplateMetadata.PatchVersion
-//    x.PreReleaseVersionSuffix <- swateTemplateMetadata.PreReleaseVersionSuffix
-//    x.BuildMetadataVersionSuffix <- swateTemplateMetadata.BuildMetadataVersionSuffix
-//    x.Organisation <- swateTemplateMetadata.BuildMetadataVersionSuffix
-//    x.EndpointRepositories <- clientEmptyOntologyAnnotations
-//    x.ReleaseDate <- DateTimeOffset()
-//    x.Tags <- clientEmptyOntologyAnnotations
-//    x.Authors <- clientEmptyAuthors
-//    x
-
-//let swateTemplateDto = SwateTemplateDto.Create(swateTemplate, swateTemplateMetadata)
-
-//let swateClientDto = 
-//    let x = new STRClient.SwateTemplateDto()
-//    x.Content <- clientTemplate
-//    x.Metadata <- clientMetadata
-//    x
-
-//let result = client.CreateTemplateAsync(swateClientDto).Result
-
-//let newTemplates = client.GetAllTemplatesAsync().Result |> Array.ofSeq
-//printfn "newTemplates: %i" (Array.length newTemplates)
-
-//let directories = DirectoryInfo(templatesPath).GetDirectories()
-
-//let fileInfos =
-//    directories
-//    |> Array.collect(fun directory ->
-//        directory.GetFiles("*.xlsx", SearchOption.AllDirectories))
 
 //let localTemplates =
 //    fileInfos
-//    |> Array.map (fun item -> STRCIController.CreateTemplateFromXlsx(item))
+//    |> Array.map (fun fileInfo -> STRCIController.CreateTemplateFromXlsx(fileInfo))
 
-//let result =
+//let dbTemplates = client.GetAllTemplatesAsync().Result |> Array.ofSeq
+
+//let createTemplatesInDB () = 
 //    localTemplates
-//    |> Array.map (fun item -> STRCIController.IsTemplateInDB(item, dbTemplates))
-
-//result
-//|> Array.iter (fun item -> printfn "Template exists in db: %s" (item.ToString()))
-
-//STRCIController.TemplatesToJsonV2()
+//    |> Array.iter (fun item -> 
+//        let isTemplateInDB = STRCIController.IsTemplateInDB(item, dbTemplates)
+//        if not isTemplateInDB then
+//            let swateTemplate = STRCIController.CreateSwateClientTemplate(item)
+//            let metaData = STRCIController.CreateSwateClientMetadata(item)
+//            let swateTemplateDto = new STRClient.SwateTemplateDto()
+//            swateTemplateDto.Content <- swateTemplate
+//            swateTemplateDto.Metadata <- metaData
+//            client.CreateTemplateAsync(swateTemplateDto).Result |> ignore
+//    )
