@@ -2,8 +2,9 @@
 
 open System
 open System.IO
-open STRCI
+open System.Diagnostics
 
+open STRCI
 
 let token =
     match Environment.GetEnvironmentVariable("STR_PAT") with
@@ -30,8 +31,7 @@ let localTemplates =
 
 let dbTemplates = client.GetAllTemplatesAsync().Result |> Array.ofSeq
 
-[<EntryPoint>]
-let main argv = 
+let createTemplatesInDB () = 
     localTemplates
     |> Array.iter (fun item -> 
         let isTemplateInDB = STRCIController.IsTemplateInDB(item, dbTemplates)
@@ -44,4 +44,15 @@ let main argv =
             client.CreateTemplateAsync(swateTemplateDto).Result |> ignore
     )
 
-    0
+[<EntryPoint>]
+let main argv = 
+    match argv |> Array.toList with
+    | ["Release_2.0.0"] ->
+        STRCIController.TemplatesToJsonV2()
+        0
+    | ["CreateTemplatesInDB"] ->
+        createTemplatesInDB()
+        1
+    | _ ->
+        printfn "Not the right Usage given"
+        2

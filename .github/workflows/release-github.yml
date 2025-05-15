@@ -12,14 +12,16 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - name: Setup .NET 6.0
+    - name: Setup .NET 8.0
       uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: '6.0.x'
+        dotnet-version: '8.0.x'
     - name: convert and publish 1.0.0
       run: dotnet fsi release/templates-to-json_v1.0.0.fsx
     - name: convert and publish 2.0.0
-      run: dotnet fsi release/templates-to-json_v2.0.0.fsx
+      env:
+        STR_PAT: ${{ secrets.STR_PAT }}
+      run: dotnet run --project src/STRCI/STRCI.fsproj -- Release_2.0.0
     - uses: "marvinpinto/action-automatic-releases@latest"
       with:
         repo_token: "${{ secrets.GITHUB_TOKEN }}"

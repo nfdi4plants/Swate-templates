@@ -50,25 +50,25 @@ let newTemplatesPath = "C:/Users/Patri/Downloads/templates"
 //|> Array.map (fun directory ->
 //    templateController.CopyDirectory(directory.FullName, $"{testTemplatesPath}/{directory.Name}"))
 
-let directories = DirectoryInfo(templatesPath).GetDirectories()
+//let directories = DirectoryInfo(templatesPath).GetDirectories()
 
-let fileInfos =
-    directories
-    |> Array.collect(fun directory ->
-        directory.GetFiles("*.xlsx", SearchOption.AllDirectories))
+//let fileInfos =
+//    directories
+//    |> Array.collect(fun directory ->
+//        directory.GetFiles("*.xlsx", SearchOption.AllDirectories))
 
-fileInfos
-|> Array.map (fun item -> STRCIController.CreateDirectoryForTemplate item)
+//fileInfos
+//|> Array.map (fun item -> STRCIController.CreateDirectoryForTemplate item)
 
-let updatedNewDicetories = DirectoryInfo(templatesPath).GetDirectories()
+//let updatedNewDicetories = DirectoryInfo(templatesPath).GetDirectories()
 
-let newFileInfos =
-    updatedNewDicetories
-    |> Array.collect(fun directory ->
-        directory.GetFiles("*.xlsx", SearchOption.AllDirectories))
+//let newFileInfos =
+//    updatedNewDicetories
+//    |> Array.collect(fun directory ->
+//        directory.GetFiles("*.xlsx", SearchOption.AllDirectories))
 
-newFileInfos
-|> Array.map (fun item -> STRCIController.UpdateFileName item)
+//newFileInfos
+//|> Array.map (fun item -> STRCIController.UpdateFileName item)
 
 //let newDirectories = DirectoryInfo(newTemplatesPath).GetDirectories()
 
@@ -190,3 +190,5 @@ newFileInfos
 
 //result
 //|> Array.iter (fun item -> printfn "Template exists in db: %s" (item.ToString()))
+
+STRCIController.TemplatesToJsonV2()
