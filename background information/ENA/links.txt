@@ -5,5 +5,11 @@ https://xrzhou.com/ena2swate/
 ENA sample checklists:
 https://www.ebi.ac.uk/ena/browser/checklists
 
+Assembly metadata:
+https://ena-docs.readthedocs.io/en/latest/submit/assembly/genome.html#stage-2-prepare-the-files
+
+metadata for raw reads and data analysis in webin portal:
+https://www.ebi.ac.uk/ena/browser/submit
+
 last updated:
-Plant Sample Checklist: 30.04.2024
+10.04.2025
