@@ -191,5 +191,4 @@ let newTemplatesPath = "C:/Users/Patri/Downloads/templates"
 //result
 //|> Array.iter (fun item -> printfn "Template exists in db: %s" (item.ToString()))
 
-STRCIController.TemplatesToJsonV1()
 STRCIController.TemplatesToJsonV2()
