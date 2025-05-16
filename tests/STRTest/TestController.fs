@@ -107,9 +107,10 @@ type TestController (?templatesPath) =
             |> Array.collect(fun directory ->
                 directory.GetFiles("*.xlsx", SearchOption.AllDirectories))
             |> Array.map (fun file -> file.FullName)
+            |> List.ofArray
 
         filePaths
-        |> Array.map (fun templatePath ->
+        |> List.map (fun templatePath ->
             testCase templatePath <| fun _ ->
                 let p = templatePath
                 let template =
@@ -131,7 +132,6 @@ type TestController (?templatesPath) =
             testList "TemplateConversion" 
                 (
                     this.TestConvertibleTemplateFiles ()
-                    |> List.ofArray
                 )
         let result = Tests.runTestsWithCLIArgs [] [||] tests
 
@@ -170,7 +170,7 @@ type TestController (?templatesPath) =
                     None
         )
 
-    member this.TestForDiversity (template: Template, templates: Template [], ?threshhold) = 
+    member this.TestForTemplateDiversity (template: Template, templates: Template [], ?threshhold) = 
         let threshhold = defaultArg threshhold TemplateSimilarityThershold // Minimum difference
         testCase $"Diversity-{template.Name}_{template.Version}_{template.Id}" <| fun _ ->
             let fileterdTemplates =
@@ -201,7 +201,7 @@ type TestController (?templatesPath) =
                 (
                     templates
                     |> Array.map(fun template ->
-                        this.TestForDiversity(template, templates))
+                        this.TestForTemplateDiversity(template, templates))
                     |> List.ofArray
                 )
         let result = Tests.runTestsWithCLIArgs [] [||] tests
@@ -281,7 +281,7 @@ type TestController (?templatesPath) =
 
     member this.TestTagForSimiliarity (tag: ARCtrl.OntologyAnnotation, tags: ARCtrl.OntologyAnnotation [], id: int, templates, ?similiarityThreshold) =
         let similiarityThreshold = defaultArg similiarityThreshold 0.8
-        testCase $"Similiarity_{tag.NameText}_{id}" <| fun _ ->
+        testCase $"{tag.NameText}_{id}" <| fun _ ->
             let similiarTags = this.GetSimiliarTags(tag, tags, similiarityThreshold)
             let msg = 
                 if similiarTags.IsNone then "" else
@@ -306,7 +306,7 @@ type TestController (?templatesPath) =
             Expect.isNone similiarTags msg
 
     member this.TestTagForAmbiguous (name: string, tags: ARCtrl.OntologyAnnotation [], id: int, templates) =
-        testCase $"Ambiguous_{name}_{id}" <| fun _ ->
+        testCase $"{name}_{id}" <| fun _ ->
             let msg =
                 let sb = System.Text.StringBuilder()
                 let temps = ARCtrl.Templates.filterByOntologyAnnotation (ResizeArray tags) templates
@@ -423,7 +423,7 @@ type TestController (?templatesPath) =
         this.MatchResult(result)
 
     member this.TestAreAllDBTemplatesAvailable(dbTemplate: STRClient.SwateTemplate, localTemplates: Template []) =
-        testCase $"DBEnsure_{dbTemplate.TemplateName}_{dbTemplate.TemplateId}_{dbTemplate.TemplateMajorVersion}.{dbTemplate.TemplateMinorVersion}.{dbTemplate.TemplatePatchVersion}" <| fun _ ->
+        testCase $"{dbTemplate.TemplateName}_{dbTemplate.TemplateId}_{dbTemplate.TemplateMajorVersion}.{dbTemplate.TemplateMinorVersion}.{dbTemplate.TemplatePatchVersion}" <| fun _ ->
             let dbVersion = SemVer.SemVer.create(dbTemplate.TemplateMajorVersion, dbTemplate.TemplateMinorVersion, dbTemplate.TemplatePatchVersion).AsString()
             let test = localTemplates |> Array.tryFind (fun localTemplate -> localTemplate.Id = dbTemplate.TemplateId && localTemplate.Version = dbVersion)
             Expect.isTrue (test.IsSome) $"The template {dbTemplate.TemplateName} with Id {dbTemplate.TemplateId} is locally not available"
@@ -440,61 +440,61 @@ type TestController (?templatesPath) =
 
         this.MatchResult(result)
 
-    member this.RunAllTests() = 
-        let localTemplates = this.ReadAllTemplates()
-        let officialTemplates = this.ReadAllTemplates() |> Array.filter (fun template -> template.Organisation.IsOfficial())
+    // member this.RunAllTests() = 
+    //     let localTemplates = this.ReadAllTemplates()
+    //     let officialTemplates = this.ReadAllTemplates() |> Array.filter (fun template -> template.Organisation.IsOfficial())
 
-        let distinctTags = this.DistinctTags(ResizeArray localTemplates)
-        let directories =
-            DirectoryInfo(this.TemplatesPath).GetDirectories()
-            |> Array.filter (fun directory -> not (directory.Name.ToLower() = "test"))
-        let fileInfos =
-            directories
-            |> Array.collect(fun directory ->
-                directory.GetFiles("*.xlsx", SearchOption.AllDirectories))
-        let dbTemplates = this.Client.GetAllTemplatesAsync().Result |> Array.ofSeq
+    //     let distinctTags = this.DistinctTags(ResizeArray localTemplates)
+    //     let directories =
+    //         DirectoryInfo(this.TemplatesPath).GetDirectories()
+    //         |> Array.filter (fun directory -> not (directory.Name.ToLower() = "test"))
+    //     let fileInfos =
+    //         directories
+    //         |> Array.collect(fun directory ->
+    //             directory.GetFiles("*.xlsx", SearchOption.AllDirectories))
+    //     let dbTemplates = this.Client.GetAllTemplatesAsync().Result |> Array.ofSeq
 
-        let convertibleTests = this.TestConvertibleTemplateFiles()
-        let diversityTests = 
-            localTemplates
-            |> Array.map (fun template -> this.TestForDiversity(template, officialTemplates))
-        let distinctTests = this.TestDistinctTags(ResizeArray localTemplates)
-        let ambiguousTests =
-            let groupedByNameTags = distinctTags |> Array.groupBy (fun oa -> oa.NameText)
-            groupedByNameTags
-            |> Array.mapi (fun id (name, tags) -> this.TestTagForAmbiguous(name, tags, id, ResizeArray localTemplates))
-        let similarityTests =
-            let distinctByNamesTags = distinctTags |> Array.distinctBy (fun t -> t.NameText)
-            distinctByNamesTags
-            |> Array.mapi (fun id tag -> this.TestTagForSimiliarity(tag, distinctTags, id, ResizeArray localTemplates))
-        let parentFolderTests =
-            fileInfos
-            |> Array.mapi (fun i fileInfo -> this.TestCheckParentFolder(fileInfo, i))
-        let fileNameVersioningTests =
-            fileInfos
-            |> Array.mapi (fun i fileInfo -> this.TestCheckFileNameVersioning(fileInfo, i))
-        let versioningTests =
-            fileInfos
-            |> Array.map (fun fileInfo -> this.TestCheckFileVersioning(fileInfo))
-        let runAreAllDBTemplatesAvailableTests =
-            dbTemplates
-            |> Array.map (fun dbTemplate -> this.TestAreAllDBTemplatesAvailable(dbTemplate, localTemplates))
+    //     let convertibleTests = this.TestConvertibleTemplateFiles()
+    //     let diversityTests = 
+    //         localTemplates
+    //         |> Array.map (fun template -> this.TestForTemplateDiversity(template, officialTemplates))
+    //     let distinctTests = this.TestDistinctTags(ResizeArray localTemplates)
+    //     let ambiguousTests =
+    //         let groupedByNameTags = distinctTags |> Array.groupBy (fun oa -> oa.NameText)
+    //         groupedByNameTags
+    //         |> Array.mapi (fun id (name, tags) -> this.TestTagForAmbiguous(name, tags, id, ResizeArray localTemplates))
+    //     let similarityTests =
+    //         let distinctByNamesTags = distinctTags |> Array.distinctBy (fun t -> t.NameText)
+    //         distinctByNamesTags
+    //         |> Array.mapi (fun id tag -> this.TestTagForSimiliarity(tag, distinctTags, id, ResizeArray localTemplates))
+    //     let parentFolderTests =
+    //         fileInfos
+    //         |> Array.mapi (fun i fileInfo -> this.TestCheckParentFolder(fileInfo, i))
+    //     let fileNameVersioningTests =
+    //         fileInfos
+    //         |> Array.mapi (fun i fileInfo -> this.TestCheckFileNameVersioning(fileInfo, i))
+    //     let versioningTests =
+    //         fileInfos
+    //         |> Array.map (fun fileInfo -> this.TestCheckFileVersioning(fileInfo))
+    //     let runAreAllDBTemplatesAvailableTests =
+    //         dbTemplates
+    //         |> Array.map (fun dbTemplate -> this.TestAreAllDBTemplatesAvailable(dbTemplate, localTemplates))
 
-        let allTest =
-            [|
-                convertibleTests
-                //diversityTests
-                ambiguousTests
-                similarityTests
-                parentFolderTests
-                fileNameVersioningTests
-                versioningTests
-                runAreAllDBTemplatesAvailableTests
-            |]
-            |> Array.concat
-            |> List.ofArray
-            |> (fun tests -> distinctTests :: tests)
+    //     let allTest =
+    //         [|
+    //             convertibleTests
+    //             //diversityTests
+    //             ambiguousTests
+    //             similarityTests
+    //             parentFolderTests
+    //             fileNameVersioningTests
+    //             versioningTests
+    //             runAreAllDBTemplatesAvailableTests
+    //         |]
+    //         |> Array.concat
+    //         |> List.ofArray
+    //         |> (fun tests -> distinctTests :: tests)
 
-        let tests = testList "All tests" (allTest)
-        let result = Tests.runTestsWithCLIArgs [] [||] tests
-        this.MatchResult(result)
+    //     let tests = testList "All tests" (allTest)
+    //     let result = Tests.runTestsWithCLIArgs [] [||] tests
+    //     this.MatchResult(result)

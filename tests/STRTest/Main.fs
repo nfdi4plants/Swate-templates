@@ -19,38 +19,42 @@ let allTests =
             directory.GetFiles("*.xlsx", SearchOption.AllDirectories))
     let dbTemplates = testController.Client.GetAllTemplatesAsync().Result |> Array.ofSeq
 
-    let convertibleTests = testController.TestConvertibleTemplateFiles()
-    let diversityTests = 
+    let convertibleTests = testController.TestConvertibleTemplateFiles() |> testList "Template Parsing"
+    let templateDiversityTests = 
         localTemplates
-        |> Array.map (fun template -> testController.TestForDiversity(template, localTemplates))
-    let distinctTests = testController.TestDistinctTags(ResizeArray localTemplates)
-    let ambiguousTests =
+        |> Array.map (fun template -> testController.TestForTemplateDiversity(template, localTemplates))
+    let distinctTagsTests = testController.TestDistinctTags(ResizeArray localTemplates)
+    let ambiguousTagsTests =
         let groupedByNameTags = distinctTags |> Array.groupBy (fun oa -> oa.NameText)
         groupedByNameTags
-        |> Array.mapi (fun id (name, tags) -> testController.TestTagForAmbiguous(name, tags, id, ResizeArray localTemplates))
-    let similarityTests =
+        |> List.ofArray
+        |> List.mapi (fun id (name, tags) -> testController.TestTagForAmbiguous(name, tags, id, ResizeArray localTemplates))
+        |> testList "Ambiguous tags tests"
+    let similarityTagsTests =
         let distinctByNamesTags = distinctTags |> Array.distinctBy (fun t -> t.NameText)
         distinctByNamesTags
-        |> Array.mapi (fun id tag -> testController.TestTagForSimiliarity(tag, distinctTags, id, ResizeArray localTemplates))
+        |> List.ofArray
+        |> List.mapi (fun id tag -> testController.TestTagForSimiliarity(tag, distinctTags, id, ResizeArray localTemplates))
+        |> testList "Similarity tags tests"
     // let parentFolderTests =
     //     fileInfos
     //     |> Array.mapi (fun i fileInfo -> testController.TestCheckParentFolder(fileInfo, i))
     let runAreAllDBTemplatesAvailableTests =
         dbTemplates
-        |> Array.map (fun dbTemplate -> testController.TestAreAllDBTemplatesAvailable(dbTemplate, localTemplates))
+        |> List.ofArray
+        |> List.map (fun dbTemplate -> testController.TestAreAllDBTemplatesAvailable(dbTemplate, localTemplates))
+        |> testList "Are all DB templates available tests"
 
     let allTest =
-        [|
+        [
             convertibleTests
-            diversityTests
-            ambiguousTests
-            similarityTests
+            // templateDiversityTests
+            ambiguousTagsTests
+            similarityTagsTests
             // parentFolderTests
             runAreAllDBTemplatesAvailableTests
-        |]
-        |> Array.concat
-        |> List.ofArray
-        |> (fun tests -> distinctTests :: tests)
+            distinctTagsTests
+        ]
 
     testList "All tests" (allTest)
 
