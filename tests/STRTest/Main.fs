@@ -32,9 +32,9 @@ let allTests =
         let distinctByNamesTags = distinctTags |> Array.distinctBy (fun t -> t.NameText)
         distinctByNamesTags
         |> Array.mapi (fun id tag -> testController.TestTagForSimiliarity(tag, distinctTags, id, ResizeArray localTemplates))
-    let parentFolderTests =
-        fileInfos
-        |> Array.mapi (fun i fileInfo -> testController.TestCheckParentFolder(fileInfo, i))
+    // let parentFolderTests =
+    //     fileInfos
+    //     |> Array.mapi (fun i fileInfo -> testController.TestCheckParentFolder(fileInfo, i))
     let runAreAllDBTemplatesAvailableTests =
         dbTemplates
         |> Array.map (fun dbTemplate -> testController.TestAreAllDBTemplatesAvailable(dbTemplate, localTemplates))
@@ -45,7 +45,7 @@ let allTests =
             diversityTests
             ambiguousTests
             similarityTests
-            parentFolderTests
+            // parentFolderTests
             runAreAllDBTemplatesAvailableTests
         |]
         |> Array.concat

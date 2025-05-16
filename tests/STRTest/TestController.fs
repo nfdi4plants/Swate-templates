@@ -172,7 +172,7 @@ type TestController (?templatesPath) =
 
     member this.TestForDiversity (template: Template, templates: Template [], ?threshhold) = 
         let threshhold = defaultArg threshhold TemplateSimilarityThershold // Minimum difference
-        testCase $"{template.Name}_{template.Id}_{template.Version}" <| fun _ ->
+        testCase $"Diversity-{template.Name}_{template.Version}_{template.Id}" <| fun _ ->
             let fileterdTemplates =
                 templates
                 |> Array.filter (fun item -> item.Id <> template.Id)
@@ -281,7 +281,7 @@ type TestController (?templatesPath) =
 
     member this.TestTagForSimiliarity (tag: ARCtrl.OntologyAnnotation, tags: ARCtrl.OntologyAnnotation [], id: int, templates, ?similiarityThreshold) =
         let similiarityThreshold = defaultArg similiarityThreshold 0.8
-        testCase $"{tag.NameText}_{id}" <| fun _ ->
+        testCase $"Similiarity_{tag.NameText}_{id}" <| fun _ ->
             let similiarTags = this.GetSimiliarTags(tag, tags, similiarityThreshold)
             let msg = 
                 if similiarTags.IsNone then "" else
@@ -306,7 +306,7 @@ type TestController (?templatesPath) =
             Expect.isNone similiarTags msg
 
     member this.TestTagForAmbiguous (name: string, tags: ARCtrl.OntologyAnnotation [], id: int, templates) =
-        testCase $"{name}_{id}" <| fun _ ->
+        testCase $"Ambiguous_{name}_{id}" <| fun _ ->
             let msg =
                 let sb = System.Text.StringBuilder()
                 let temps = ARCtrl.Templates.filterByOntologyAnnotation (ResizeArray tags) templates
@@ -423,7 +423,7 @@ type TestController (?templatesPath) =
         this.MatchResult(result)
 
     member this.TestAreAllDBTemplatesAvailable(dbTemplate: STRClient.SwateTemplate, localTemplates: Template []) =
-        testCase $"{dbTemplate.TemplateName}_{dbTemplate.TemplateId}_{dbTemplate.TemplateMajorVersion}.{dbTemplate.TemplateMinorVersion}.{dbTemplate.TemplatePatchVersion}" <| fun _ ->
+        testCase $"DBEnsure_{dbTemplate.TemplateName}_{dbTemplate.TemplateId}_{dbTemplate.TemplateMajorVersion}.{dbTemplate.TemplateMinorVersion}.{dbTemplate.TemplatePatchVersion}" <| fun _ ->
             let dbVersion = SemVer.SemVer.create(dbTemplate.TemplateMajorVersion, dbTemplate.TemplateMinorVersion, dbTemplate.TemplatePatchVersion).AsString()
             let test = localTemplates |> Array.tryFind (fun localTemplate -> localTemplate.Id = dbTemplate.TemplateId && localTemplate.Version = dbVersion)
             Expect.isTrue (test.IsSome) $"The template {dbTemplate.TemplateName} with Id {dbTemplate.TemplateId} is locally not available"
