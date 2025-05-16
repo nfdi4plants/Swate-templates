@@ -7,6 +7,7 @@ The **Swate Template Registry** is a tool for managing templates used in Swate. 
 * 👀 View templates via a web service
 
 🔗 Access the Template Registry Service: [str.nfdi4plants.org](https://str.nfdi4plants.org/)
+
 🔗 OpenAPI/Swagger docs: [str.nfdi4plants.org/swagger](https://str.nfdi4plants.org/swagger/index.html)
 
 ---
