@@ -17,11 +17,11 @@ jobs:
           dotnet-version: '8.0.x'
 
       - name: Install NSwag CLI
-        run: dotnet tool install --global NSwag.ConsoleCore
+        run: dotnet tool restore
 
       - name: Generate NSwag Client
         run: |
-          nswag openapi2csclient /input:https://str.nfdi4plants.org/swagger/v1/swagger.json /output:src/STRCI/STRClient.cs /namespace:STRClient
+          dotnet nswag openapi2csclient /input:https://str.nfdi4plants.org/swagger/v1/swagger.json /output:src/STRCI/STRClient.cs /namespace:STRClient
 
       - name: Push missing templates to Database
         env:

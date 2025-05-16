@@ -20,6 +20,7 @@ module Constants =
     let TagWhiteList : string [] [] = 
         [| 
             [|"RNASeq"; "mRNASeq"; "DNASeq"|]
+            [|"MIAPE"; "MIAPPE"|]
         |]
     let TagSimiliarityThreshold = 0.8
 
