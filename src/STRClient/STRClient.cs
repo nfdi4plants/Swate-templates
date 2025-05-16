@@ -177,9 +177,9 @@ namespace STRClient
         /// Get the latest version of a Swate template from the template registry. Template content is a base64 encoded byte array containing the template executable.
         /// </remarks>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<SwateTemplateMetadata> GetLatestTemplateMetadataByNameAsync(System.Guid id)
+        public virtual System.Threading.Tasks.Task<SwateTemplateMetadata> GetLatestTemplateMetadataByIdAsync(System.Guid id)
         {
-            return GetLatestTemplateMetadataByNameAsync(id, System.Threading.CancellationToken.None);
+            return GetLatestTemplateMetadataByIdAsync(id, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
@@ -190,7 +190,7 @@ namespace STRClient
         /// Get the latest version of a Swate template from the template registry. Template content is a base64 encoded byte array containing the template executable.
         /// </remarks>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<SwateTemplateMetadata> GetLatestTemplateMetadataByNameAsync(System.Guid id, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<SwateTemplateMetadata> GetLatestTemplateMetadataByIdAsync(System.Guid id, System.Threading.CancellationToken cancellationToken)
         {
             if (id == null)
                 throw new System.ArgumentNullException("id");
@@ -289,9 +289,9 @@ namespace STRClient
         /// Get a specific version of a Swate template from the template registry. Template content is a base64 encoded byte array containing the template executable.
         /// </remarks>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<SwateTemplateMetadata> GetTemplateMetadataByNameAndVersionAsync(System.Guid id, string version)
+        public virtual System.Threading.Tasks.Task<SwateTemplateMetadata> GetTemplateMetadataByIdAndVersionAsync(System.Guid id, string version)
         {
-            return GetTemplateMetadataByNameAndVersionAsync(id, version, System.Threading.CancellationToken.None);
+            return GetTemplateMetadataByIdAndVersionAsync(id, version, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
@@ -302,7 +302,7 @@ namespace STRClient
         /// Get a specific version of a Swate template from the template registry. Template content is a base64 encoded byte array containing the template executable.
         /// </remarks>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<SwateTemplateMetadata> GetTemplateMetadataByNameAndVersionAsync(System.Guid id, string version, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<SwateTemplateMetadata> GetTemplateMetadataByIdAndVersionAsync(System.Guid id, string version, System.Threading.CancellationToken cancellationToken)
         {
             if (id == null)
                 throw new System.ArgumentNullException("id");
@@ -625,9 +625,9 @@ namespace STRClient
         /// Get the latest version of a Swate template from the template registry. Template content is a base64 encoded byte array containing the template executable.
         /// </remarks>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<SwateTemplate> GetLatestTemplateByNameAsync(System.Guid id)
+        public virtual System.Threading.Tasks.Task<SwateTemplate> GetLatestTemplateByIdAsync(System.Guid id)
         {
-            return GetLatestTemplateByNameAsync(id, System.Threading.CancellationToken.None);
+            return GetLatestTemplateByIdAsync(id, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
@@ -638,7 +638,7 @@ namespace STRClient
         /// Get the latest version of a Swate template from the template registry. Template content is a base64 encoded byte array containing the template executable.
         /// </remarks>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<SwateTemplate> GetLatestTemplateByNameAsync(System.Guid id, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<SwateTemplate> GetLatestTemplateByIdAsync(System.Guid id, System.Threading.CancellationToken cancellationToken)
         {
             if (id == null)
                 throw new System.ArgumentNullException("id");
@@ -737,9 +737,9 @@ namespace STRClient
         /// Get a specific version of a Swate template from the template registry. Template content is a base64 encoded byte array containing the template executable.
         /// </remarks>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<SwateTemplate> GetTemplateByNameAndVersionAsync(System.Guid id, string version)
+        public virtual System.Threading.Tasks.Task<SwateTemplate> GetTemplateByIdAndVersionAsync(System.Guid id, string version)
         {
-            return GetTemplateByNameAndVersionAsync(id, version, System.Threading.CancellationToken.None);
+            return GetTemplateByIdAndVersionAsync(id, version, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
@@ -750,7 +750,7 @@ namespace STRClient
         /// Get a specific version of a Swate template from the template registry. Template content is a base64 encoded byte array containing the template executable.
         /// </remarks>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<SwateTemplate> GetTemplateByNameAndVersionAsync(System.Guid id, string version, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<SwateTemplate> GetTemplateByIdAndVersionAsync(System.Guid id, string version, System.Threading.CancellationToken cancellationToken)
         {
             if (id == null)
                 throw new System.ArgumentNullException("id");
@@ -952,9 +952,9 @@ namespace STRClient
         /// Get download statistics for all versions specific template
         /// </remarks>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Downloads>> GetAllDownloadsByNameAsync(System.Guid id)
+        public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Downloads>> GetAllDownloadsByIdAsync(System.Guid id)
         {
-            return GetAllDownloadsByNameAsync(id, System.Threading.CancellationToken.None);
+            return GetAllDownloadsByIdAsync(id, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
@@ -965,7 +965,7 @@ namespace STRClient
         /// Get download statistics for all versions specific template
         /// </remarks>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Downloads>> GetAllDownloadsByNameAsync(System.Guid id, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Downloads>> GetAllDownloadsByIdAsync(System.Guid id, System.Threading.CancellationToken cancellationToken)
         {
             if (id == null)
                 throw new System.ArgumentNullException("id");
@@ -1054,9 +1054,9 @@ namespace STRClient
         /// Get download statistics for a specific version of a specific template
         /// </remarks>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Downloads> GetDownloadsByNameAndVersionAsync(System.Guid id, string version)
+        public virtual System.Threading.Tasks.Task<Downloads> GetDownloadsByIdAndVersionAsync(System.Guid id, string version)
         {
-            return GetDownloadsByNameAndVersionAsync(id, version, System.Threading.CancellationToken.None);
+            return GetDownloadsByIdAndVersionAsync(id, version, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
@@ -1067,7 +1067,7 @@ namespace STRClient
         /// Get download statistics for a specific version of a specific template
         /// </remarks>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Downloads> GetDownloadsByNameAndVersionAsync(System.Guid id, string version, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<Downloads> GetDownloadsByIdAndVersionAsync(System.Guid id, string version, System.Threading.CancellationToken cancellationToken)
         {
             if (id == null)
                 throw new System.ArgumentNullException("id");

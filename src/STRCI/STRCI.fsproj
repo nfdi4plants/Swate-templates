@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -20,8 +20,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\STRClient\STRClient.csproj" />
-    <ProjectReference Include="..\STRIndex\STRIndex.fsproj" />
-    <ProjectReference Include="..\STRService\STRService.csproj" />
   </ItemGroup>
 
 </Project>

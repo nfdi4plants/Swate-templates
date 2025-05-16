@@ -1,71 +1,101 @@
-# Swate Template Registry
+# 🌱 Swate Template Registry
 
-Swate template registry is a tool used to add new templates to the database, update existing ones, and enable viewing those.
+The **Swate Template Registry** is a tool for managing templates used in Swate. It allows you to:
 
-You can find the Template Registry Service [here](https://str.nfdi4plants.org/).
+* ✅ Add new templates
+* 🔁 Update existing templates
+* 👀 View templates via a web service
 
-## Workflow
+🔗 Access the Template Registry Service: [str.nfdi4plants.org](https://str.nfdi4plants.org/)
+🔗 OpenAPI/Swagger docs: [str.nfdi4plants.org/swagger](https://str.nfdi4plants.org/swagger/index.html)
 
-#### Create Template
+---
 
-* Check whether a similar template exists already or not and you really need a new one
-* Create a new template with [Swate](https://github.com/nfdi4plants/Swate) or [ARCtrl](https://github.com/nfdi4plants/ARCtrl), following the [template creation guide](https://nfdi4plants.github.io/nfdi4plants.knowledgebase/swate/swate-template-contribution/)
-* Move the template into a subdirectory of [Templates](templates) corresponding to your organization
-* Create a directory with the name of the template and move the template into it
-* Rename the template file based on this pattern: Filename_vMaijorversion.MinorVersion.Patchversion
-* Commit changes and create PR to main
+## 🧩 Workflow Overview
 
-#### Update Template
+### 📄 1. Create a New Template
 
-* Copy existing template
-* The newly copied template stays in the same folder as the original one
-* Rename the copied template file based on this pattern: Filename_vMaijorversion.MinorVersion.Patchversion, updating the version
-* Update the file content, using [Swate](https://github.com/nfdi4plants/Swate) or [ARCtrl](https://github.com/nfdi4plants/ARCtrl), and update the version in the template metadata
-* Commit changes and create PR to main
+1. **Check for existing templates** — make sure you're not duplicating.
+2. **Create a template** using [Swate](https://github.com/nfdi4plants/Swate) or [ARCtrl](https://github.com/nfdi4plants/ARCtrl), following the [official guide](https://nfdi4plants.github.io/nfdi4plants.knowledgebase/swate/swate-template-contribution/).
+3. **Organize the file**:
 
-#### Update STRService
+   * Move it into a subfolder of [Templates](templates) corresponding to your organization.
+   * Create a folder named after the template itself and place the file inside.
+   * Rename the file using this format:
+     `TemplateName_v<Major>.<Minor>.<Patch>.xlsx`
+4. **Commit & PR**: Commit your changes and open a pull request to the `main` branch.
 
-* Add new functionality or fix a bug
-* Generate STRClient.cs by following this [step](.github/CONTRIBUTING.md#3-strclient-generation)
-* Fix potential problems in the newly generated STRClient.cs
-* Commit changes and create PR to main
+   * This will trigger a CI workflow that validates your template for best practices.
 
-#### Pull-Request to main
+---
 
-* The following tests are run, when a pull-request to main is created:
-* Check whether all local templates can be parsed
-* Check for distinct tags (Endpoint repository tags vs. general tags)
-* Check for ambiguousness of tags
-* Check for similarity of provided tags
-* Check for correctly named parent folder of templates
-* Check for correct versioning of template file name
-* Check whether all database templates are locally available or not
+### ✏️ 2. Update an Existing Template
 
-Check whether the tests are passing. If they fail, try to fix the problem or wait for a response from the curators!
+1. **Duplicate** the existing template.
+2. **Place the copy** in the same folder as the original.
+3. **Rename** the new file with an updated version number:
+   `TemplateName_v<NewMajor>.<NewMinor>.<NewPatch>.tsv`
+4. **Edit** using [Swate](https://github.com/nfdi4plants/Swate) or [ARCtrl](https://github.com/nfdi4plants/ARCtrl).
+5. **Update metadata** with the new version.
+6. **Commit & PR**: Submit your changes via a pull request to `main`.
 
-Generates new STRClient.cs when a change to api related code happened -> Can break the release
+   * This will trigger a CI workflow that validates your template for best practices.
 
-Release of STR and generation of new JSON file
+---
 
-## Overview
+### 🛠️ 3. Update the STR Service
 
-You can find the OpenAPI (Swagger) specification [here](https://str.nfdi4plants.org/swagger/index.html).
+1. Implement your feature or bug fix.
+2. Regenerate `STRClient.cs` using this [guide](.github/CONTRIBUTING.md#3-strclient-generation).
+3. Fix any issues in the generated file.
+4. Commit your changes and create a PR to `main`.
 
-You can find a representation of the STR project relationships [here](src).
+---
 
-#### Requirements
+### ✅ 4. Pull Request Validation
 
-- [npm and nswag]
-    - install nswag with 'dotnet tool install --global NSwag.ConsoleCore' (Tested with v14.4.0)
-    - verify with `npm --version` (Tested with 9.2.0)
-    - verify with `nswag --version` (Tested with 14.4.0)
-- [.NET SDK](https://dotnet.microsoft.com/en-us/download)
-    - verify with `dotnet --version` (Tested with 7.0.306)
--  [Docker Desktop](https://www.docker.com/products/docker-desktop/)
-    - verify with `docker --version` (Tested with 4.40.0)
+When you create a PR to `main`, the following checks will run automatically:
 
-[Graph of the workflow](src/STRCI)
+* ✅ Templates must be parsable.
+* ✅ Tags must be:
 
-#### Contributing
+  * Distinct between endpoint and general use.
+  * Unambiguous.
+  * Non-redundant.
+* ✅ Versioning in filenames must be correct.
+* ✅ All templates in the database must exist locally.
 
-A guide on how to contribute new templates or the STR service can be found [here](.github/CONTRIBUTING.md)
+**Note**: If tests fail, either fix the issue or wait for curators to respond.
+
+---
+
+## 📚 Requirements
+
+To work with this project, make sure you have the following tools installed:
+
+| Tool                | Tested Version | Notes                                                              |
+| ------------------- | -------------- | ------------------------------------------------------------------ |
+| `NSwag.ConsoleCore` | 14.4.0         | Install with: `dotnet tool restore` as local dotnet tool           |
+| `.NET SDK`          | 9.0.300        | [Download .NET SDK](https://dotnet.microsoft.com/en-us/download)   |
+| Docker Desktop      | 4.40.0         | [Download Docker](https://www.docker.com/products/docker-desktop/) |
+
+Verify installations with:
+
+```bash
+dotnet nswag version
+dotnet --version
+docker --version
+```
+
+---
+
+## 🧭 Project Overview
+
+* 🔍 [Source code and structure](src)
+* 🗺️ [Graph of the CI workflow](src/STRCI)
+
+---
+
+## 🤝 Contributing
+
+Check out the [contribution guide](.github/CONTRIBUTING.md) to learn how to contribute to the templates or STR service.

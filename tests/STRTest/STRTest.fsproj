@@ -1,14 +1,22 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="TestController.fs" />
-    <None Include="LocalTests.fsx" />
+    <Compile Include="Helper/Constants.fs" />
+    <Compile Include="Helper/Util.fs" />
+    <Compile Include="Helper/TemplatesRead.fs" />
+    <Compile Include="Helper/TestData.fs" />
+    <Compile Include="TemplateAvailability.fs" />
+    <Compile Include="FileNameVersionTest.fs" />
+    <Compile Include="TemplatesParse.Test.fs" />
+    <Compile Include="TagCategory.Test.fs" />
+    <Compile Include="TagSimilarity.Test.fs" />
+    <Compile Include="TagAmbiguity.Test.fs" />
     <Compile Include="Main.fs" />
   </ItemGroup>
 
@@ -21,9 +29,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\STRCI\STRCI.fsproj" />
-    <ProjectReference Include="..\..\src\STRClient\STRClient.csproj" />
-    <ProjectReference Include="..\..\src\STRIndex\STRIndex.fsproj" />
-    <ProjectReference Include="..\..\src\STRService\STRService.csproj" />
   </ItemGroup>
 
 </Project>
