@@ -1,4 +1,4 @@
-﻿namespace STRTest
+namespace STRTest
 
 // open System.IO
 // open System.Text
@@ -89,7 +89,7 @@
 //                 match template with
 //                 | Error (p, e) -> failwith $"Unable to read template: {p}. {e.Message}"
 //                 | Ok _ ->
-//                     // a bit redundant, i decided to use this syntax to improve error message in 'Error' case
+//                     //a bit redundant, i decided to use this syntax to improve error message in 'Error' case
 //                     Expect.isOk template $"Should be Ok for: '{templatePath}'"
 //         )
 
@@ -118,7 +118,7 @@
 //         |> Array.map (FsWorkbook.fromXlsxFile >> Spreadsheet.Template.fromFsWorkbook)
 
 
-//     /// Assumption: Similiarity is defined by headers
+//     // Assumption: Similiarity is defined by headers
 //     member this.EnsureTemplateDiverse (template: Template, templates: Template [], ?threshhold) =
 //         let threshhold = defaultArg threshhold TemplateSimilarityThershold // Minimum difference
 //         let headers = template.Table.Headers |> Seq.map (fun h -> h.ToContent()) |> Set
@@ -179,7 +179,7 @@
 //         let ER_Tags = ARCtrl.Templates.getDistinctEndpointRepositories(templates) |> Array.ofSeq
 //         let Tags = ARCtrl.Templates.getDistinctTags(templates) |> Array.ofSeq
 
-//         // These are ER_Tags also used as Tags
+//         //These are ER_Tags also used as Tags
 //         let ER_TagsAsTags = Tags |> Array.filter (fun tag -> ER_Tags |> Array.contains tag)
 
 //         if ER_TagsAsTags.Length > 0 then
@@ -218,7 +218,7 @@
 //         this.MatchResult(result)
 
 //     member this.GetSimiliarTags(tag: ARCtrl.OntologyAnnotation, tags: ARCtrl.OntologyAnnotation [], ?similiarityThreshold) =
-//         let similiarityThreshold = defaultArg similiarityThreshold TagSimiliarityThreshold
+//         let similiarityThreshold = defaultArg similiarityThreshold 0.8
 //         let WhiteListMap =
 //             [|
 //                 for set in TagWhiteList do
@@ -406,61 +406,61 @@
 
 //         this.MatchResult(result)
 
-//     // member this.RunAllTests() =
-//     //     let localTemplates = this.ReadAllTemplates()
-//     //     let officialTemplates = this.ReadAllTemplates() |> Array.filter (fun template -> template.Organisation.IsOfficial())
+//      member this.RunAllTests() =
+//          let localTemplates = this.ReadAllTemplates()
+//          let officialTemplates = this.ReadAllTemplates() |> Array.filter (fun template -> template.Organisation.IsOfficial())
 
-//     //     let distinctTags = this.DistinctTags(ResizeArray localTemplates)
-//     //     let directories =
-//     //         DirectoryInfo(this.TemplatesPath).GetDirectories()
-//     //         |> Array.filter (fun directory -> not (directory.Name.ToLower() = "test"))
-//     //     let fileInfos =
-//     //         directories
-//     //         |> Array.collect(fun directory ->
-//     //             directory.GetFiles("*.xlsx", SearchOption.AllDirectories))
-//     //     let dbTemplates = this.Client.GetAllTemplatesAsync().Result |> Array.ofSeq
+//          let distinctTags = this.DistinctTags(ResizeArray localTemplates)
+//          let directories =
+//              DirectoryInfo(this.TemplatesPath).GetDirectories()
+//              |> Array.filter (fun directory -> not (directory.Name.ToLower() = "test"))
+//          let fileInfos =
+//              directories
+//              |> Array.collect(fun directory ->
+//                  directory.GetFiles("*.xlsx", SearchOption.AllDirectories))
+//          let dbTemplates = this.Client.GetAllTemplatesAsync().Result |> Array.ofSeq
 
-//     //     let convertibleTests = this.TestConvertibleTemplateFiles()
-//     //     let diversityTests =
-//     //         localTemplates
-//     //         |> Array.map (fun template -> this.TestForTemplateDiversity(template, officialTemplates))
-//     //     let distinctTests = this.TestDistinctTags(ResizeArray localTemplates)
-//     //     let ambiguousTests =
-//     //         let groupedByNameTags = distinctTags |> Array.groupBy (fun oa -> oa.NameText)
-//     //         groupedByNameTags
-//     //         |> Array.mapi (fun id (name, tags) -> this.TestTagForAmbiguous(name, tags, id, ResizeArray localTemplates))
-//     //     let similarityTests =
-//     //         let distinctByNamesTags = distinctTags |> Array.distinctBy (fun t -> t.NameText)
-//     //         distinctByNamesTags
-//     //         |> Array.mapi (fun id tag -> this.TestTagForSimiliarity(tag, distinctTags, id, ResizeArray localTemplates))
-//     //     let parentFolderTests =
-//     //         fileInfos
-//     //         |> Array.mapi (fun i fileInfo -> this.TestCheckParentFolder(fileInfo, i))
-//     //     let fileNameVersioningTests =
-//     //         fileInfos
-//     //         |> Array.mapi (fun i fileInfo -> this.TestCheckFileNameVersioning(fileInfo, i))
-//     //     let versioningTests =
-//     //         fileInfos
-//     //         |> Array.map (fun fileInfo -> this.TestCheckFileVersioning(fileInfo))
-//     //     let runAreAllDBTemplatesAvailableTests =
-//     //         dbTemplates
-//     //         |> Array.map (fun dbTemplate -> this.TestAreAllDBTemplatesAvailable(dbTemplate, localTemplates))
+//          let convertibleTests = this.TestConvertibleTemplateFiles()
+//          let diversityTests =
+//              localTemplates
+//              |> Array.map (fun template -> this.TestForTemplateDiversity(template, officialTemplates))
+//          let distinctTests = this.TestDistinctTags(ResizeArray localTemplates)
+//          let ambiguousTests =
+//              let groupedByNameTags = distinctTags |> Array.groupBy (fun oa -> oa.NameText)
+//              groupedByNameTags
+//              |> Array.mapi (fun id (name, tags) -> this.TestTagForAmbiguous(name, tags, id, ResizeArray localTemplates))
+//          let similarityTests =
+//              let distinctByNamesTags = distinctTags |> Array.distinctBy (fun t -> t.NameText)
+//              distinctByNamesTags
+//              |> Array.mapi (fun id tag -> this.TestTagForSimiliarity(tag, distinctTags, id, ResizeArray localTemplates))
+//          let parentFolderTests =
+//              fileInfos
+//              |> Array.mapi (fun i fileInfo -> this.TestCheckParentFolder(fileInfo, i))
+//          let fileNameVersioningTests =
+//              fileInfos
+//              |> Array.mapi (fun i fileInfo -> this.TestCheckFileNameVersioning(fileInfo, i))
+//          let versioningTests =
+//              fileInfos
+//              |> Array.map (fun fileInfo -> this.TestCheckFileVersioning(fileInfo))
+//          let runAreAllDBTemplatesAvailableTests =
+//              dbTemplates
+//              |> Array.map (fun dbTemplate -> this.TestAreAllDBTemplatesAvailable(dbTemplate, localTemplates))
 
-//     //     let allTest =
-//     //         [|
-//     //             convertibleTests
-//     //             //diversityTests
-//     //             ambiguousTests
-//     //             similarityTests
-//     //             parentFolderTests
-//     //             fileNameVersioningTests
-//     //             versioningTests
-//     //             runAreAllDBTemplatesAvailableTests
-//     //         |]
-//     //         |> Array.concat
-//     //         |> List.ofArray
-//     //         |> (fun tests -> distinctTests :: tests)
+//          let allTest =
+//              [|
+//                  convertibleTests
+//                  //diversityTests
+//                  ambiguousTests
+//                  similarityTests
+//                  parentFolderTests
+//                  fileNameVersioningTests
+//                  versioningTests
+//                  runAreAllDBTemplatesAvailableTests
+//              |]
+//              |> Array.concat
+//              |> List.ofArray
+//              |> (fun tests -> distinctTests :: tests)
 
-//     //     let tests = testList "All tests" (allTest)
-//     //     let result = Tests.runTestsWithCLIArgs [] [||] tests
-//     //     this.MatchResult(result)
+//          let tests = testList "All tests" (allTest)
+//          let result = Tests.runTestsWithCLIArgs [] [||] tests
+//          this.MatchResult(result)

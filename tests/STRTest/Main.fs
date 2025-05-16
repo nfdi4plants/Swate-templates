@@ -1,4 +1,4 @@
-﻿module STRTest.Tests
+module STRTest.Tests
 
 open System
 open System.IO
@@ -63,7 +63,8 @@ let allTests = testList "all" [
     TagCategory.Main
     TagSimilarity.Main
     TagAmbiguity.Main
-
+    FileNameVersion.Main
+    TemplateAvailability.Main
 ]
 
 [<EntryPoint>]

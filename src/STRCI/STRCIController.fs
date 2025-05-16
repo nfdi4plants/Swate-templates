@@ -1,4 +1,4 @@
-﻿namespace STRCI
+namespace STRCI
 
 open System
 open System.IO
@@ -27,6 +27,33 @@ module Helper =
             fileWriter.WriteLine(sprintf "ERROR: %s" s)
             fileWriter.Flush()
 
+    let mapOntologyAnnotation (tag: ARCtrl.OntologyAnnotation) =
+        let name = defaultArg tag.Name ""
+        let tan = defaultArg tag.TermAccessionNumber ""
+        let tsr = defaultArg tag.TermSourceREF ""
+
+        let result = new STRIndex.Domain.OntologyAnnotation()
+        result.Name <- name
+        result.TermAccessionNumber <- tan
+        result.TermSourceREF <- tsr
+
+        result
+
+    let mapAuthor(p: ARCtrl.Person) =
+        let fullName =
+            let fst = defaultArg p.FirstName ""
+            let mid = if p.MidInitials.IsSome then $"{fst} {p.MidInitials.Value}" else fst
+            let last = if p.LastName.IsSome then $"{mid} {p.LastName.Value}" else mid
+            last
+        let aff = defaultArg p.Affiliation ""
+        let email = defaultArg p.EMail ""
+
+        let result = new STRIndex.Domain.Author()
+        result.FullName <- fullName
+        result.Affiliation <- aff
+        result.Email <- email
+
+        result
 open Helper
 
 type STRCIController =        
@@ -216,7 +243,7 @@ type STRCIController =
         swateTemplate
 
     static member CreateClientOntologyAnnotation (ontologyAnnotation: ARCtrl.OntologyAnnotation) =
-        let swateOntologyAnnotation = STRService.Data.DataInitializer.MapOntologyAnnotation(ontologyAnnotation)
+        let swateOntologyAnnotation = mapOntologyAnnotation(ontologyAnnotation)
         let clientOntologyAnnotation = new STRClient.OntologyAnnotation()
         clientOntologyAnnotation.Name <- swateOntologyAnnotation.Name
         clientOntologyAnnotation.TermAccessionNumber <- swateOntologyAnnotation.TermAccessionNumber
@@ -224,7 +251,7 @@ type STRCIController =
         clientOntologyAnnotation
 
     static member createClientAuthor (person: ARCtrl.Person) =
-        let author = STRService.Data.DataInitializer.MapAuthor(person)
+        let author = mapAuthor(person)
         let clientAuthor = new STRClient.Author()
         clientAuthor.FullName <- author.FullName
         clientAuthor.Email <- author.Email

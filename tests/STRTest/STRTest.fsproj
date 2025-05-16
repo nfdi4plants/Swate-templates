@@ -13,6 +13,8 @@
     <Compile Include="Helper/TestData.fs" />
     <Compile Include="TestController.fs" />
     <None Include="LocalTests.fsx" />
+    <Compile Include="TemplateAvailability.fs" />
+    <Compile Include="FileNameVersionTest.fs" />
     <Compile Include="TemplatesParse.Test.fs" />
     <Compile Include="TagCategory.Test.fs" />
     <Compile Include="TagSimilarity.Test.fs" />

@@ -9,7 +9,6 @@
 #r @"C:/Users/Patri/source/repos/Swate-templates/bin/Debug/System.IO.Packaging.dll"
 
 #r @"C:/Users/Patri/source/repos/Swate-templates/bin/Debug/STRIndex.dll"
-#r @"C:/Users/Patri/source/repos/Swate-templates/bin/Debug/STRService.dll"
 #r @"C:/Users/Patri/source/repos/Swate-templates/src/STRCI/bin/Debug/net8.0/STRClient.dll"
 
 #r "nuget: Fable.Core"
@@ -32,8 +31,6 @@ open FsSpreadsheet.Net
 open STRIndex
 open STRCI
 open STRClient
-open STRService.Data
-open STRService.Models
 
 let createTestURL (port: int) = $"https://localhost:{port}/"
 
