@@ -3,11 +3,11 @@ name: Release json file
 on:
   push:
     branches: [ main ]
-    
+
 jobs:
 
   release-github:
-    
+
     runs-on: ubuntu-latest
 
     steps:
@@ -15,7 +15,7 @@ jobs:
     - name: Setup .NET 8.0
       uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: '8.0.x'
+        dotnet-version: '9.0.x'
     - name: convert and publish 1.0.0
       run: dotnet fsi release/templates-to-json_v1.0.0.fsx
     - name: convert and publish 2.0.0

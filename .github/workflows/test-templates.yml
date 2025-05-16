@@ -5,9 +5,9 @@ on:
         branches: [ main ]
     pull_request:
         branches: [ main ]
-    
+
 jobs:
-  
+
   test:
     runs-on: ubuntu-latest
 
@@ -17,7 +17,7 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: '8.0.x'  # or whatever version you're targeting
-          
+          dotnet-version: '9.0.x'
+
       - name: Run tests
         run: dotnet run --project tests/STRTest/STRTest.fsproj
