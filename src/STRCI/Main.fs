@@ -30,9 +30,9 @@ let localTemplates =
 
 let dbTemplates = client.GetAllTemplatesAsync().Result |> Array.ofSeq
 
-let createTemplatesInDB () = 
+let createTemplatesInDB () =
     localTemplates
-    |> Array.map (fun item -> 
+    |> Array.map (fun item ->
         let isTemplateInDB = STRCIController.IsTemplateInDB(item, dbTemplates)
         if not isTemplateInDB then
             let swateTemplate = STRCIController.CreateSwateClientTemplate(item)
@@ -41,21 +41,18 @@ let createTemplatesInDB () =
             swateTemplateDto.Content <- swateTemplate
             swateTemplateDto.Metadata <- metaData
             let result = client.CreateTemplateAsync(swateTemplateDto)
-            
+
             match result with
             | success when success.IsCompletedSuccessfully -> success.Result
             | failure when failure.IsFaulted -> raise failure.Exception
             | _  -> raise (Exception("Unexpected task state during template creation in db"))
-        else 
+        else
             null
     )
 
 [<EntryPoint>]
-let main argv = 
+let main argv =
     match argv |> Array.toList with
-    | ["Release_2.0.0"] ->
-        STRCIController.TemplatesToJsonV2()
-        0
     | ["CreateTemplatesInDB"] ->
         createTemplatesInDB()
         0

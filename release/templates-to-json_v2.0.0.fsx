@@ -19,15 +19,15 @@ let reportFileName = Path.Combine(outputPath, $"report_v{version}.txt")
 
 
 type Logger(path : string) =
-    
+
     let fileWriter = new StreamWriter(path)
 
-    member this.Info(s) = 
+    member this.Info(s) =
         printfn "INFO: %s" s
         fileWriter.WriteLine(sprintf "INFO: %s" s)
         fileWriter.Flush()
 
-    member this.Error(s) = 
+    member this.Error(s) =
         printfn "ERROR: %s" s
         fileWriter.WriteLine(sprintf "ERROR: %s" s)
         fileWriter.Flush()
@@ -54,28 +54,45 @@ log.Info(sprintf "Found %d xlsx files" xlsxFiles.Length)
 
 open ARCtrl.Spreadsheet
 
+let getLatestTemplate (templates: (string * ARCtrl.Template) []) =
+     templates
+     |> Array.sortByDescending (fun (name, template) -> template.Version)
+     //enables checking, whether the templates are
+     //|> Array.map (fun template ->
+     //    printfn "template.Name: %s template.Version: %s" template.Name template.Version
+     //    template)
+     |> Array.head
+     |> snd
 
-
-let templates = 
+let templates =
     xlsxFiles
-    |> Array.choose (fun f -> 
-        try 
+    |> Array.choose (fun f ->
+        try
             let p = inputPath + f
             FsWorkbook.fromXlsxFile p
             |> Template.fromFsWorkbook
-            |> fun wb -> Some (wb)
+            |> fun wb -> Some (f,wb)
         with
-        | ex -> 
+        | ex ->
             log.Error(sprintf "Error loading template %s: %s" f ex.Message)
             None
+    )
+
+let latestTemplates =
+    let groupedTemplates =
+        templates
+        |> Array.groupBy (fun (name, template) -> template.Id)
+    groupedTemplates
+    |> Array.map (fun (_, templates) ->
+        getLatestTemplate templates
     )
 
 log.Info(sprintf "Success! Read %d templates" templates.Length)
 
 open ARCtrl.Json
 
-let json = 
-    templates 
+let json =
+    latestTemplates
     |> Templates.toJsonString 0
 
 log.Info("Write json")
