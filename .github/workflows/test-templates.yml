@@ -1,4 +1,4 @@
-name: Test Templates
+name: Test templates
 
 on:
     push:
@@ -7,53 +7,17 @@ on:
         branches: [ main ]
     
 jobs:
-
-  test-readability:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Setup .NET 6.0
-        uses: actions/setup-dotnet@v3
-        with:
-          dotnet-version: '6.0.x'
-      - name: "[Test] readability"
-        run: dotnet fsi CI/templatesEnsure.fsx
-
-  quality-control-tag-coherence:
-    runs-on: ubuntu-latest
-
-    needs: test-readability
-    steps:
-      - uses: actions/checkout@v3
-      - name: Setup .NET 6.0
-        uses: actions/setup-dotnet@v3
-        with:
-          dotnet-version: '6.0.x'
-      - name: "[Test] tag coherence"
-        run: dotnet fsi CI/coherentTagsEnsure.fsx
-
-  quality-control-tag-categories:
-    runs-on: ubuntu-latest
-
-    needs: test-readability
-    steps:
-      - uses: actions/checkout@v3
-      - name: Setup .NET 6.0
-        uses: actions/setup-dotnet@v3
-        with:
-          dotnet-version: '6.0.x'
-      - name: "[Test] tag category"
-        run: dotnet fsi CI/tagCategoryEnsure.fsx
   
-  # quality-control-template-diversity:
-  #   runs-on: ubuntu-latest
+  test-QualityEnsurace:
+    runs-on: ubuntu-latest
 
-  #   needs: test-readability
-  #   steps:
-  #     - uses: actions/checkout@v3
-  #     - name: Setup .NET 6.0
-  #       uses: actions/setup-dotnet@v3
-  #       with:
-  #         dotnet-version: '6.0.x'
-  #     - name: "[Test] template diversity"
-  #       run: dotnet fsi CI/templateDiversityEnsure.fsx
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.0.x'  # or whatever version you're targeting
+          
+      - name: "[Test] qualityEnsurace"
+        run: dotnet run --project tests/STRTest/STRTest.fsproj

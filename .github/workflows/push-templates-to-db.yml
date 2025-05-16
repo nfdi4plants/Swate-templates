@@ -1,8 +1,8 @@
-name: Push Templates to Database
+name: Push templates to database
 
 on:
   push:
-    branches: [ main, str ]
+    branches: [ main ]
     
 jobs:
   action-PushTemplatesToDB:

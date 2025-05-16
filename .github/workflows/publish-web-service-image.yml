@@ -1,8 +1,8 @@
-name: "Publish service image"
+name: "Publish web service image"
 
 on:
   push:
-    branches: ['str']
+    branches: ['main']
     paths:
       # this ensures that docker image is only published when source code or Dockerfile is changed
       - 'src/STRService/**'

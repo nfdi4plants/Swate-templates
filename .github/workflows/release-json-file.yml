@@ -1,4 +1,4 @@
-name: Release github
+name: Release json file
 
 on:
   push:
