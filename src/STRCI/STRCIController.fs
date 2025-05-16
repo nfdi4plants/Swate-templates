@@ -14,15 +14,15 @@ open FsSpreadsheet.Net
 module Helper =
 
     type Logger(path : string) =
-    
+
         let fileWriter = new StreamWriter(path)
 
-        member this.Info(s) = 
+        member this.Info(s) =
             printfn "INFO: %s" s
             fileWriter.WriteLine(sprintf "INFO: %s" s)
             fileWriter.Flush()
 
-        member this.Error(s) = 
+        member this.Error(s) =
             printfn "ERROR: %s" s
             fileWriter.WriteLine(sprintf "ERROR: %s" s)
             fileWriter.Flush()
@@ -56,7 +56,7 @@ module Helper =
         result
 open Helper
 
-type STRCIController =        
+type STRCIController =
 
     static member Client (authenticationToken: string) =
         let httpClient = new System.Net.Http.HttpClient()
@@ -95,7 +95,7 @@ type STRCIController =
             if not target.Exists then
                 target.Create() |> ignore
 
-            // Copy all files 
+            // Copy all files
             source.GetFiles()
             |> Array.iter (fun file ->
                 let targetFilePath = Path.Combine(target.FullName, file.Name)
@@ -108,7 +108,7 @@ type STRCIController =
                 copyDirectory subDir.FullName nextTargetSubDir)
         copyDirectory sourceDir targetDir
 
-    static member CreateDirectoryForTemplate (file: FileInfo) =        
+    static member CreateDirectoryForTemplate (file: FileInfo) =
         let fileName = STRCIController.CleanFileNameFromInfo(file)
         let fileDirectory = file.Directory.FullName
         if fileDirectory.ToLower().Contains(fileName.ToLower()) then
@@ -128,23 +128,23 @@ type STRCIController =
             else findParentDirectory dir.Parent $"{dir.Name}/{parentdirectories}"
         findParentDirectory directory.Parent directory.Name
 
-    static member CreateDirectoryForExternalTemplate (file: FileInfo) =        
+    static member CreateDirectoryForExternalTemplate (file: FileInfo) =
         let fileName = STRCIController.CleanFileNameFromInfo(file)
 
-        let sourceDirectories = 
+        let sourceDirectories =
             let solutionRoot = STRCIController.FindSolutionRoot (DirectoryInfo(System.Environment.CurrentDirectory))
             let templatesPath = Path.Combine(solutionRoot, "templates")
             Directory.GetDirectories(templatesPath, "*", SearchOption.AllDirectories)
             |> Array.map (fun item -> new DirectoryInfo(item))
 
-        let sourceDirectoryNames = 
+        let sourceDirectoryNames =
             sourceDirectories
             |> Array.map (fun item -> item.Name.ToLower())
 
         match sourceDirectoryNames with
         //Check whether a directory with the name of the file exists or not
         | directoryNames when Array.contains (fileName.ToLower()) directoryNames ->
-            let newFileDirectory = 
+            let newFileDirectory =
                 let directory =
                     sourceDirectories
                     |> Array.find (fun item -> (item.Name.ToLower()).EndsWith(fileName.ToLower()))
@@ -152,13 +152,13 @@ type STRCIController =
             let path = Regex.Replace(newFileDirectory.FullName, @"\\", "/")
             let newFile = new FileInfo($"{path}/{file.Name}")
 
-            if not newFile.Exists then 
+            if not newFile.Exists then
                 file.CopyTo($"{path}/{file.Name}", false) |> ignore
                 printfn "copied file: %s" file.Name
 
         //Check whether a directory with the name of the files parent directory exists or not
         | directoryNames when Array.contains (file.Directory.Name.ToLower()) directoryNames ->
-            let newFileDirectory = 
+            let newFileDirectory =
                 let directory =
                     sourceDirectories
                     |> Array.find (fun item -> (item.Name.ToLower()).EndsWith(file.Directory.Name.ToLower()))
@@ -172,12 +172,12 @@ type STRCIController =
 
             let newFile = new FileInfo($"{path}/{file.Name}")
 
-            if not newFile.Exists then 
+            if not newFile.Exists then
                 file.CopyTo($"{path}/{file.Name}", false) |> ignore
                 printfn "copied file: %s" file.Name
 
         | _ ->
-            let newFileDirectory = 
+            let newFileDirectory =
                 let path = STRCIController.FindExistingParentDirectory(file.Directory, sourceDirectories)
                 new DirectoryInfo(path)
             let path = Regex.Replace(newFileDirectory.FullName, @"\\", "/")
@@ -190,7 +190,7 @@ type STRCIController =
 
             let newFile = new FileInfo($"{path}/{file.Name}")
 
-            if not newFile.Exists then 
+            if not newFile.Exists then
                 file.CopyTo($"{path}/{file.Name}", false) |> ignore
                 printfn "copied file: %s" file.Name
 
@@ -212,7 +212,7 @@ type STRCIController =
         |> Spreadsheet.Template.fromFsWorkbook
 
     static member IsTemplateInDB (template: Template, dbTemplates: STRClient.SwateTemplate []) =
-        let potTemplate = Array.tryFind (fun (item: STRClient.SwateTemplate) -> 
+        let potTemplate = Array.tryFind (fun (item: STRClient.SwateTemplate) ->
             let dbVersion = SemVer.SemVer.create(item.TemplateMajorVersion, item.TemplateMinorVersion, item.TemplatePatchVersion).AsString()
             item.TemplateId = template.Id && dbVersion = template.Version) dbTemplates
         potTemplate.IsSome
@@ -298,25 +298,25 @@ type STRCIController =
         swateMetadata.BuildMetadataVersionSuffix <- buildMetadataVersionSuffix
         swateMetadata
 
-    static member CreateFileNames(?version) =
+    static member CreateFileNames(version: string) =
         let currentDirectory = DirectoryInfo(System.Environment.CurrentDirectory)
         let solutionRoot = STRCIController.FindSolutionRoot(currentDirectory)
 
-        let outputPath = Path.Combine(solutionRoot, "src/templates-to-json")
-        let outputFileName = Path.Combine(outputPath, if version.IsSome then $"templates_v{version.Value}.json" else $"templates.json")
-        let reportFileName = Path.Combine(outputPath, if version.IsSome then $"report_v{version.Value}.txt" else $"report.txt")
+        let outputPath = Path.Combine(solutionRoot, "templates-to-json")
+        let outputFileName = Path.Combine(outputPath, $"templates_{version}.json")
+        let reportFileName = Path.Combine(outputPath, $"report_{version}.txt")
         currentDirectory, outputPath, outputFileName, reportFileName
 
     static member GetLatestTemplates(currentDirectory, log: Logger) =
         let files = STRCIController.GetAllTemplateFiles(currentDirectory)
-        
-        let templates = 
+
+        let templates =
             files
-            |> Array.choose (fun f -> 
-                try 
+            |> Array.choose (fun f ->
+                try
                     Some (STRCIController.CreateTemplateFromXlsx f)
                 with
-                | ex -> 
+                | ex ->
                     log.Error(sprintf "Error loading template %s: %s" f.Name ex.Message)
                     None
             )
@@ -326,8 +326,8 @@ type STRCIController =
         let getLatestTemplate (templates: Template []) =
             templates
             |> Array.sortByDescending (fun template -> template.Version)
-            //enables checking, whether the templates are 
-            //|> Array.map (fun template -> 
+            //enables checking, whether the templates are
+            //|> Array.map (fun template ->
             //    printfn "template.Name: %s template.Version: %s" template.Name template.Version
             //    template)
             |> Array.head
@@ -337,14 +337,14 @@ type STRCIController =
                 templates
                 |> Array.groupBy (fun template -> template.Id)
             groupedTemplates
-            |> Array.map (fun (_, templates) -> 
+            |> Array.map (fun (_, templates) ->
                 getLatestTemplate templates
             )
         latestTemplates
 
-    static member TemplatesToJsonV2 () =
+    static member TemplatesToJsonArtifact () =
 
-        let version = "2.0.0"
+        let version = "latest"
 
         let currentDirectory, outputPath, outputFileName, reportFileName = STRCIController.CreateFileNames(version)
 
@@ -360,8 +360,8 @@ type STRCIController =
 
         let latestTemplates = STRCIController.GetLatestTemplates(currentDirectory, log)
 
-        let json = 
-            latestTemplates 
+        let json =
+            latestTemplates
             |> Templates.toJsonString 0
 
         log.Info("Write json")

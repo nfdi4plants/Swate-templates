@@ -53,6 +53,9 @@ let createTemplatesInDB () =
 [<EntryPoint>]
 let main argv =
     match argv |> Array.toList with
+    | ["Release_2.0.0"] ->
+        STRCIController.TemplatesToJsonArtifact()
+        0
     | ["CreateTemplatesInDB"] ->
         createTemplatesInDB()
         0
