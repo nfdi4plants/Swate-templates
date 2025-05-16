@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -29,8 +29,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\STRCI\STRCI.fsproj" />
-    <ProjectReference Include="..\..\src\STRClient\STRClient.csproj" />
-    <ProjectReference Include="..\..\src\STRIndex\STRIndex.fsproj" />
   </ItemGroup>
 
 </Project>
