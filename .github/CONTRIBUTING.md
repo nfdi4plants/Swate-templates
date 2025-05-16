@@ -6,31 +6,27 @@
 
    `dotnet tool restore`
 
-#### 2. Install NPM dependencies
-   
-    `npm install`
-
-#### 3. STRClient Generation
+#### 2. STRClient Generation
 
 Run one of the following commands, in the project root of STRClient, depending on the nswag version you are using.
-
-Utilize a local version of nswag
-
-```bash
-<path to nswag tool>\NSwag\Net80\dotnet-nswag.exe openapi2csclient /input:https://str.nfdi4plants.org/swagger/v1/swagger.json /namespace:STRClient /output:STRClient.cs
-```
-
-or
 
 Utilize the nswag CLI being installed as part of the .NET project
 
 ```bash
-nswag openapi2csclient /input:https://str.nfdi4plants.org/swagger/v1/swagger.json /output:STRClient.cs /namespace:STRClient
+dotnet nswag openapi2csclient /input:https://str.nfdi4plants.org/swagger/v1/swagger.json /output:STRClient.cs /namespace:STRClient
 ```
 
-#### 4. In Visual Studio you have to select docker-compose as the starting project and then you can start it for local tests
+#### 3. In Visual Studio you have to select docker-compose as the starting project and then you can start it for local tests
 
 ![Logo](../img/SelectDockerDesktop.png)
+
+
+#### Run Tests locally
+
+```bash
+# in root
+dotnet watch run --project tests/STRTest/STRTest.fsproj --no-hot-reload
+```
 
 #### How to add a new Template
 
