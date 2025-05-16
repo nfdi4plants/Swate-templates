@@ -1,43 +1,42 @@
+// #r @"C:/Users/Patri/source/repos/Swate-templates/bin/Debug/Newtonsoft.Json.dll"
 
-#r @"C:/Users/Patri/source/repos/Swate-templates/bin/Debug/Newtonsoft.Json.dll"
+// #r @"C:/Users/Patri/source/repos/Swate-templates/bin/Debug/DocumentFormat.OpenXml.dll"
 
-#r @"C:/Users/Patri/source/repos/Swate-templates/bin/Debug/DocumentFormat.OpenXml.dll"
+// #r @"C:/Users/Patri/source/repos/Swate-templates/bin/Debug/FsSpreadsheet.dll"
+// #r @"C:/Users/Patri/source/repos/Swate-templates/bin/Debug/FsSpreadsheet.Net.dll"
 
-#r @"C:/Users/Patri/source/repos/Swate-templates/bin/Debug/FsSpreadsheet.dll"
-#r @"C:/Users/Patri/source/repos/Swate-templates/bin/Debug/FsSpreadsheet.Net.dll"
+// #r @"C:/Users/Patri/source/repos/Swate-templates/bin/Debug/System.IO.Packaging.dll"
 
-#r @"C:/Users/Patri/source/repos/Swate-templates/bin/Debug/System.IO.Packaging.dll"
+// #r @"C:/Users/Patri/source/repos/Swate-templates/bin/Debug/STRIndex.dll"
+// #r @"C:/Users/Patri/source/repos/Swate-templates/tests/STRTest/bin/Debug/net8.0/STRClient.dll"
+// #r @"C:/Users/Patri/source/repos/Swate-templates/bin/Debug/STRService.dll"
 
-#r @"C:/Users/Patri/source/repos/Swate-templates/bin/Debug/STRIndex.dll"
-#r @"C:/Users/Patri/source/repos/Swate-templates/tests/STRTest/bin/Debug/net8.0/STRClient.dll"
-#r @"C:/Users/Patri/source/repos/Swate-templates/bin/Debug/STRService.dll"
+// #r "nuget: Fable.Core"
+// #r "nuget: ARCtrl"
+// #r "nuget: FSharp.Data"
+// #r "nuget: Expecto"
 
-#r "nuget: Fable.Core"
-#r "nuget: ARCtrl"
-#r "nuget: FSharp.Data"
-#r "nuget: Expecto"
+// #load @"../..\src/STRCI/STRCIController.fs"
+// #load @"../STRTest/TestController.fs"
 
-#load @"../..\src/STRCI/STRCIController.fs"
-#load @"../STRTest/TestController.fs"
+// open System
+// open System.IO
+// open System.Text.RegularExpressions
 
-open System
-open System.IO
-open System.Text.RegularExpressions
+// open ARCtrl
 
-open ARCtrl
+// open FsSpreadsheet
+// open FsSpreadsheet.Net
 
-open FsSpreadsheet
-open FsSpreadsheet.Net
+// open Expecto
 
-open Expecto
+// // open STRTest
+// // open STRClient
+// // open STRIndex
+// // open STRCI
+// // open STRService.Data
+// // open STRService.Models
 
-open STRTest
-open STRClient
-open STRIndex
-open STRCI
-open STRService.Data
-open STRService.Models
+// let testController = new STRTest.TestController()
 
-let testController = new STRTest.TestController()
-
-testController.RunAllTests()
+// // testController.RunAllTests()

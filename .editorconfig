@@ -1,0 +1,39 @@
+# Top-most EditorConfig file
+root = true
+
+# All files
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+# F# files
+[*.fs]
+indent_style = space
+indent_size = 4
+continuation_indent_size = 4
+max_line_length = 100
+
+[*.fsi]
+indent_style = space
+indent_size = 4
+
+[*.fsx]
+indent_style = space
+indent_size = 4
+
+# XML/Project files
+[*.{csproj,fsproj}]
+indent_style = space
+indent_size = 2
+
+# JSON/YAML/TOML configs
+[*.{json,yml,yaml,toml}]
+indent_style = space
+indent_size = 2
+
+# EditorConfig settings for Visual Studio (optional but useful)
+[*.fs]
+dotnet_sort_system_directives_first = true
+dotnet_separate_import_directive_groups = true
