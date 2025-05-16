@@ -11,11 +11,6 @@ open STRCI
 
 open Expecto
 
-let token =
-    match Environment.GetEnvironmentVariable("STR_PAT") with
-    | null | "" -> failwith "STR_PAT environment variable is not set!"
-    | t -> t
-
 let private checkLocalTemplateAvailability(dbTemplate: STRClient.SwateTemplate) (localTemplates: Template []) =
     testCase $"{dbTemplate.TemplateName}_{dbTemplate.TemplateId}_{dbTemplate.TemplateMajorVersion}.{dbTemplate.TemplateMinorVersion}.{dbTemplate.TemplatePatchVersion}" <| fun _ ->
         let msg, isAvailable =
@@ -29,7 +24,7 @@ let private checkLocalTemplateAvailability(dbTemplate: STRClient.SwateTemplate) 
         Expect.isTrue (isAvailable.IsSome) msg
             
 let Main = testList "Databse templates are locally available" [
-    let client = STRCIController.Client(token)
+    let client = STRCIController.Client("")
     let dbTemplates = client.GetAllTemplatesAsync().Result |> Array.ofSeq
     let localTemplates = TestData.getTemplates()
 
