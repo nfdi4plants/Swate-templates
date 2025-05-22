@@ -4,7 +4,7 @@
 
 ## 📚 Requirements
 
-To work with this project, make sure you have the following tools installed:
+The following tools need to be installed to work on the STR service. For adding or updating templates, installation is not required. 
 
 | Tool                | Tested Version | Notes                                                              |
 | ------------------- | -------------- | ------------------------------------------------------------------ |
@@ -45,7 +45,7 @@ docker --version
 1. **Duplicate** the existing template.
 2. **Place the copy** in the same folder as the original.
 3. **Rename** the new file with an updated version number:
-   `TemplateName_v<NewMajor>.<NewMinor>.<NewPatch>.tsv`
+   `TemplateName_v<NewMajor>.<NewMinor>.<NewPatch>.xlsx`
 4. **Edit** using [Swate](https://github.com/nfdi4plants/Swate) or [ARCtrl](https://github.com/nfdi4plants/ARCtrl).
 5. **Update metadata** with the new version.
 6. **Commit & PR**: Submit your changes via a pull request to `main`.
