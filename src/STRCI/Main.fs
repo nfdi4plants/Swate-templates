@@ -31,24 +31,21 @@ let localTemplates =
 let dbTemplates = client.GetAllTemplatesAsync().Result |> Array.ofSeq
 
 let createTemplatesInDB () =
-    localTemplates
-    |> Array.map (fun item ->
-        let isTemplateInDB = STRCIController.IsTemplateInDB(item, dbTemplates)
-        if not isTemplateInDB then
-            let swateTemplate = STRCIController.CreateSwateClientTemplate(item)
-            let metaData = STRCIController.CreateSwateClientMetadata(item)
-            let swateTemplateDto = new STRClient.SwateTemplateDto()
-            swateTemplateDto.Content <- swateTemplate
-            swateTemplateDto.Metadata <- metaData
-            let result = client.CreateTemplateAsync(swateTemplateDto)
+    async  {
+        for item in localTemplates do
+            if not (STRCIController.IsTemplateInDB(item, dbTemplates)) then
+                let swateTemplate = STRCIController.CreateSwateClientTemplate(item)
+                let metaData = STRCIController.CreateSwateClientMetadata(item)
+                let swateTemplateDto = new STRClient.SwateTemplateDto()
+                swateTemplateDto.Content <- swateTemplate
+                swateTemplateDto.Metadata <- metaData
 
-            match result with
-            | success when success.IsCompletedSuccessfully -> success.Result
-            | failure when failure.IsFaulted -> raise failure.Exception
-            | state  -> raise (Exception($"Unexpected task state {state.Status.ToString()} during template creation in db"))
-        else
-            null
-    )
+                try
+                    let! _ = client.CreateTemplateAsync(swateTemplateDto) |> Async.AwaitTask
+                    printfn "created template: %s" swateTemplate.TemplateName
+                with ex ->
+                    return raise (Exception("Error during template creation in DB", ex))
+    }
 
 [<EntryPoint>]
 let main argv =
@@ -58,6 +55,7 @@ let main argv =
         0
     | ["CreateTemplatesInDB"] ->
         createTemplatesInDB()
+        |> Async.RunSynchronously
         0
     | _ ->
         printfn "Not the right Usage given"

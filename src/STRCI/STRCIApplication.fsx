@@ -80,19 +80,22 @@ let fileInfos =
 
 //let dbTemplates = client.GetAllTemplatesAsync().Result |> Array.ofSeq
 
-//let createTemplatesInDB () = 
-//    localTemplates
-//    |> Array.iter (fun item -> 
-//        let isTemplateInDB = STRCIController.IsTemplateInDB(item, dbTemplates)
-//        if not isTemplateInDB then
-//            printfn "item: %s" item.Name
-//            let swateTemplate = STRCIController.CreateSwateClientTemplate(item)
-//            let metaData = STRCIController.CreateSwateClientMetadata(item)
-//            let swateTemplateDto = new STRClient.SwateTemplateDto()
-//            swateTemplateDto.Content <- swateTemplate
-//            swateTemplateDto.Metadata <- metaData
-//            client.CreateTemplateAsync(swateTemplateDto).Result |> ignore
-//    )
+//let createTemplatesInDB () =
+//    async  {
+//        for item in localTemplates do
+//            if not (STRCIController.IsTemplateInDB(item, dbTemplates)) then
+//                let swateTemplate = STRCIController.CreateSwateClientTemplate(item)
+//                let metaData = STRCIController.CreateSwateClientMetadata(item)
+//                let swateTemplateDto = STRClient.SwateTemplateDto()
+//                swateTemplateDto.Content <- swateTemplate
+//                swateTemplateDto.Metadata <- metaData
+
+//                try
+//                    let! _ = client.CreateTemplateAsync(swateTemplateDto) |> Async.AwaitTask
+//                    printfn "created template: %s" swateTemplate.TemplateName
+//                with ex ->
+//                    return raise (Exception("Error during template creation in DB", ex))
+//    }
 
 //createTemplatesInDB()
-
+//|> Async.RunSynchronously
