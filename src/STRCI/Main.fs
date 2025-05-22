@@ -1,4 +1,4 @@
-﻿module STRCI.Tests
+module STRCI.Tests
 
 open System
 open System.IO
@@ -45,7 +45,7 @@ let createTemplatesInDB () =
             match result with
             | success when success.IsCompletedSuccessfully -> success.Result
             | failure when failure.IsFaulted -> raise failure.Exception
-            | _  -> raise (Exception("Unexpected task state during template creation in db"))
+            | state  -> raise (Exception($"Unexpected task state {state.Status.ToString()} during template creation in db"))
         else
             null
     )

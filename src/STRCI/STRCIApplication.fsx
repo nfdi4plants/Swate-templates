@@ -67,10 +67,10 @@ let fileInfos =
 //newFileInfos
 //|> Array.map (fun item -> STRCIController.UpdateFileName item)
 
-//let client = STRCIController.Client(token)
+//let client = STRCIController.Client("token")
 
 ////Set client baseURL for testing
-//client.BaseUrl <- (createTestURL 59667)
+//client.BaseUrl <- (createTestURL 50794)
 
 //printfn "client.BaseUrl: %s" client.BaseUrl
 
@@ -85,6 +85,7 @@ let fileInfos =
 //    |> Array.iter (fun item -> 
 //        let isTemplateInDB = STRCIController.IsTemplateInDB(item, dbTemplates)
 //        if not isTemplateInDB then
+//            printfn "item: %s" item.Name
 //            let swateTemplate = STRCIController.CreateSwateClientTemplate(item)
 //            let metaData = STRCIController.CreateSwateClientMetadata(item)
 //            let swateTemplateDto = new STRClient.SwateTemplateDto()
@@ -92,3 +93,6 @@ let fileInfos =
 //            swateTemplateDto.Metadata <- metaData
 //            client.CreateTemplateAsync(swateTemplateDto).Result |> ignore
 //    )
+
+//createTemplatesInDB()
+
