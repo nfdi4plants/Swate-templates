@@ -4,7 +4,7 @@
 
 ## 📚 Requirements
 
-The following tools need to be installed to work on the STR service. For adding or updating templates installation is not required. 
+The following tools need to be installed to work on the STR service. For adding or updating templates, installation is not required. 
 
 | Tool                | Tested Version | Notes                                                              |
 | ------------------- | -------------- | ------------------------------------------------------------------ |
