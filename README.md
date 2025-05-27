@@ -21,4 +21,5 @@ The **Swate Template Registry** is a tool for managing templates used in Swate. 
 
 ## 🤝 Contributing
 
-Check out the [contribution guide](.github/CONTRIBUTING.md) to learn how to contribute to the templates or STR service.
+For contributing Swate templates, please check out the [contribution guide](https://nfdi4plants.github.io/nfdi4plants.knowledgebase/swate/swate-template-contribution/) in the DataPLANT knowledgebase.
+For contributing to the STR service, check out this [contribution guide](.github/CONTRIBUTING.md).
