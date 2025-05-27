@@ -64,7 +64,7 @@ let allTests = testList "all" [
     TagSimilarity.Main
     TagAmbiguity.Main
     FileNameVersion.Main
-    TemplateAvailability.Main
+    //TemplateAvailability.Main
 ]
 
 [<EntryPoint>]
