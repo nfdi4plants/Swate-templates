@@ -24,7 +24,7 @@ docker --version
 
 ## 🧩 Workflow Overview
 
-### 📄 1. Create a New Template
+### 📄 Creating a New Template
 
 1. **Check for existing templates** — make sure you're not duplicating.
 2. **Create a template** using [Swate](https://github.com/nfdi4plants/Swate) or [ARCtrl](https://github.com/nfdi4plants/ARCtrl), following the [official guide](https://nfdi4plants.github.io/nfdi4plants.knowledgebase/swate/swate-template-contribution/).
@@ -40,7 +40,7 @@ docker --version
 
 ---
 
-### ✏️ 2. Update an Existing Template
+### ✏️ Updating an Existing Template
 
 1. **Duplicate** the existing template.
 2. **Place the copy** in the same folder as the original.
@@ -54,7 +54,7 @@ docker --version
 
 ---
 
-### 🛠️ 3. Update the STR Service
+### 🛠️ Updating the STR Service
 
 1. Implement your feature or bug fix.
 2. Regenerate `STRClient.cs` using this [guide](.github/CONTRIBUTING.md#3-strclient-generation).
@@ -63,7 +63,7 @@ docker --version
 
 ---
 
-### ✅ 4. Pull Request Validation
+### ✅ Pull Request Validation
 
 When you create a PR to `main`, the following checks will run automatically:
 
